@@ -7,10 +7,11 @@
 					</div>
 		        	<div id="overlay_content">
 			        	<h3>{$edit_plan_title} </h3>
-			        	{$edit_plan_description}
+			        	<div style="padding-bottom:20px;">{$edit_plan_description}<br/>
 			        	<a style='float:right;text-decoration:none;' href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}'> 
 							<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
 						</a>
+						</div>
 						{foreach from=$edit_plan_tasks.data item=task}
 						    {if $task->completed == -1}
 						    	 <hr>

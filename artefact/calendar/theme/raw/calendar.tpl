@@ -36,16 +36,16 @@
 			</tr>
 			<tr>
 				{if $week_start == 0}
-					<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
+					<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='sunday'}</th>
 				{/if}
-				<th style="width:14%;">{str section="artefact.calendar" tag='monday'}</th>
-				<th style="width:14%;">{str section="artefact.calendar" tag='tuesday'}</th>
-				<th style="width:14%;">{str section="artefact.calendar" tag='wednesday'}</th>
-				<th style="width:14%;">{str section="artefact.calendar" tag='thursday'}</th>
-				<th style="width:14%;">{str section="artefact.calendar" tag='friday'}</th>
-				<th style="width:14%;">{str section="artefact.calendar" tag='saturday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='monday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='tuesday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='wednesday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='thursday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='friday'}</th>
+				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='saturday'}</th>
 				{if $week_start == 1}
-					<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
+					<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='sunday'}</th>
 				{/if}
 			</tr>
 
@@ -77,11 +77,12 @@
 								{assign var=p_id value=$task['parent_id']}
 
 								{* The name tag has to be in p tag and each child tag, so IE toggels the tasks correctly *}
-								<p name="task{$task['parent_id']}" title="{$task['full_title']}" style="background-color:#{$colors[$p_id]};padding-left:3px;margin: 2px;">
-								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&task_info={$task['task_id']}' >{$task['title']}</a>
+								
+								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&task_info={$task['task_id']}' style="background-color:#{$colors[$p_id]};padding-left:3px;margin: 2px;display:block;">{$task['title']}
 									{if $task['completed'] == '1'}
 										<img name="task{$task['parent_id']}" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
-									{/if}
+									{/if}</a>
+									
 
 							{/foreach}
 						{/if}

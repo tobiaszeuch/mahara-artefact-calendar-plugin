@@ -31,7 +31,7 @@
 			        	{if $form['description'] == ""}
 			        		{str section="artefact.calendar" tag='nodescription'}
 			        	{else}
-			        		{$form['description']}
+			        		<p>{$form['description']}</p>
 			        	{/if}
 			        </div>		    	
 	        </div>
