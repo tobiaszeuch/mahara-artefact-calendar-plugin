@@ -95,7 +95,7 @@
 		<table>
 			{foreach from=$plans.data item=plan}
 			{assign var=id value=$plan->id}
-				<tr>
+				<tr style="overflow:scroll;">
 				    <td>
 				        	
 							{if $plans_status[$id] == '0'}
