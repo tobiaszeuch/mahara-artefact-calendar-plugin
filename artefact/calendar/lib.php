@@ -218,7 +218,7 @@ class ArtefactTypeCalendar extends ArtefactType {
     $smarty->assign_by_ref('parent_id', $parent);
     $smarty->assign_by_ref('new_task', $new_task);
     $smarty->assign_by_ref('delete_task', $delete_task);
-    $smarty->assign_by_ref('task_info', $task_info);≤
+    $smarty->assign_by_ref('task_info', $task_info);
 
     // colors and status
     $smarty->assign_by_ref('colors', $colors);
