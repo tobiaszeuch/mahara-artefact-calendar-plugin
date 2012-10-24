@@ -278,16 +278,16 @@ class ArtefactTypeCalendar extends ArtefactType {
   $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
   
   $week_start = get_string('week_start', 'artefact.calendar');  //week starts monday/sunday, depending on language, filled with empty days, depending on day the month starts with
-  
+
   if($week_start == 1){ //monday is start day of each week
     if($weekday == 0) 
       $empty_days = 6;
     else $empty_days = $weekday - 1;
   }
   else {//sunday is start of each week
-    $empty_days == $weekday;
+    $empty_days = $weekday;
   }
-  
+
   $days_total = $empty_days + $num_days;
 
   //number of days of past month, number of past month, number of year of past month

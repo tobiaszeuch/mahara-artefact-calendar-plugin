@@ -52,20 +52,22 @@
 			{foreach from=$calendar item=week}
 				<tr class="r0">
 					{counter start=0 assign=week_count}
-					{foreach from=$week item=day}
-						{counter}
-						test
-						{$week_count}
-						{if $week_count == 0 or $week_count == 6 and $week_start == 0}
-						{elseif $day == $today}
-							<td style="background-color:lightgray;padding:2px;height:96px;">
+					{foreach from=$week item=day}						
+						
+						{if $day == $today}
+							<td style="background-color:lightgray;padding: 2px;height:96px;border:1px solid white;">
 							<b>{$day}</b>
 						{elseif $day == ""}
 							<td style="background-color:white;height:96px;">
+						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
+							<td style="padding: 2px;height:96px;background-color:#F3F7EC;border:1px solid white;">
+							{$day}
 						{else}
-							<td style="height:96px;padding:2px;">
+							<td style="height:96px;padding: 2px;border:1px solid white;">
 							{$day}
 						{/if}
+
+						{counter}{* counts the days*}
 
 						<br/>
 
