@@ -11,6 +11,8 @@ $string['friday'] = 'Freitag';
 $string['saturday'] = 'Samstag';
 $string['sunday'] = 'Sonntag';
 
+$string['week_start'] = '1'; //monday
+
 $string['monday_short'] = 'Mo';
 $string['tuesday_short'] = 'Di';
 $string['wednesday_short'] = 'Mi';

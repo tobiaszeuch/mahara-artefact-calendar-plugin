@@ -274,60 +274,68 @@ class ArtefactTypeCalendar extends ArtefactType {
   $this_month = date('n',time());
   $this_year = date('Y',time());
    
-    $weekday = date('w', mktime(0,0,0,$month,1,$year)); //numeric day of the week the month started (0 = sunday, 6 = saturday)
-    $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-    
-    if($weekday == 0)  //calendar starts monday, filled with empty days, depending on day of the week
+  $weekday = date('w', mktime(0,0,0,$month,1,$year)); //numeric day of the week the month started (0 = sunday, 6 = saturday)
+  $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+  
+  $week_start = get_string('week_start', 'artefact.calendar');  //week starts monday/sunday, depending on language, filled with empty days, depending on day the month starts with
+  
+  if($week_start == 1){ //monday is start day of each week
+    if($weekday == 0) 
       $empty_days = 6;
     else $empty_days = $weekday - 1;
-
-    $days_total = $empty_days + $num_days;
+  }
+  else {//sunday is start of each week
+    $empty_days == $weekday;
+  }
+  
+  $days_total = $empty_days + $num_days;
 
   //number of days of past month, number of past month, number of year of past month
-    if($month == 1)
-      {
-        $past_month = 12;
-        $num_days_past = 31;
-        $past_month_year = $year - 1;  //the year of the past month         
-      }   
-    else
-      {
-        $past_month = $month - 1;
-        $past_month_year = $year; //the year of the past month   
-        $num_days_past = cal_days_in_month(CAL_GREGORIAN, date($past_month,time()), $past_month_year);
-        
-      }         
-    $end_of_last_month = $num_days_past.'.'.$past_month.'.'.$past_month_year;
-   
-    if($month == 12){
-      $next_month = 1;
-      $next_month_year = $year + 1; //the year of next month
-    }
-    else {
-      $next_month = $month+1;
-      $next_month_year = $year;   
-    }
-
-    $month_name = get_string($month, 'artefact.calendar'); //name of the month    
+  if($month == 1)
+    {
+      $past_month = 12;
+      $num_days_past = 31;
+      $past_month_year = $year - 1;  //the year of the past month         
+    }   
+  else
+    {
+      $past_month = $month - 1;
+      $past_month_year = $year; //the year of the past month   
+      $num_days_past = cal_days_in_month(CAL_GREGORIAN, date($past_month,time()), $past_month_year);
+      
+    }         
+  $end_of_last_month = $num_days_past.'.'.$past_month.'.'.$past_month_year;
  
-  $return = array('today' => $today, 
-          'month' => $month, 
-          'year' => $year, 
-          'weekday' => $weekday, 
-          'num_days' => $num_days,
-          'empty_days' => $empty_days,
-          'days_total' => $days_total,
-          'end_of_last_month' => $end_of_last_month,
-          'next_month' => $next_month,
-          'next_month_year' => $next_month_year,
-          'past_month' => $past_month,
-          'past_month_year' => $past_month_year,
-          'this_month' => $this_month,
-          'this_year' => $this_year,
-          'month_name' => $month_name);
-          
-  return $return;
+  if($month == 12){
+    $next_month = 1;
+    $next_month_year = $year + 1; //the year of next month
   }
+  else {
+    $next_month = $month+1;
+    $next_month_year = $year;   
+  }
+
+  $month_name = get_string($month, 'artefact.calendar'); //name of the month    
+
+$return = array('today' => $today, 
+        'month' => $month, 
+        'year' => $year, 
+        'weekday' => $weekday, 
+        'num_days' => $num_days,
+        'empty_days' => $empty_days,
+        'days_total' => $days_total,
+        'end_of_last_month' => $end_of_last_month,
+        'next_month' => $next_month,
+        'next_month_year' => $next_month_year,
+        'past_month' => $past_month,
+        'past_month_year' => $past_month_year,
+        'this_month' => $this_month,
+        'this_year' => $this_year,
+        'month_name' => $month_name,
+        'week_start' => $week_start);
+        
+return $return;
+}
 
   /**
   * Gets all data for task form

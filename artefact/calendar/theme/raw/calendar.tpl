@@ -32,23 +32,32 @@
 </a>
 		<table>
 			<tr >
-				<th colspan='7' style="text-align:center;"><h3>{$month_name}</h3></td>
+				<th colspan='7' style="text-align:center;"><h3>{$month_name} {$year}</h3></td>
 			</tr>
 			<tr>
+				{if $week_start == 0}
+					<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
+				{/if}
 				<th style="width:14%;">{str section="artefact.calendar" tag='monday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='tuesday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='wednesday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='thursday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='friday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='saturday'}</th>
+				{if $week_start == 1}
 				<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
+				{/if}
 			</tr>
 
 			{foreach from=$calendar item=week}
-				<tr class="{cycle values='r0,r1'}">
+				<tr class="r0">
+					{counter start=0 assign=week_count}
 					{foreach from=$week item=day}
-
-						{if $day == $today}
+						{counter}
+						test
+						{$week_count}
+						{if $week_count == 0 or $week_count == 6 and $week_start == 0}
+						{elseif $day == $today}
 							<td style="background-color:lightgray;padding:2px;height:96px;">
 							<b>{$day}</b>
 						{elseif $day == ""}
