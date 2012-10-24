@@ -238,6 +238,7 @@ class ArtefactTypeCalendar extends ArtefactType {
    	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
     $smarty->assign_by_ref('month_name', $dates['month_name']);
     $smarty->assign_by_ref('task_per_day', $task_per_day);
+    $smarty->assign_by_ref('week_start', $dates['week_start']);
     $smarty->assign_by_ref('calendar', $calendar);
 
     // smarty fetch

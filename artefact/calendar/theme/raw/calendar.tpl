@@ -45,7 +45,7 @@
 				<th style="width:14%;">{str section="artefact.calendar" tag='friday'}</th>
 				<th style="width:14%;">{str section="artefact.calendar" tag='saturday'}</th>
 				{if $week_start == 1}
-				<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
+					<th style="width:14%;">{str section="artefact.calendar" tag='sunday'}</th>
 				{/if}
 			</tr>
 
@@ -67,7 +67,7 @@
 							{$day}
 						{/if}
 
-						{counter}{* counts the days*}
+						{counter}{* counts the week days*}
 
 						<br/>
 
@@ -95,7 +95,7 @@
 		<table>
 			{foreach from=$plans.data item=plan}
 			{assign var=id value=$plan->id}
-				<tr style="overflow:scroll;">
+				<tr>
 				    <td>
 				        	
 							{if $plans_status[$id] == '0'}
