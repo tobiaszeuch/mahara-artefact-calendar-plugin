@@ -53,33 +53,47 @@ ArtefactTypeCalendar::build_calendar_html($plans);
 
 //javascript
 $javascript = <<< JAVASCRIPT
-	function toggle(linkid, colorid, planid){
+	function toggle_ajax(linkid, colorid, taskid, status, planid, date){//calls the toggle function and also saves status to db with ajax
 
-			if(document.getElementById(linkid).style.opacity == '0.5' || document.getElementById(linkid).style.filter == 'alpha(opacity=20)')
-			{	
-				document.getElementById(linkid).style.opacity = '1'; 
-				document.getElementById(linkid).style.filter = 'alpha(opacity=100)';
-				var p = document.getElementsByName(planid);
-				
-				for (var i=0; i < p.length; i++) {
-						 p[i].style.display = 'block'; 
-				}
-				document.getElementById(colorid).style.display = 'block'; 
+		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  
+		else// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+
+	 	toggle(linkid, colorid, taskid);
+
+		xmlhttp.open("GET","index.php?"+date+"&status="+status+"&plan="+planid+"&ajax=true",true);
+		xmlhttp.send();
+	}
+
+	function toggle(linkid, colorid, taskid){ //toggles tasks
+	if(document.getElementById(linkid).style.opacity == '0.5' || document.getElementById(linkid).style.filter == 'alpha(opacity=20)')
+		{	
+			document.getElementById(linkid).style.opacity = '1'; 
+			document.getElementById(linkid).style.filter = 'alpha(opacity=100)';
+			var p = document.getElementsByName(taskid);
+			
+			for (var i=0; i < p.length; i++) {
+					 p[i].style.display = 'block'; 
 			}
-			else
-			{	
-				document.getElementById(linkid).style.opacity ='0.5'; 
-				document.getElementById(linkid).style.filter = 'alpha(opacity=20)';
-				document.getElementById(colorid).style.display = 'none';
-				var p = document.getElementsByName(planid);
-				
-				for (var i=0; i < p.length; i++) {
-						p[i].style.display = 'none'; 
-				}
-
+			document.getElementById(colorid).style.display = 'block'; 
+		}
+		else
+		{	
+			document.getElementById(linkid).style.opacity ='0.5'; 
+			document.getElementById(linkid).style.filter = 'alpha(opacity=20)';
+			document.getElementById(colorid).style.display = 'none';
+			var p = document.getElementsByName(taskid);
+			
+			for (var i=0; i < p.length; i++) {
+					p[i].style.display = 'none'; 
 			}
 
 		}
+
+	}
+	
 
 	function hide_overlay(){
 
@@ -88,11 +102,11 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('done_sw').style.display = 'none';
 	}
 
-	function toggle_color_picker(planid){
-		if(document.getElementById(planid).style.display == 'none')
-			document.getElementById(planid).style.display = 'block';
+	function toggle_color_picker(taskid){
+		if(document.getElementById(taskid).style.display == 'none')
+			document.getElementById(taskid).style.display = 'block';
 		else 
-			document.getElementById(planid).style.display = 'none';
+			document.getElementById(taskid).style.display = 'none';
 	}
 
 JAVASCRIPT;
@@ -101,6 +115,7 @@ $smarty = smarty(array('paginator'));
 $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign_by_ref('plans', $plans);
 $smarty->assign('PAGEHEADING', hsc(get_string("calendar", "artefact.calendar")));
-$smarty->display('artefact:calendar:index.tpl');
+if(!($_GET["ajax"] == true))
+	$smarty->display('artefact:calendar:index.tpl');
 
 ?>

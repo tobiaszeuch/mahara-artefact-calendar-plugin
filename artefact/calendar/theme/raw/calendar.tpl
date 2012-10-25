@@ -105,7 +105,7 @@
 								{assign var=stat value='0'}
 							{/if}
 
-							<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&status={$stat}&plan={$id}" >
+							<a onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'month={$month}&year={$year}');" >
 							<div id='color{$id}' style='position:absolute;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;z-index:2;'>
 							</div>
 							<div style='position:absolute;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;z-index:1;'>
@@ -113,11 +113,12 @@
 								<h3 id='link{$id}' style="position:relative;left:12px;">
 									{$plan->title}
 								</h3>
+								{if $plans_status[$id] == '0'}
 
-							{if $plans_status[$id] == '0'}
 								<script language="JavaScript">
 										toggle('link{$id}', 'color{$id}', 'task{$id}');
 								</script>
+
 							{/if}
 							</a> 
 						

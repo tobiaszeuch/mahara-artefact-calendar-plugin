@@ -101,148 +101,147 @@ class ArtefactTypeCalendar extends ArtefactType {
   public static function build_calendar_html(&$plans) {
     
     global $SESSION,$USER;
-    
-   	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
-    
-    $new_task = $_GET['new_task']; //is set to 1 if new task is added
-    $parent = $_GET['parent'];
 
-    if(isset($_GET['task_info']))
-      $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
-    else $task_info = 0;
-
-    if(isset($_GET['edit'])) //is set to task id if task is edited
-      $edit = param_integer('edit');
-    else
-      $edit = $task_info;
-
-    if($edit != 0){ //if task needs to be edited, get form
-      $form = ArtefactTypeCalendar::get_task_form($edit);
-    }     
-    else 
-        $form = 0;    
-
-    if(isset($_GET['edit_plan'])){
-      $edit_plan = param_integer('edit_plan');
-      $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan); //if plan needs to be edited, get form
-    }
-    else 
-        $edit_plan_tasks = 0;
-
-    //get title and description of edited plan 
-
-    for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
-
-      $id = $plans['data'][$i]->id; //get ids
-
-      if($id == $edit_plan){ //plan is edited plan
-           $edit_plan_title = $plans['data'][$i]->title;
-           $edit_plan_description = $plans['data'][$i]->description;
-         }
-    }
-
-    if(isset($_GET['edit_plan_itself']))
-      $edit_plan_itself = isset($_GET['edit_plan_itself']);      
-
-    if(isset($_GET['title'])){
-      ArtefactTypeCalendar::submit_task($dates, $task_info); //if edit task form was send, submit the task
-    }
-
-    //if edit plan form was send, get data
-
-    if(isset($_GET['plan_title'])){
-      $plan_id = (int) $_GET['edit_plan'];
-      $artefact = new ArtefactTypePlan($plan_id);
-      $artefact->set('title', $_GET['plan_title']);
-      $artefact->set('description', $_GET['plan_description']);
-      $artefact->commit();
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
-    }
-
-    // if task needs to be deleted
-
-    if(isset($_GET['delete_task']))
-      $delete_task = $_GET['delete_task'];
-
-     // if task is finally to be deleted
-
-    if(isset($_GET['delete_task_final'])){
-      $delete_task_id = $_GET['delete_task_final'];
-      $todelete = new ArtefactTypeTask($delete_task_id);
-      
-      if (!$USER->can_edit_artefact($todelete)) 
-        throw new AccessDeniedException(get_string('accessdenied', 'error'));
-      
-      $todelete->delete();
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
-    }
-
-    //if color was picked with color picker
-    if(isset($_GET['color']) && isset($_GET['picker']))
-      ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
-      
-    //if status is changed
-    if(isset($_GET['status']) && isset($_GET['plan'])){
+     //if status is changed
+    if(isset($_GET['ajax'])){
       ArtefactTypeCalendar::save_status_to_db($_GET['plan'], $_GET['status']);
-      $toggle = $_GET['plan']; //plan is toggled
+      echo "saved: ".$_GET['plan']."status:".$_GET['status'];
     }
-    else 
-      $toggle = 0;
-
-    
-    $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
-
-    $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
-
-    $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
-
-    $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
-    
-    /**
-    * assigns for smarty
-    */
-
-    $smarty = smarty_core();
+    else{
    
-    // plans
-    $smarty->assign_by_ref('plans', $plans);
+     	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
+      
+      $new_task = $_GET['new_task']; //is set to 1 if new task is added
+      $parent = $_GET['parent'];
 
-    // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
-    $smarty->assign_by_ref('form', $form);
-    $smarty->assign_by_ref('edit_id', $edit);
-    $smarty->assign_by_ref('edit_plan_id', $edit_plan);
-    $smarty->assign_by_ref('edit_plan_itself', $edit_plan_itself);
-    $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_tasks);
-    $smarty->assign_by_ref('edit_plan_title', $edit_plan_title);
-    $smarty->assign_by_ref('edit_plan_description', $edit_plan_description);
-    $smarty->assign_by_ref('parent_id', $parent);
-    $smarty->assign_by_ref('new_task', $new_task);
-    $smarty->assign_by_ref('delete_task', $delete_task);
-    $smarty->assign_by_ref('task_info', $task_info);
+      if(isset($_GET['task_info']))
+        $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
+      else $task_info = 0;
 
-    // colors and status
-    $smarty->assign_by_ref('colors', $colors);
-    $smarty->assign_by_ref('toggle', $toggle);
-    $smarty->assign_by_ref('plans_status', $plans_status);
+      if(isset($_GET['edit'])) //is set to task id if task is edited
+        $edit = param_integer('edit');
+      else
+        $edit = $task_info;
 
-    // dates
-    $smarty->assign_by_ref('year', $dates['year']);
-    $smarty->assign_by_ref('month', $dates['month']);
-    $smarty->assign_by_ref('today', $dates['today']);
-    $smarty->assign_by_ref('num_days', $dates['num_days']);
-    $smarty->assign_by_ref('next_month',$dates['next_month']);
-   	$smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
-   	$smarty->assign_by_ref('this_month',$dates['this_month']);
-   	$smarty->assign_by_ref('this_year', $dates['this_year']);
-   	$smarty->assign_by_ref('past_month', $dates['past_month']);
-   	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
-    $smarty->assign_by_ref('month_name', $dates['month_name']);
-    $smarty->assign_by_ref('task_per_day', $task_per_day);
-    $smarty->assign_by_ref('week_start', $dates['week_start']);
-    $smarty->assign_by_ref('calendar', $calendar);
+      if($edit != 0){ //if task needs to be edited, get form
+        $form = ArtefactTypeCalendar::get_task_form($edit);
+      }     
+      else 
+          $form = 0;    
 
-    // smarty fetch
-    $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
+      if(isset($_GET['edit_plan'])){
+        $edit_plan = param_integer('edit_plan');
+        $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan); //if plan needs to be edited, get form
+      }
+      else 
+          $edit_plan_tasks = 0;
+
+      //get title and description of edited plan 
+
+      for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
+
+        $id = $plans['data'][$i]->id; //get ids
+
+        if($id == $edit_plan){ //plan is edited plan
+             $edit_plan_title = $plans['data'][$i]->title;
+             $edit_plan_description = $plans['data'][$i]->description;
+           }
+      }
+
+      if(isset($_GET['edit_plan_itself']))
+        $edit_plan_itself = isset($_GET['edit_plan_itself']);      
+
+      if(isset($_GET['title'])){
+        ArtefactTypeCalendar::submit_task($dates, $task_info); //if edit task form was send, submit the task
+      }
+
+      //if edit plan form was send, get data
+
+      if(isset($_GET['plan_title'])){
+        $plan_id = (int) $_GET['edit_plan'];
+        $artefact = new ArtefactTypePlan($plan_id);
+        $artefact->set('title', $_GET['plan_title']);
+        $artefact->set('description', $_GET['plan_description']);
+        $artefact->commit();
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
+      }
+
+      // if task needs to be deleted
+
+      if(isset($_GET['delete_task']))
+        $delete_task = $_GET['delete_task'];
+
+       // if task is finally to be deleted
+
+      if(isset($_GET['delete_task_final'])){
+        $delete_task_id = $_GET['delete_task_final'];
+        $todelete = new ArtefactTypeTask($delete_task_id);
+        
+        if (!$USER->can_edit_artefact($todelete)) 
+          throw new AccessDeniedException(get_string('accessdenied', 'error'));
+        
+        $todelete->delete();
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
+      }
+
+      //if color was picked with color picker
+      if(isset($_GET['color']) && isset($_GET['picker']))
+        ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
+
+      
+      $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
+
+      $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
+
+      $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
+
+      $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
+      
+      /**
+      * assigns for smarty
+      */
+
+      $smarty = smarty_core();
+     
+      // plans
+      $smarty->assign_by_ref('plans', $plans);
+
+      // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
+      $smarty->assign_by_ref('form', $form);
+      $smarty->assign_by_ref('edit_id', $edit);
+      $smarty->assign_by_ref('edit_plan_id', $edit_plan);
+      $smarty->assign_by_ref('edit_plan_itself', $edit_plan_itself);
+      $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_tasks);
+      $smarty->assign_by_ref('edit_plan_title', $edit_plan_title);
+      $smarty->assign_by_ref('edit_plan_description', $edit_plan_description);
+      $smarty->assign_by_ref('parent_id', $parent);
+      $smarty->assign_by_ref('new_task', $new_task);
+      $smarty->assign_by_ref('delete_task', $delete_task);
+      $smarty->assign_by_ref('task_info', $task_info);
+
+      // colors and status
+      $smarty->assign_by_ref('colors', $colors);
+      $smarty->assign_by_ref('plans_status', $plans_status);
+
+      // dates
+      $smarty->assign_by_ref('year', $dates['year']);
+      $smarty->assign_by_ref('month', $dates['month']);
+      $smarty->assign_by_ref('today', $dates['today']);
+      $smarty->assign_by_ref('num_days', $dates['num_days']);
+      $smarty->assign_by_ref('next_month',$dates['next_month']);
+     	$smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
+     	$smarty->assign_by_ref('this_month',$dates['this_month']);
+     	$smarty->assign_by_ref('this_year', $dates['this_year']);
+     	$smarty->assign_by_ref('past_month', $dates['past_month']);
+     	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
+      $smarty->assign_by_ref('month_name', $dates['month_name']);
+      $smarty->assign_by_ref('task_per_day', $task_per_day);
+      $smarty->assign_by_ref('week_start', $dates['week_start']);
+      $smarty->assign_by_ref('calendar', $calendar);
+
+      // smarty fetch
+      $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
+    }
   }
 
 
