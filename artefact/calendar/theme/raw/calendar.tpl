@@ -56,15 +56,15 @@
 						
 						{if $day == $today}
 							<td style="background-color:lightgray;padding: 2px;height:96px;border:1px solid white;">
-							<b>{$day}</b>
+							<b>&ensp;{$day}</b>
 						{elseif $day == ""}
 							<td style="background-color:white;height:96px;">
 						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
 							<td style="padding: 2px;height:96px;background-color:#F3F7EC;border:1px solid white;">
-							{$day}
+							&ensp;{$day}
 						{else}
 							<td style="height:96px;padding: 2px;border:1px solid white;">
-							{$day}
+							&ensp;{$day}
 						{/if}
 
 						{counter}{* counts the week days*}
@@ -105,7 +105,7 @@
 								{assign var=stat value='0'}
 							{/if}
 
-							<a onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}');" >
+							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}');" >
 							<div id='color{$id}' style='position:absolute;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;z-index:2;'>
 							</div>
 							<div style='position:absolute;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;z-index:1;'>

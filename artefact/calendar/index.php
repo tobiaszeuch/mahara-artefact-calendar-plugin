@@ -62,6 +62,11 @@ $javascript = <<< JAVASCRIPT
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
 	 	toggle(linkid, colorid, taskid);
+	 	var new_status;
+	 	if(status == 1)
+	 		new_status = 0;
+	 	else new_status = 1;
+	 	document.getElementById("onclick"+planid).onclick = function() {toggle_ajax(linkid, colorid, taskid, new_status, planid)};
 
 		xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
 		xmlhttp.send();
