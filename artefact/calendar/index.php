@@ -53,7 +53,7 @@ ArtefactTypeCalendar::build_calendar_html($plans);
 
 //javascript
 $javascript = <<< JAVASCRIPT
-	function toggle_ajax(linkid, colorid, taskid, status, planid, date){//calls the toggle function and also saves status to db with ajax
+	function toggle_ajax(linkid, colorid, taskid, status, planid){//calls the toggle function and also saves status to db with ajax
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -63,7 +63,7 @@ $javascript = <<< JAVASCRIPT
 
 	 	toggle(linkid, colorid, taskid);
 
-		xmlhttp.open("GET","index.php?"+date+"&status="+status+"&plan="+planid+"&ajax=true",true);
+		xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
 		xmlhttp.send();
 	}
 
@@ -93,7 +93,6 @@ $javascript = <<< JAVASCRIPT
 		}
 
 	}
-	
 
 	function hide_overlay(){
 
@@ -102,11 +101,27 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('done_sw').style.display = 'none';
 	}
 
-	function toggle_color_picker(taskid){
-		if(document.getElementById(taskid).style.display == 'none')
-			document.getElementById(taskid).style.display = 'block';
+	function toggle_color_picker(planid){
+		if(document.getElementById(planid).style.display == 'none')
+			document.getElementById(planid).style.display = 'block';
 		else 
-			document.getElementById(taskid).style.display = 'none';
+			document.getElementById(planid).style.display = 'none';
+	}
+
+	function save_color(planid, color){
+
+		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  
+		else// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+
+		document.getElementById('color'+planid).style.backgroundColor = "#"+color;
+		toggle_color_picker('picker'+planid);
+
+		xmlhttp.open("GET","index.php?color="+color+"&picker="+planid+"&ajax=true",true);
+		xmlhttp.send();
+		
 	}
 
 JAVASCRIPT;

@@ -105,7 +105,7 @@
 								{assign var=stat value='0'}
 							{/if}
 
-							<a onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'month={$month}&year={$year}');" >
+							<a onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}');" >
 							<div id='color{$id}' style='position:absolute;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;z-index:2;'>
 							</div>
 							<div style='position:absolute;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;z-index:1;'>
@@ -114,12 +114,10 @@
 									{$plan->title}
 								</h3>
 								{if $plans_status[$id] == '0'}
-
-								<script language="JavaScript">
-										toggle('link{$id}', 'color{$id}', 'task{$id}');
-								</script>
-
-							{/if}
+									<script language="JavaScript">
+											toggle('link{$id}', 'color{$id}', 'task{$id}');
+									</script>
+								{/if}
 							</a> 
 						
 				    </td>

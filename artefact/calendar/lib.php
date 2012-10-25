@@ -104,8 +104,13 @@ class ArtefactTypeCalendar extends ArtefactType {
 
      //if status is changed
     if(isset($_GET['ajax'])){
-      ArtefactTypeCalendar::save_status_to_db($_GET['plan'], $_GET['status']);
-      echo "saved: ".$_GET['plan']."status:".$_GET['status'];
+
+      if(isset($_GET['status']))//status gets changed
+        ArtefactTypeCalendar::save_status_to_db($_GET['plan'], $_GET['status']);
+
+      else if (isset($_GET['color'])) //color gets changed
+        ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
+        
     }
     else{
    
@@ -183,12 +188,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $todelete->delete();
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
       }
-
-      //if color was picked with color picker
-      if(isset($_GET['color']) && isset($_GET['picker']))
-        ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
-
-      
+    
       $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
 
       $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
