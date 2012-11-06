@@ -93,42 +93,44 @@
 		</table>
 	</td>
 	<td>
-		<table>
-			{foreach from=$plans.data item=plan}
-			{assign var=id value=$plan->id}
-				<tr>
-				    <td>
-				        	
-							{if $plans_status[$id] == '0'}
-								{assign var=stat value='1'}										
-							{else}
-								{assign var=stat value='0'}
-							{/if}
+		<div style="height:50%;overflow:scroll;">
+			<table>
+				{counter start=0 assign=plan_count}
+				{foreach from=$plans.data item=plan}
+				{assign var=id value=$plan->id}
+				{counter}
+					    	<td>	
 
-							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}');" >
-							<div id='color{$id}' style='position:absolute;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;z-index:2;'>
-							</div>
-							<div style='position:absolute;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;z-index:1;'>
-							</div> 
-								<h3 id='link{$id}' style="position:relative;left:12px;">
-									{$plan->title}
-								</h3>
 								{if $plans_status[$id] == '0'}
-									<script language="JavaScript">
-											toggle('link{$id}', 'color{$id}', 'task{$id}');
-									</script>
+									{assign var=stat value='1'}										
+								{else}
+									{assign var=stat value='0'}
 								{/if}
-							</a> 
-						
-				    </td>
-				    <td style="min-width:40px;">
-				        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
-								<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
-								{include file="color_picker.tpl"}
-				    </td>
-				</tr>
-			{/foreach}
-		</table>
+
+								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" >
+								<div id='color{$id}' style='position:relative;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;'>
+								</div>					
+								<div id="gray{$id}" style='position:relative;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;display:none;'>
+								</div>
+									<h3 id='link{$id}' style="position:relative;">
+										{$plan->title}
+									</h3>
+									{if $plans_status[$id] == '0'}
+										<script language="JavaScript">
+												toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
+										</script>
+									{/if}
+								</a> 
+					    </td>
+					    <td style="min-width:40px;position:relative;">
+					        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
+									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+									{include file="color_picker.tpl"}
+					    </td>
+					</tr>		
+				{/foreach}
+			</table>
+		</div>
 	</td>
 </tr>
 

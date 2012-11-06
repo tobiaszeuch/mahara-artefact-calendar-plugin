@@ -45,7 +45,7 @@ define('TITLE', get_string('calendar', 'artefact.calendar'));
 
 // offset and limit for pagination
 $offset = param_integer('offset', 0);
-$limit  = param_integer('limit', 10);
+$limit  = param_integer('limit', 100);
 
 $plans = ArtefactTypePlan::get_plans($offset, $limit);
 
@@ -53,7 +53,8 @@ ArtefactTypeCalendar::build_calendar_html($plans);
 
 //javascript
 $javascript = <<< JAVASCRIPT
-	function toggle_ajax(linkid, colorid, taskid, status, planid){//calls the toggle function and also saves status to db with ajax
+
+	function toggle_ajax(linkid, colorid, taskid, status, planid, grayid){//calls the toggle function and also saves status to db with ajax
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -61,18 +62,18 @@ $javascript = <<< JAVASCRIPT
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
-	 	toggle(linkid, colorid, taskid);
+	 	toggle(linkid, colorid, taskid, grayid);
 	 	var new_status;
 	 	if(status == 1)
 	 		new_status = 0;
 	 	else new_status = 1;
-	 	document.getElementById("onclick"+planid).onclick = function() {toggle_ajax(linkid, colorid, taskid, new_status, planid)};
+	 	document.getElementById("onclick"+planid).onclick = function() {toggle_ajax(linkid, colorid, taskid, new_status, planid, grayid)};
 
 		xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
 		xmlhttp.send();
 	}
 
-	function toggle(linkid, colorid, taskid){ //toggles tasks
+	function toggle(linkid, colorid, taskid, grayid){ //toggles tasks
 	if(document.getElementById(linkid).style.opacity == '0.5' || document.getElementById(linkid).style.filter == 'alpha(opacity=20)')
 		{	
 			document.getElementById(linkid).style.opacity = '1'; 
@@ -83,12 +84,15 @@ $javascript = <<< JAVASCRIPT
 					 p[i].style.display = 'block'; 
 			}
 			document.getElementById(colorid).style.display = 'block'; 
+			document.getElementById(grayid).style.display = 'none'; 
 		}
 		else
 		{	
 			document.getElementById(linkid).style.opacity ='0.5'; 
 			document.getElementById(linkid).style.filter = 'alpha(opacity=20)';
 			document.getElementById(colorid).style.display = 'none';
+			document.getElementById(grayid).style.display = 'block'; 
+
 			var p = document.getElementsByName(taskid);
 			
 			for (var i=0; i < p.length; i++) {
@@ -113,7 +117,7 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById(planid).style.display = 'none';
 	}
 
-	function save_color(planid, color){
+	function save_color(planid, taskid, color){
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -124,11 +128,17 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('color'+planid).style.backgroundColor = "#"+color;
 		toggle_color_picker('picker'+planid);
 
+		var p = document.getElementsByName(taskid);
+			
+			for (var i=0; i < p.length; i++) {
+					p[i].style.backgroundColor = "#"+color;
+			}
+
 		xmlhttp.open("GET","index.php?color="+color+"&picker="+planid+"&ajax=true",true);
 		xmlhttp.send();
 		
 	}
-
+	
 JAVASCRIPT;
 
 $smarty = smarty(array('paginator'));
