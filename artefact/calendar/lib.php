@@ -136,7 +136,7 @@ class ArtefactTypeCalendar extends ArtefactType {
 
       if(isset($_GET['edit_plan'])){
         $edit_plan = param_integer('edit_plan');
-        $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan); //if plan needs to be edited, get form
+        $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan,0,100); //if plan needs to be edited, get form
       }
       else 
           $edit_plan_tasks = 0;
@@ -407,7 +407,7 @@ return $return;
     for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
 
       $id = $plans['data'][$i]->id; //get id
-      $task[$i] = ArtefactTypeTask::get_tasks($id); //get all tasks
+      $task[$i] = ArtefactTypeTask::get_tasks($id,0,100); //get all tasks
 
       for($j = 0; $j < count($task[$i]['data']); $j++){  
 

@@ -12,6 +12,7 @@
 							<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
 						</a>
 						</div>
+						<div style="height:300px;overflow:scroll;">
 						{foreach from=$edit_plan_tasks.data item=task}
 						    {if $task->completed == -1}
 						    	 <hr>
@@ -25,8 +26,8 @@
 							            </a> 
 							            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
 						        	</p>
-						        	<div style="z-index:3;float:right;">
-						          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;">
+						        	<div style="z-index:3;float:right;position:relative;">
+						          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;right:10px;z-index:3;">
 							            	{str section="artefact.calendar" tag='deleteconfirm'}
 							            </div>
 							   		</div>
@@ -51,8 +52,8 @@
 							            </a> 
 							            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
 						       			</p>
-						       			<div style="z-index:3;float:right;">
-							          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;">
+						       			<div style="z-index:3;float:right;position:relative;">
+							          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;right:10px;z-index:3;">
 								            	{str section="artefact.calendar" tag='deleteconfirm'}
 								            </div>
 							   			</div>
@@ -67,4 +68,5 @@
 
 						    {/if}
 						{/foreach}
+					</div>
 					</div>
