@@ -54,4 +54,13 @@ $string['newtask'] = 'Neue Aufgabe';
 $string['saveplan'] = 'Vorhaben speichern';
 $string['deleteconfirm'] = 'Wirklich l&ouml;schen?';
 
+$string['set_reminder'] = 'Benachrichtigung einstellen';
+$string['remind_me'] = 'Benachrichtige mich über Aufgaben';
+$string['sameday'] = 'am selben Tag';
+$string['onedayahead'] = 'einen Tag davor';
+$string['twodaysahead'] = 'zwei Tage davor';
+$string['threedaysahead'] = 'drei Tage davor';
+$string['oneweekahead'] = 'eine Woche davor';
+$string['notification_help'] = 'Die Art der Benachrichtigung (E-Mail, E-Mail Übersicht, Eingangsbox) kann unter Einstellungen -> Nachrichten verändert werden.';
+
 ?>

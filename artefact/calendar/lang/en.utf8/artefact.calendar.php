@@ -53,4 +53,14 @@ $string['savetask'] = 'Save task';
 $string['newtask'] = 'New task';
 $string['saveplan'] = 'Save plan';
 $string['deleteconfirm'] = 'Confirm deletion?';
+
+$string['set_reminder'] = 'Set reminder';
+$string['remind_me'] = 'Remind me about tasks';
+$string['sameday'] = 'on the same day';
+$string['onedayahead'] = 'one day ahead';
+$string['twodaysahead'] = 'two days ahead';
+$string['threedaysahead'] = 'three days ahead';
+$string['oneweekahead'] = 'one week ahead';
+$string['notification_help'] = 'The type of notification (Email, Email digest, Inbox) can be changed at Settings -> Notifications.';
+
 ?>

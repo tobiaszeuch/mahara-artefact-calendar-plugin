@@ -26,6 +26,8 @@
 
 defined('INTERNAL') || die();
 
+require_once('activity.php');
+
 class PluginArtefactCalendar extends PluginArtefact {
 
 	public static function get_artefact_types() {
@@ -52,6 +54,17 @@ class PluginArtefactCalendar extends PluginArtefact {
 			),
 		);
 	}
+
+  public static function get_activity_types() {
+        return array(
+            (object)array(
+                'name' => 'reminder',
+                'admin' => 0,
+                'delay' => 0,
+            )
+        );
+    }
+
 }
 
 
@@ -92,6 +105,27 @@ class ArtefactTypeCalendar extends ArtefactType {
 		
 	}
 
+  public static function get_cron() {
+    return array(
+      (object)array('callfunction' => 'task_reminder',
+                    'hour' => '0',
+                    'minute' => '00',
+      ),
+    );
+  }
+
+public static function task_reminder() {
+
+    $message = new StdClass;
+    $message->users = array('2');
+
+    $message->subject = 'test2';
+    $message->message = get_string('task_reminder', 'artefact.calendar');
+
+    //activity_occurred('maharamessage', $message);
+}
+
+
 
   /**
    * Builds the plans calendar
@@ -100,6 +134,8 @@ class ArtefactTypeCalendar extends ArtefactType {
    */
   public static function build_calendar_html(&$plans) {
     
+    ArtefactTypeCalendar::task_reminder();
+
     global $SESSION,$USER;
 
      //if status is changed
@@ -602,9 +638,6 @@ return $return;
 
     db_commit();
   }
-
-
-
 }
 
 ?>

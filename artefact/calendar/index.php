@@ -138,6 +138,10 @@ $javascript = <<< JAVASCRIPT
 		xmlhttp.send();
 		
 	}
+
+	function toggle_notification_settings(){
+		document.getElementById('set_notification').style.display = 'block';
+	}
 	
 JAVASCRIPT;
 
