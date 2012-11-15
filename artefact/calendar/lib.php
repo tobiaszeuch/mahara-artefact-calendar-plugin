@@ -108,7 +108,7 @@ class ArtefactTypeCalendar extends ArtefactType {
   public static function get_cron() {
     return array(
       (object)array('callfunction' => 'task_reminder',
-                    'hour' => '0',
+                    'hour' => '4',
                     'minute' => '00',
       ),
     );
@@ -122,7 +122,7 @@ public static function task_reminder() {
     $message->subject = 'test2';
     $message->message = get_string('task_reminder', 'artefact.calendar');
 
-    //activity_occurred('maharamessage', $message);
+    activity_occurred('maharamessage', $message);
 }
 
 
@@ -134,7 +134,7 @@ public static function task_reminder() {
    */
   public static function build_calendar_html(&$plans) {
     
-    ArtefactTypeCalendar::task_reminder();
+   // ArtefactTypeCalendar::task_reminder();
 
     global $SESSION,$USER;
 
@@ -149,7 +149,8 @@ public static function task_reminder() {
         
     }
     else{
-   
+      
+      $plan_count = count($plans['data']);
      	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
       
       $new_task = $_GET['new_task']; //is set to 1 if new task is added
@@ -179,7 +180,7 @@ public static function task_reminder() {
 
       //get title and description of edited plan 
 
-      for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
+      for($i = 0; $i < $plan_count; $i++){ //loop through all plans
 
         $id = $plans['data'][$i]->id; //get ids
 
@@ -241,6 +242,7 @@ public static function task_reminder() {
      
       // plans
       $smarty->assign_by_ref('plans', $plans);
+      $smarty->assign_by_ref('plan_count', $plan_count);
 
       // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
       $smarty->assign_by_ref('form', $form);

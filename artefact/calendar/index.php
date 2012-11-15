@@ -140,6 +140,9 @@ $javascript = <<< JAVASCRIPT
 	}
 
 	function toggle_notification_settings(){
+		if(document.getElementById('set_notification').style.display == 'block')
+			document.getElementById('set_notification').style.display = 'none';
+		else
 		document.getElementById('set_notification').style.display = 'block';
 	}
 	

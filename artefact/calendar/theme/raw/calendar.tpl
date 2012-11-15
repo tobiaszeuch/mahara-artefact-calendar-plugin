@@ -131,6 +131,13 @@
 				{/foreach}
 			</table>
 		</div>
+		<p  class="description" style="text-align:center;" >{$plan_count}
+		{if $plan_count > 2}
+			{str section="artefact.plans" tag='plans'}
+		{else}
+			{str section="artefact.plans" tag='plan'}
+		{/if}
+		</p>
 		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'} <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='edit'></a></p>
 		<div id='set_notification' style="display:none;">
 			{str section="artefact.calendar" tag='remind_me'}
