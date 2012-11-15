@@ -120,7 +120,17 @@
 												toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
 										</script>
 									{/if}
-								</a> 
+								</a>
+								<p  class="description" style="margin:0px;">
+									{$task_count[$id]}
+									{if $task_count[$id] != 1}
+										{str section="artefact.plans" tag='tasks'}
+									{else}
+										{str section="artefact.plans" tag='task'}
+									{/if}	
+									({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})
+										
+								</p>
 					    </td>
 					    <td style="min-width:40px;position:relative;">
 					        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
@@ -131,8 +141,8 @@
 				{/foreach}
 			</table>
 		</div>
-		<p  class="description" style="text-align:center;" >{$plan_count}
-		{if $plan_count > 2}
+		<p  class="description" style="text-align:center;">{$plan_count}
+		{if $plan_count != 1}
 			{str section="artefact.plans" tag='plans'}
 		{else}
 			{str section="artefact.plans" tag='plan'}

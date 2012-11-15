@@ -178,12 +178,22 @@ public static function task_reminder() {
       else 
           $edit_plan_tasks = 0;
 
-      //get title and description of edited plan 
+      $task_count = array(); //array with number of tasks per plan
+      $task_count_completed = array(); //array with number of completed tasks per plan
 
       for($i = 0; $i < $plan_count; $i++){ //loop through all plans
 
         $id = $plans['data'][$i]->id; //get ids
+        $tasks = ArtefactTypeTask::get_tasks($id,0,100);
+        $task_count[$id] = $tasks['count']; 
+        $task_count_completed[$id] = 0;
 
+        for($j = 0; $j < $task_count[$id]; $j++){
+           if($tasks['data'][$j]->completed == 1)
+            $task_count_completed[$id]++;
+        }
+
+         //get title and description of edited plan 
         if($id == $edit_plan){ //plan is edited plan
              $edit_plan_title = $plans['data'][$i]->title;
              $edit_plan_description = $plans['data'][$i]->description;
@@ -243,6 +253,8 @@ public static function task_reminder() {
       // plans
       $smarty->assign_by_ref('plans', $plans);
       $smarty->assign_by_ref('plan_count', $plan_count);
+      $smarty->assign_by_ref('task_count', $task_count);
+      $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
 
       // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
       $smarty->assign_by_ref('form', $form);
@@ -446,8 +458,9 @@ return $return;
 
       $id = $plans['data'][$i]->id; //get id
       $task[$i] = ArtefactTypeTask::get_tasks($id,0,100); //get all tasks
+      $task_count = $task[$i]['count'];
 
-      for($j = 0; $j < count($task[$i]['data']); $j++){  
+      for($j = 0; $j < $task_count; $j++){  
 
         $title = $task[$i]['data'][$j]->title; //task title
         $full_title = $title; //full title, other title will be shortened
