@@ -78,7 +78,7 @@
 
 								{* The name tag has to be in p tag and each child tag, so IE toggels the tasks correctly *}
 								
-								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&task_info={$task['task_id']}' style="background-color:#{$colors[$p_id]};padding-left:3px;margin: 2px;display:block;">{$task['title']}
+								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&task_info={$task['task_id']}' title="{$task['full_title']}" style="text-decoration:none;background-color:#{$colors[$p_id]};padding-left:3px;margin: 2px;display:block;">{$task['title']}
 									{if $task['completed'] == '1'}
 										<img name="task{$task['parent_id']}" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
 									{/if}</a>
@@ -93,13 +93,13 @@
 		</table>
 	</td>
 	<td>
-		<div style="height:50%;overflow:scroll;">
+		<div style="height:520px;overflow-x:hidden; overflow-y:auto;">
 			<table>
 				{counter start=0 assign=plan_count}
 				{foreach from=$plans.data item=plan}
 				{assign var=id value=$plan->id}
 				{counter}
-					    	<td>	
+					    	<td style="min-width:150px;">	
 
 								{if $plans_status[$id] == '0'}
 									{assign var=stat value='1'}										
@@ -132,7 +132,7 @@
 										
 								</p>
 					    </td>
-					    <td style="min-width:40px;position:relative;">
+					    <td style="min-width:40px;position:relative;padding-right:20px;text-align:right;">
 					        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
 									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
 									{include file="color_picker.tpl"}

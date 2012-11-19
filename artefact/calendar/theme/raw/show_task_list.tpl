@@ -12,7 +12,7 @@
 							<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
 						</a>
 						</div>
-						<div style="height:300px;overflow:scroll;">
+						<div style="height:300px;overflow:auto;">
 						{foreach from=$edit_plan_tasks.data item=task}
 						    {if $task->completed == -1}
 						    	 <hr>
