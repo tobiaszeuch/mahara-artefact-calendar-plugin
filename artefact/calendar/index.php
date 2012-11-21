@@ -145,6 +145,19 @@ $javascript = <<< JAVASCRIPT
 		else
 		document.getElementById('set_notification').style.display = 'block';
 	}
+
+	function set_reminder_ajax(reminder_value){//changes the reminder settings
+
+		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
+		  xmlhttp=new XMLHttpRequest();
+		  
+		else// code for IE6, IE5
+		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	 	
+	 	document.getElementById('reminder_set').style.display = 'block';
+		//xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
+		//xmlhttp.send();
+	}
 	
 JAVASCRIPT;
 

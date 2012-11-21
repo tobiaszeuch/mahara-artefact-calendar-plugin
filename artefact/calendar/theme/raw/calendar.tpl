@@ -150,15 +150,19 @@
 		</p>
 		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'} <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='edit'></a></p>
 		<div id='set_notification' style="display:none;">
+
 			{str section="artefact.calendar" tag='remind_me'}
-			<select>
+
+			<select name="reminder" onfocus="document.getElementById('reminder_set').style.display = 'none';" onchange="set_reminder_ajax(this.value);">
+				<option value='-1'>{str section="artefact.calendar" tag='never'}</option>
 				<option value='0'>{str section="artefact.calendar" tag='sameday'}</option>
 				<option value='1'>{str section="artefact.calendar" tag='onedayahead'}</option>
 				<option value='2'>{str section="artefact.calendar" tag='twodaysahead'}</option>
 				<option value='3'>{str section="artefact.calendar" tag='threedaysahead'}</option>
 				<option value='7'>{str section="artefact.calendar" tag='oneweekahead'}</option>
+				
 			</select>	
-			<p class="description">{str section="artefact.calendar" tag='notification_help'}</p>
+			<p class="description" style="display:none;" id="reminder_set">{str section="artefact.calendar" tag='reminder_is_set'}</p>
 		</div>
 	</td>
 </tr>
