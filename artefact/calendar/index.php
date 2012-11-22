@@ -146,7 +146,8 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('set_notification').style.display = 'block';
 	}
 
-	function set_reminder_ajax(reminder_value){//changes the reminder settings
+
+	function set_reminder_date_ajax(reminder_value, plan){//changes the reminder settings
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -154,9 +155,9 @@ $javascript = <<< JAVASCRIPT
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	 	
-	 	document.getElementById('reminder_set').style.display = 'block';
-		//xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
-		//xmlhttp.send();
+	 	toggle_notification_settings();
+		xmlhttp.open("GET","index.php?reminder_date="+reminder_value+"&reminder="+plan+"&ajax=true",true);
+		xmlhttp.send();
 	}
 
 
@@ -168,7 +169,11 @@ $javascript = <<< JAVASCRIPT
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
-	 	if(status == 0){
+	 	if(status == 0)
+	 		new_status = 1;
+	 	else new_status = 0;
+
+	 	if(new_status == 1){
 	 		var enable = 'reminder_enabled'+planid;
 	 		var disable = 'reminder_disabled'+planid;
 	 	}
@@ -180,8 +185,8 @@ $javascript = <<< JAVASCRIPT
 	 	document.getElementById(enable).style.display = 'inline';
 	 	
 		
-		//xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
-		//xmlhttp.send();
+		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder="+planid+"&ajax=true",true);
+		xmlhttp.send();
 	}
 
 	function toggle_all_reminders(plan_ids, status){
@@ -191,7 +196,11 @@ $javascript = <<< JAVASCRIPT
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 		
-	 	if(status == 0){
+	 	if(status == 0)
+	 		new_status = 1;
+	 	else new_status = 0;
+
+	 	if(new_status == 1){
 	 		for (var i = 0; i < plan_ids.length; ++i){
 		 		var enable = 'reminder_enabled'+plan_ids[i];
 		 		var disable = 'reminder_disabled'+plan_ids[i];
@@ -213,8 +222,8 @@ $javascript = <<< JAVASCRIPT
 		 	document.getElementById('reminder_enabled_all').style.display = 'none';
 	 	}	
 		
-		//xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
-		//xmlhttp.send();	
+		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder=all&ajax=true",true);
+		xmlhttp.send();
 	}
 	
 JAVASCRIPT;

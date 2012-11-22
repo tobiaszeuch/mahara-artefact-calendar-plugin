@@ -135,8 +135,18 @@
 					    <td style="min-width:60px;position:relative;padding-right:20px;text-align:right;">
 					        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
 									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
-									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'></a>
-									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"  style="display:none;"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
+
+									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
+									{if $reminder_status_per_plan[$id] == 0}
+										style="display:none;"
+									{/if}>
+									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'></a>
+									
+									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
+									{if $reminder_status_per_plan[$id] == 1}
+										style="display:none;"
+									{/if}>
+									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
 									{include file="color_picker.tpl"}
 					    </td>
 					</tr>		
@@ -153,18 +163,26 @@
 			<a style="padding-left:20px;text-decoration:none;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},1);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'></a>
 			<a style="padding-left:20px;text-decoration:none;display:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},0);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
 		</p>
-		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'}: </a></p>
+		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'}: 
+			{* Shows reminder date of first plan, display of date for each plan not yet implemented*}
+			{assign var=time value=$reminder_date_per_plan[$plans.data[1]->id]}
+			{foreach key=date_key item=date_string from=$reminder_dates}
+				{if $time == $date_key}
+					{$date_string}
+				{/if}
+			{/foreach}
+		</a></p>
 		<div id='set_notification' style="display:none;">
 
 			{str section="artefact.calendar" tag='remind_me'}
 
-			<select name="reminder" onfocus="document.getElementById('reminder_set').style.display = 'none';" onchange="set_reminder_ajax(this.value);">
-				<option value='-1'>{str section="artefact.calendar" tag='never'}</option>
-				<option value='0'>{str section="artefact.calendar" tag='sameday'}</option>
-				<option value='1'>{str section="artefact.calendar" tag='onedayahead'}</option>
-				<option value='2'>{str section="artefact.calendar" tag='twodaysahead'}</option>
-				<option value='3'>{str section="artefact.calendar" tag='threedaysahead'}</option>
-				<option value='7'>{str section="artefact.calendar" tag='oneweekahead'}</option>
+			<select name="reminder" onchange="set_reminder_date_ajax(this.value,'all');">
+				{foreach key=date_key item=date_string from=$reminder_dates}
+				<option value='{$date_key}' 
+					{if $time == $date_key} 
+						selected 
+					{/if}>{$date_string}</option>
+					{/foreach}
 			</select>	
 
 			<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
