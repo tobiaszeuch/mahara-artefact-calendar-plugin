@@ -132,23 +132,28 @@
 										
 								</p>
 					    </td>
-					    <td style="min-width:40px;position:relative;padding-right:20px;text-align:right;">
+					    <td style="min-width:60px;position:relative;padding-right:20px;text-align:right;">
 					        	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$id}" >
 									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'></a>
+									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"  style="display:none;"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
 									{include file="color_picker.tpl"}
 					    </td>
 					</tr>		
 				{/foreach}
 			</table>
 		</div>
-		<p  class="description" style="text-align:center;">{$plan_count}
+		<p  class="description" style="text-align:center;">{$plan_count} 
+			
 		{if $plan_count != 1}
 			{str section="artefact.plans" tag='plans'}
 		{else}
 			{str section="artefact.plans" tag='plan'}
 		{/if}
+			<a style="padding-left:20px;text-decoration:none;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},1);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'></a>
+			<a style="padding-left:20px;text-decoration:none;display:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},0);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
 		</p>
-		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'} <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='edit'></a></p>
+		<p><a onclick='toggle_notification_settings();'>{str section="artefact.calendar" tag='set_reminder'}: </a></p>
 		<div id='set_notification' style="display:none;">
 
 			{str section="artefact.calendar" tag='remind_me'}
@@ -160,9 +165,9 @@
 				<option value='2'>{str section="artefact.calendar" tag='twodaysahead'}</option>
 				<option value='3'>{str section="artefact.calendar" tag='threedaysahead'}</option>
 				<option value='7'>{str section="artefact.calendar" tag='oneweekahead'}</option>
-				
 			</select>	
-			<p class="description" style="display:none;" id="reminder_set">{str section="artefact.calendar" tag='reminder_is_set'}</p>
+
+			<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
 		</div>
 	</td>
 </tr>

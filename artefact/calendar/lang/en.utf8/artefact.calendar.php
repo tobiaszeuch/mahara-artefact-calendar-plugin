@@ -54,7 +54,7 @@ $string['newtask'] = 'New task';
 $string['saveplan'] = 'Save plan';
 $string['deleteconfirm'] = 'Confirm deletion?';
 
-$string['set_reminder'] = 'Set reminder';
+$string['set_reminder'] = 'Reminder date';
 $string['remind_me'] = 'Remind me by email about tasks';
 $string['of'] = 'of';
 $string['all_plans'] = 'all plans';
@@ -64,6 +64,6 @@ $string['onedayahead'] = 'one day ahead';
 $string['twodaysahead'] = 'two days ahead';
 $string['threedaysahead'] = 'three days ahead';
 $string['oneweekahead'] = 'one week ahead';
-$string['reminder_is_set'] = 'Reminder options saved';
-
+$string['disable_reminder'] = 'You can disable/enable the reminders of each plan by clickung on the clock button next to it.';
+$string['all'] = 'All plans';
 ?>

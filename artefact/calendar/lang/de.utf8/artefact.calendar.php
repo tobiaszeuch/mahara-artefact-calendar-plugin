@@ -54,7 +54,7 @@ $string['newtask'] = 'Neue Aufgabe';
 $string['saveplan'] = 'Vorhaben speichern';
 $string['deleteconfirm'] = 'Wirklich l&ouml;schen?';
 
-$string['set_reminder'] = 'Benachrichtigung einstellen';
+$string['set_reminder'] = 'Benachrichtigungszeitpunkt';
 $string['remind_me'] = 'Benachrichtige mich per E-Mail über Aufgaben';
 $string['of'] = 'von';
 $string['all_plans'] = 'allen Vorhaben';
@@ -64,6 +64,7 @@ $string['onedayahead'] = 'einen Tag davor';
 $string['twodaysahead'] = 'zwei Tage davor';
 $string['threedaysahead'] = 'drei Tage davor';
 $string['oneweekahead'] = 'eine Woche davor';
-$string['reminder_is_set'] = 'Benachrichtigungsoptionen gespeichert';
+$string['disable_reminder'] = 'Sie können die Benachrichtung der einzelnen Vorhaben aktivieren/deaktiviern indem Sie auf den Uhr-Button neben dem Vorhaben klicken.';
+$string['all'] = 'Alle Vorhaben';
 
 ?>

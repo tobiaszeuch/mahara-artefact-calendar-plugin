@@ -244,6 +244,16 @@ public static function task_reminder() {
 
       $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
       
+
+      $planids_js = 'new Array('; //javascript array of plan ids
+      for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+        $id = $plans['data'][$m]->id;
+        $planids_js .= $id;
+        if($m < $plan_count - 1)
+          $planids_js .= ',';
+      }
+      $planids_js .= ")";
+
       /**
       * assigns for smarty
       */
@@ -255,6 +265,7 @@ public static function task_reminder() {
       $smarty->assign_by_ref('plan_count', $plan_count);
       $smarty->assign_by_ref('task_count', $task_count);
       $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
+      $smarty->assign_by_ref('planids_js', $planids_js);
 
       // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
       $smarty->assign_by_ref('form', $form);
