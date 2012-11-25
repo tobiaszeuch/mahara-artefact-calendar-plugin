@@ -66,4 +66,10 @@ $string['reminder_date3'] = 'three days ahead';
 $string['reminder_date7'] = 'one week ahead';
 $string['disable_reminder'] = 'You can disable/enable the reminders of each plan by clickung on the clock button next to it.';
 $string['all'] = 'All plans';
+$string['reminder_enabled_tooltip'] = 'Reminder is enabled';
+$string['reminder_disabled_tooltip'] = 'Reminder is disabled';
+$string['subject'] = 'Reminder for task(s)';
+$string['message'] = 'This is a reminder for the following task(s):';
+$string['on'] = 'On';
+
 ?>

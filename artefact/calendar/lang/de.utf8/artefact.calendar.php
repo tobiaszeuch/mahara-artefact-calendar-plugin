@@ -66,5 +66,10 @@ $string['reminder_date3'] = 'drei Tage davor';
 $string['reminder_date7'] = 'eine Woche davor';
 $string['disable_reminder'] = 'Sie können die Benachrichtung der einzelnen Vorhaben aktivieren/deaktiviern indem Sie auf den Uhr-Button neben dem Vorhaben klicken.';
 $string['all'] = 'Alle Vorhaben';
+$string['reminder_enabled_tooltip'] = 'Benachrichtigung ist aktiv';
+$string['reminder_disabled_tooltip'] = 'Benachrichtigung ist inaktiv';
+$string['subject'] = 'Benachrichtigung für Aufgabe(n)';
+$string['message'] = 'Dies ist eine Benachrichtigung für die folgenden Aufgabe(n):';
+$string['on'] = 'Am';
 
 ?>

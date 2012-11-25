@@ -139,13 +139,13 @@
 									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
 									{if $reminder_status_per_plan[$id] == 0}
 										style="display:none;"
-									{/if}>
-									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'></a>
+									{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
+									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'  ></a>
 									
 									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
 									{if $reminder_status_per_plan[$id] == 1}
 										style="display:none;"
-									{/if}>
+									{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
 									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
 									{include file="color_picker.tpl"}
 					    </td>
@@ -160,8 +160,8 @@
 		{else}
 			{str section="artefact.plans" tag='plan'}
 		{/if}
-			<a style="padding-left:20px;text-decoration:none;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},1);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'></a>
-			<a style="padding-left:20px;text-decoration:none;display:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},0);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
+			<a style="padding-left:20px;text-decoration:none;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},1);" >{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'></a>
+			<a style="padding-left:20px;text-decoration:none;display:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},0);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder' ></a>
 		</p>
 		<p><a onclick='toggle_notification_settings();' id="reminder">{str section="artefact.calendar" tag='set_reminder'}: 
 			{* Shows reminder date of first plan, display of date for each plan not yet implemented*}
