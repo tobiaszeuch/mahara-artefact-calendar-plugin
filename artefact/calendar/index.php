@@ -147,14 +147,19 @@ $javascript = <<< JAVASCRIPT
 	}
 
 
-	function set_reminder_date_ajax(reminder_value, plan){//changes the reminder settings
-
+	function set_reminder_date_ajax(reminder_value, plan, prefix, reminder_strings){//changes the reminder settings
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
 		  
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 	 	
+	 	for (var i = 0; i < reminder_strings.length; ++i){ //changes text to new reminder date
+	 		if(reminder_strings[i][0] == reminder_value){
+	 			var newText = prefix+reminder_strings[i][1];
+	 			document.getElementById('reminder').innerText = newText;
+	 		}
+	 	}
 	 	toggle_notification_settings();
 		xmlhttp.open("GET","index.php?reminder_date="+reminder_value+"&reminder="+plan+"&ajax=true",true);
 		xmlhttp.send();

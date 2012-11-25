@@ -263,12 +263,20 @@ public static function task_reminder() {
 
       $available_dates = self::$available_dates;
       $reminder_dates = array();
-      for($u = 0; $u < count($available_dates); $u++){
-        $reminder_dates[$available_dates[$u]] = get_string('reminder_date'.$available_dates[$u], 'artefact.calendar');
+      $reminder_strings = 'new Array('; //javascript array of reminder strings
+      $num_dates = count($available_dates);
+      for($u = 0; $u < $num_dates; $u++){
+        $reminder_string = get_string('reminder_date'.$available_dates[$u], 'artefact.calendar');
+        $reminder_dates[$available_dates[$u]] = $reminder_string; //php array
+        $reminder_strings .= 'new Array('.$available_dates[$u].',"'.$reminder_string.'")'; //javascript array
+        if($u < $num_dates - 1)
+          $reminder_strings .= ',';
       }
-
+      $reminder_strings .= ')';
+      
       $planids_js = 'new Array('; //javascript array of plan ids
       for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+        
         $id = $plans['data'][$m]->id;
         $planids_js .= $id;
         if($m < $plan_count - 1)
@@ -293,6 +301,7 @@ public static function task_reminder() {
       $smarty->assign_by_ref('reminder_status_per_plan', $reminder_status_per_plan);
       $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
       $smarty->assign_by_ref('reminder_dates', $reminder_dates);
+      $smarty->assign_by_ref('reminder_strings', $reminder_strings);
 
       // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
       $smarty->assign_by_ref('form', $form);
