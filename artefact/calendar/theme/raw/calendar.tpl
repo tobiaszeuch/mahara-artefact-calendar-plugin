@@ -107,7 +107,7 @@
 									{assign var=stat value='0'}
 								{/if}
 
-								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" >
+								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" style="text-decoration:none;" >
 								<div id='color{$id}' style='position:relative;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;'>
 								</div>					
 								<div id="gray{$id}" style='position:relative;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;display:none;'>

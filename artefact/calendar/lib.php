@@ -65,13 +65,8 @@ class PluginArtefactCalendar extends PluginArtefact {
     return array(
       (object)array(
       'callfunction' => 'remind_all_users',
-      'hour' => '14',
+      'hour' => '2',
       'minute' => '00',
-      ),
-      (object)array(
-      'callfunction' => 'remind_all_users2',
-      'hour' => '14',
-      'minute' => '05',
       ));
   }
 
@@ -80,13 +75,6 @@ class PluginArtefactCalendar extends PluginArtefact {
   */
 
   public static function remind_all_users(){
-
-    $users_to_be_reminded = PluginArtefactCalendar::get_users_to_be_reminded();
-    PluginArtefactCalendar::notify_users($users_to_be_reminded);
-
-  }
-
-  public static function remind_all_users2(){
 
     $users_to_be_reminded = PluginArtefactCalendar::get_users_to_be_reminded();
     PluginArtefactCalendar::notify_users($users_to_be_reminded);
@@ -141,7 +129,7 @@ class PluginArtefactCalendar extends PluginArtefact {
     $date = date("Y-m-d",strtotime('+'.$num_days. ' days')); //date in x days, format YYYY-MM-DD
 
     ($results = get_records_sql_array("SELECT title FROM {artefact_plans_task} JOIN {artefact} ON {artefact}.id = {artefact_plans_task}.artefact 
-      WHERE artefacttype = 'task' AND parent = '$plan_id' AND completiondate = '$date';", array()))
+      WHERE artefacttype = 'task' AND parent = '$plan_id' AND completiondate = '$date' AND completed = '0';", array()))
             || ($results = array()); //get plans and user ids
 
     if (!empty($results[0])) {
@@ -243,9 +231,6 @@ class ArtefactTypeCalendar extends ArtefactType {
    * @param plans (reference)
    */
   public static function build_calendar_html(&$plans) {
-
-    //PluginArtefactCalendar::remind_all_users();
-   //ArtefactTypeCalendar::remind_all_users();
 
     global $SESSION,$USER;
 
