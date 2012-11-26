@@ -140,7 +140,7 @@
 									{if $reminder_status_per_plan[$id] == 0}
 										style="display:none;"
 									{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
-									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='renminder'  ></a>
+									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'  ></a>
 									
 									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
 									{if $reminder_status_per_plan[$id] == 1}
@@ -160,33 +160,38 @@
 		{else}
 			{str section="artefact.plans" tag='plan'}
 		{/if}
-			<a style="padding-left:20px;text-decoration:none;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},1);" >{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder'></a>
-			<a style="padding-left:20px;text-decoration:none;display:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},0);">{str section="artefact.calendar" tag='all'}: <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder' ></a>
+		{if $plan_count != 0}	
+				<a style="text-decoration:none;padding-left:20px;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
+				</a> / 
+				<a style="text-decoration:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt="reminder"></a>
+		{/if}
 		</p>
-		<p><a onclick='toggle_notification_settings();' id="reminder">{str section="artefact.calendar" tag='set_reminder'}: 
-			{* Shows reminder date of first plan, display of date for each plan not yet implemented*}
-			{assign var=time value=$reminder_date_per_plan[$plans.data[1]->id]}
-			{foreach key=date_key item=date_string from=$reminder_dates}
-				{if $time == $date_key}
-					{$date_string}
-				{/if}
-			{/foreach}
-		</a></p>
-		<div id='set_notification' style="display:none;">
-
-			{str section="artefact.calendar" tag='remind_me'}
-
-			<select name="reminder" onchange="set_reminder_date_ajax(this.value,'all','{str section="artefact.calendar" tag='set_reminder'}: ',{$reminder_strings});">
-				{foreach key=date_key item=date_string from=$reminder_dates}
-					<option value='{$date_key}' 
-						{if $time == $date_key} 
-							selected 
-						{/if}>{$date_string}
-					</option>
-				{/foreach}
-			</select>	
-
-			<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
+		{if $plan_count != 0}
+			<p>
+				<a onclick='toggle_notification_settings();' id="reminder">{str section="artefact.calendar" tag='set_reminder'}: 
+				{* Shows reminder date of first plan, display of date for each plan not yet implemented*}
+				
+					{assign var=time value=$reminder_date_per_plan[$plans.data[0]->id]}
+					{foreach key=date_key item=date_string from=$reminder_dates}
+						{if $time == $date_key}
+							{$date_string}
+						{/if}
+					{/foreach}			
+				</a>
+			</p>
+			<div id='set_notification' style="display:none;">
+				{str section="artefact.calendar" tag='remind_me'}
+				<select name="reminder" onchange="set_reminder_date_ajax(this.value,'all','{str section="artefact.calendar" tag='set_reminder'}: ',{$reminder_strings});">
+					{foreach key=date_key item=date_string from=$reminder_dates}
+						<option value='{$date_key}' 
+							{if $time == $date_key} 
+								selected 
+							{/if}>{$date_string}
+						</option>
+					{/foreach}
+				</select>	
+				<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
+			{/if}
 		</div>
 	</td>
 </tr>

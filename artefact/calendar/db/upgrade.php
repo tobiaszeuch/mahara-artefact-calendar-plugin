@@ -27,9 +27,7 @@
 defined('INTERNAL') || die();
 
 function xmldb_artefact_calendar_upgrade($oldversion=0) {
-    
-
+    return true;
 }
 
 ?>
-

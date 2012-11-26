@@ -143,7 +143,7 @@ $javascript = <<< JAVASCRIPT
 		if(document.getElementById('set_notification').style.display == 'block')
 			document.getElementById('set_notification').style.display = 'none';
 		else
-		document.getElementById('set_notification').style.display = 'block';
+			document.getElementById('set_notification').style.display = 'block';
 	}
 
 
@@ -157,7 +157,7 @@ $javascript = <<< JAVASCRIPT
 	 	for (var i = 0; i < reminder_strings.length; ++i){ //changes text to new reminder date
 	 		if(reminder_strings[i][0] == reminder_value){
 	 			var newText = prefix+reminder_strings[i][1];
-	 			document.getElementById('reminder').innerText = newText;
+	 			document.getElementById('reminder').innerHTML = newText;
 	 		}
 	 	}
 	 	toggle_notification_settings();
@@ -212,8 +212,6 @@ $javascript = <<< JAVASCRIPT
 		 		document.getElementById(disable).style.display = 'none';
 	 			document.getElementById(enable).style.display = 'inline';
 	 		}
-	 		document.getElementById('reminder_disabled_all').style.display = 'none';
-	 		document.getElementById('reminder_enabled_all').style.display = 'inline';
 
 	 	}
 	 	else{
@@ -223,8 +221,6 @@ $javascript = <<< JAVASCRIPT
 		 		document.getElementById(disable).style.display = 'none';
 	 			document.getElementById(enable).style.display = 'inline';
 		 	} 	
-		 	document.getElementById('reminder_disabled_all').style.display = 'inline';
-		 	document.getElementById('reminder_enabled_all').style.display = 'none';
 	 	}	
 		
 		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder=all&ajax=true",true);

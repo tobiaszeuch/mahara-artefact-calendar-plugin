@@ -30,6 +30,8 @@ require_once('activity.php');
 
 class PluginArtefactCalendar extends PluginArtefact {
 
+  private static $max_reminder_days = 7;
+
 	public static function get_artefact_types() {
 		return array(
 		'calendar',
@@ -58,6 +60,131 @@ class PluginArtefactCalendar extends PluginArtefact {
   public static function get_activity_types() {
         return array();
     }
+
+  public static function get_cron() {
+    return array(
+      (object)array(
+      'callfunction' => 'remind_all_users',
+      'hour' => '14',
+      'minute' => '00',
+      ),
+      (object)array(
+      'callfunction' => 'remind_all_users2',
+      'hour' => '14',
+      'minute' => '05',
+      ));
+  }
+
+  /**
+  * Reminds all users about their tasks
+  */
+
+  public static function remind_all_users(){
+
+    $users_to_be_reminded = PluginArtefactCalendar::get_users_to_be_reminded();
+    PluginArtefactCalendar::notify_users($users_to_be_reminded);
+
+  }
+
+  public static function remind_all_users2(){
+
+    $users_to_be_reminded = PluginArtefactCalendar::get_users_to_be_reminded();
+    PluginArtefactCalendar::notify_users($users_to_be_reminded);
+
+  }
+
+
+   /**
+  * Returns an array of user ids and the name/date of tasks
+  */
+
+  private static function get_users_to_be_reminded(){
+
+    $users_to_be_reminded = array(); //two dimensional array with user ids and all their tasks
+
+    for($i = 0; $i <= self::$max_reminder_days; $i++){ // get all plans with reminder set to x days ahead    
+      ($results = get_records_sql_array("SELECT id, owner FROM {artefact} 
+        JOIN {artefact_calendar_calendar} ON artefact.id = artefact_calendar_calendar.plan WHERE artefacttype = 'plan' AND reminder_status = '1' AND reminder_date = '$i';", array()))
+            || ($results = array()); //get plans and user ids
+      
+      if (!empty($results[0])) {
+        
+        foreach ($results as $result) {
+          $userid = $result->owner;
+          $planid = $result->id;
+          $tasks = PluginArtefactCalendar::get_task_in_x_days($i,$planid);//get tasks of plans
+
+          if(count($tasks)){
+
+            $day = array_keys($tasks);
+            $day = $day[0]; //first key is the date of the tasks
+           
+            for ($j = 0; $j < count($tasks[$day]); $j++){ 
+              $num = count($users_to_be_reminded[$userid][$day]);
+              $users_to_be_reminded[$userid][$day][$num] = $tasks[$day][$j];  
+            }
+
+          }      
+        }
+      }
+    }
+    return $users_to_be_reminded;
+  }
+
+  /**
+  * Returns titles of uncompleted tasks of a specific plan that happen in x days (0 = today)
+  */
+
+  private static function get_task_in_x_days($num_days, $plan_id){
+
+    $all_tasks = array();
+    $date = date("Y-m-d",strtotime('+'.$num_days. ' days')); //date in x days, format YYYY-MM-DD
+
+    ($results = get_records_sql_array("SELECT title FROM {artefact_plans_task} JOIN {artefact} ON {artefact}.id = {artefact_plans_task}.artefact 
+      WHERE artefacttype = 'task' AND parent = '$plan_id' AND completiondate = '$date';", array()))
+            || ($results = array()); //get plans and user ids
+
+    if (!empty($results[0])) {
+      $date = date(get_string('display_format', 'artefact.calendar'),strtotime('+'.$num_days. ' days'));
+      $all_tasks[$date] = array();
+      foreach ($results as $result) { 
+        array_push($all_tasks[$date], $result->title);
+      }
+    }
+    return $all_tasks;
+  }
+
+
+  /**
+  * Notifys all users about their tasks by email
+  *
+  * Structure of $users:
+  * Array with user id
+  *   Array with date as key and another array with tasks titles as value 
+  *       ex. (user = 2, Tasks on 2012/11/26 and 2012/11/27): 
+  *       Array ( [2] => Array ( [26.11.2012] => Array ( [0] => Task Titel 1 [1] => Task Title 2 ) [27.11.2012] => Array ( [0] => Task Title 2 [1] => Task Title 4 ) )
+  */
+
+  private static function notify_users($users_to_be_reminded){
+    $message = new StdClass;
+    $users = array_keys($users_to_be_reminded);
+    
+    foreach ($users as $user){
+      $message->users = array($user);
+      $message->subject = get_string('subject', 'artefact.calendar');
+      $message_body = "";   
+      foreach (array_keys($users_to_be_reminded[$user]) as $day){
+        $message_body .=  get_string('on', 'artefact.calendar').' '.$day.": \n";
+        foreach ($users_to_be_reminded[$user][$day] as $task)
+          $message_body .= $task."\n";
+        $message_body .= "\n\n";
+      }
+     
+      $message->message = get_string('message', 'artefact.calendar')."\n\n".$message_body;
+      activity_occurred('maharamessage', $message);
+    }
+  }
+
 
 }
 
@@ -90,8 +217,6 @@ class ArtefactTypeCalendar extends ArtefactType {
                                          '3',
                                          '7');
 
-  private static $max_reminder_days = 7;
-
 	public function render_self($options) {
 		return get_string('calendar', 'artefact.calendar');
 	}
@@ -108,50 +233,7 @@ class ArtefactTypeCalendar extends ArtefactType {
 		
 	}
 
-  public static function get_cron() {
-    return array(
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '0',
-    'minute' => '10',
-    ),
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '1',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '2',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '3',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '4',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '5',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '6',
-    'minute' => '10',
-    )
-    (object)array(
-    'callfunction' => 'remind_all_users',
-    'hour' => '7',
-    'minute' => '10',
-    )
-    );
-  }
+  
 
 
 
@@ -162,6 +244,7 @@ class ArtefactTypeCalendar extends ArtefactType {
    */
   public static function build_calendar_html(&$plans) {
 
+    //PluginArtefactCalendar::remind_all_users();
    //ArtefactTypeCalendar::remind_all_users();
 
     global $SESSION,$USER;
@@ -300,7 +383,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       for($m = 0; $m < $plan_count; $m++){ //loop through all plans
         
         $id = $plans['data'][$m]->id;
-        $planids_js .= $id;
+        $planids_js .= '"'.$id.'"';
         if($m < $plan_count - 1)
           $planids_js .= ',';
       }
@@ -780,8 +863,11 @@ return $return;
   private static function get_reminder_date($plans){
 
     $reminder_date_per_plan = array();
-   
     $plan_count = count($plans['data']);
+
+    if($plan_count == 0)
+      $reminder_date_per_plan = -1;
+
     for($i = 0; $i < $plan_count; $i++){
       $id = $plans['data'][$i]->id;
 
@@ -838,110 +924,6 @@ return $return;
      }
     db_commit();
   }
-
-  /**
-  * Reminds all users about their tasks
-  */
-
-  private static function remind_all_users(){
-
-    $users_to_be_reminded = ArtefactTypeCalendar::get_users_to_be_reminded();
-    ArtefactTypeCalendar::notify_users($users_to_be_reminded);
-
-  }
-
-   /**
-  * Returns an array of user ids and the name/date of tasks
-  */
-
-  private static function get_users_to_be_reminded(){
-
-    $users_to_be_reminded = array(); //two dimensional array with user ids and all their tasks
-
-    for($i = 0; $i <= self::$max_reminder_days; $i++){ // get all plans with reminder set to x days ahead    
-      ($results = get_records_sql_array("SELECT id, owner FROM {artefact} 
-        JOIN {artefact_calendar_calendar} ON artefact.id = artefact_calendar_calendar.plan WHERE artefacttype = 'plan' AND reminder_status = '1' AND reminder_date = '$i';", array()))
-            || ($results = array()); //get plans and user ids
-      
-      if (!empty($results[0])) {
-        
-        foreach ($results as $result) {
-          $userid = $result->owner;
-          $planid = $result->id;
-          $tasks = ArtefactTypeCalendar::get_task_in_x_days($i,$planid);//get tasks of plans
-
-          if(count($tasks)){
-
-            $day = array_keys($tasks);
-            $day = $day[0]; //first key is the date of the tasks
-           
-            for ($j = 0; $j < count($tasks[$day]); $j++){ 
-              $num = count($users_to_be_reminded[$userid][$day]);
-              $users_to_be_reminded[$userid][$day][$num] = $tasks[$day][$j];  
-            }
-
-          }      
-        }
-      }
-    }
-    return $users_to_be_reminded;
-  }
-
-  /**
-  * Returns titles of uncompleted tasks of a specific plan that happen in x days (0 = today)
-  */
-
-  private static function get_task_in_x_days($num_days, $plan_id){
-
-    $all_tasks = array();
-    $date = date("Y-m-d",strtotime('+'.$num_days. ' days')); //date in x days, format YYYY-MM-DD
-
-    ($results = get_records_sql_array("SELECT title FROM {artefact_plans_task} JOIN {artefact} ON {artefact}.id = {artefact_plans_task}.artefact 
-      WHERE artefacttype = 'task' AND parent = '$plan_id' AND completiondate = '$date';", array()))
-            || ($results = array()); //get plans and user ids
-
-    if (!empty($results[0])) {
-      $date = date(get_string('display_format', 'artefact.calendar'),strtotime('+'.$num_days. ' days'));
-      $all_tasks[$date] = array();
-      foreach ($results as $result) { 
-        array_push($all_tasks[$date], $result->title);
-      }
-    }
-    return $all_tasks;
-  }
-
-
-  /**
-  * Notifys all users about their tasks by email
-  *
-  * Structure of $users:
-  * Array with user id
-  *   Array with date as key and another array with tasks titles as value 
-  *       ex. (user = 2, Tasks on 2012/11/26 and 2012/11/27): 
-  *       Array ( [2] => Array ( [26.11.2012] => Array ( [0] => Task Titel 1 [1] => Task Title 2 ) [27.11.2012] => Array ( [0] => Task Title 2 [1] => Task Title 4 ) )
-  */
-
-  private static function notify_users($users_to_be_reminded){
-    $message = new StdClass;
-    $users = array_keys($users_to_be_reminded);
-    
-    foreach ($users as $user){
-      $message->users = array($user);
-      $message->subject = get_string('subject', 'artefact.calendar');
-      $message_body = "";   
-      foreach (array_keys($users_to_be_reminded[$user]) as $day){
-        $message_body .=  get_string('on', 'artefact.calendar').' '.$day.": \n";
-        foreach ($users_to_be_reminded[$user][$day] as $task)
-          $message_body .= $task."\n";
-        $message_body .= "\n\n";
-      }
-     
-      $message->message = get_string('message', 'artefact.calendar')."\n\n".$message_body;
-      activity_occurred('maharamessage', $message);
-    }
-  }
-
-
 
 }
 
