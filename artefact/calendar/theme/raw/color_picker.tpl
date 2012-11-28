@@ -1,5 +1,5 @@
 
-<a style="z-index:1;" onclick="toggle_color_picker('picker{$id}');"><img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/color_arrow.gif" /></a>
+<a style="z-index:1;" onclick="toggle_color_picker('picker{$id}');"><img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
 			<div id='picker{$id}' style="display: none; position:absolute; z-index: 3; border: 3px solid #EEE; background: white; margin-left: auto; margin-right: auto; padding: 5px; right:20px;">
 				<div class="overlay_control" style='position: absolute;right: 1px;top: 1px;'>
             		<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" style="width:12px;" alt="X" onclick="toggle_color_picker('picker{$id}');"/>
