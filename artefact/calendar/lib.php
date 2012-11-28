@@ -199,9 +199,26 @@ class ArtefactTypeCalendar extends ArtefactType {
                                           '0000dd',
                                           'dddd00',
                                           'dd00dd',
-                                          '00dddd');
+                                          '00dddd',
+                                          'F900F9',
+                                          'DD75DD',
+                                          'BD5CFE',
+                                          'AE70ED',
+                                          '9588EC',
+                                          '6094DB',
+                                          '44B4D5',
+                                          'C27E3A',
+                                          'C47557',
+                                          'B05F3C',
+                                          'C17753',
+                                          'B96F6F',
+                                          'D73E68',
+                                          'B300B3',
+                                          '8D18AB',
+                                          '5B5BFF',
+                                          '25A0C5');
 
-  private static $color_num = 18; //number of available colors 
+  private static $color_num = 35; //number of available colors 
 
   private static $available_dates = array('-1',
                                          '0',
