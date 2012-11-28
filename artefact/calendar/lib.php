@@ -345,7 +345,8 @@ class ArtefactTypeCalendar extends ArtefactType {
       $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
 
       $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
-      
+      $available_colors = self::$available_colors; //available colors for color picker
+
       $reminder_status_per_plan = ArtefactTypeCalendar::get_reminder_status($plans);
 
       $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date($plans);
@@ -408,6 +409,7 @@ class ArtefactTypeCalendar extends ArtefactType {
 
       // colors and status
       $smarty->assign_by_ref('colors', $colors);
+      $smarty->assign_by_ref('available_colors', $available_colors);
       $smarty->assign_by_ref('plans_status', $plans_status);
 
       // dates
