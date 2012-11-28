@@ -17,22 +17,25 @@
 
 <tr class="{cycle values='r0,r1'}">
 	<td style="width:75%;">
-		<a style="float:left;" href="{$WWWROOT}artefact/calendar/index.php?month={$past_month}&year={$past_month_year}">
-	<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-left.gif' alt='back' /> 
-	{str section="artefact.calendar" tag='last_month'}
-</a>
-
-<a style="padding-left:25%;padding-right:25%;" href="{$WWWROOT}artefact/calendar/index.php?month={$this_month}&year={$this_year}">			{str section="artefact.calendar" tag='this_month'}
-	<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-up.gif' alt='this' />
-</a>
-
-<a style="float:right;" href="{$WWWROOT}artefact/calendar/index.php?month={$next_month}&year={$next_month_year}">
-	{str section="artefact.calendar" tag='next_month'}
-	<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-right.gif' alt='next' />
-</a>
 		<table>
 			<tr >
-				<th colspan='7' style="text-align:center;"><h3>{$month_name} {$year}</h3></td>
+				<th colspan='7'>
+					<a style="float:right;" href="{$WWWROOT}artefact/calendar/index.php?month={$this_month}&year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
+						<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-up.gif' alt='this' />
+					</a>
+				</th>
+			</tr>
+			<tr >
+				<th colspan='7' style="text-align:center;">
+					<h3>
+						<a href="{$WWWROOT}artefact/calendar/index.php?month={$past_month}&year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" style="padding-right:20px;">
+							<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-left.gif' alt='back' /></a>
+						{$month_name} {$year}
+						<a href="{$WWWROOT}artefact/calendar/index.php?month={$next_month}&year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" style="padding-left:20px;">
+							<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/arrow-right.gif' alt='next' /></a>
+				</h3>
+					
+				</th>
 			</tr>
 			<tr>
 				{if $week_start == 0}
