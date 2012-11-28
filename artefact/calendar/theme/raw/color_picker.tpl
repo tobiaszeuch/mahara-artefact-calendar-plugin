@@ -13,7 +13,7 @@
 							<tr>
 						{/if}
 								<td>
-									<a onclick="save_color('{$id}','task{$id}','{$color}');"><img class='thumb' src="{$WWWROOT}artefact/calendar/theme/raw/static/images/colors/{$color}.png" /></a>
+									<a onclick="save_color('{$id}','task{$id}','{$color}');" ><div class="thumb" style="background-color:#{$color};"> </div></a>
 								</td>
 						
 						{if $color_count % 3 == 2}

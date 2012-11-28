@@ -56,12 +56,12 @@ ul.planslist li {
 *	CSS rules for the calendar artefact plugin
 */
 
-img.thumb {
+*.thumb {
 	width:16px;
 	height: 16px;
 }
 
-img.thumb:hover{
+*.thumb:hover{
 	width:12px;
 	height: 12px;
 	border:2px solid black;
