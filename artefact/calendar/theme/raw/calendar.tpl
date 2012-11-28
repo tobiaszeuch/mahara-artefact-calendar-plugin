@@ -55,15 +55,15 @@
 					{foreach from=$week item=day}						
 						
 						{if $day == $today}
-							<td style="background-color:lightgray;padding: 2px;height:96px;border:1px solid white;">
+							<td style="background-color:lightgray;padding: 2px;height:96px;border:2px solid #f4f4f4;">
 							<b>&ensp;{$day}</b>
 						{elseif $day == ""}
-							<td style="background-color:white;height:96px;">
+							<td style="background-color:white;height:96px;border-bottom: 2px solid #f4f4f4;">
 						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
-							<td style="padding: 2px;height:96px;background-color:#F3F7EC;border:1px solid white;">
+							<td style="padding: 2px;height:96px;background-color:#F3F7EC;border:2px solid white;">
 							&ensp;{$day}
 						{else}
-							<td style="height:96px;padding: 2px;border:1px solid white;">
+							<td style="height:96px;padding: 2px;border:2px solid #f4f4f4;">
 							&ensp;{$day}
 						{/if}
 
