@@ -126,6 +126,7 @@ $javascript = <<< JAVASCRIPT
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
 		document.getElementById('color'+planid).style.backgroundColor = "#"+color;
+		document.getElementById('color_button'+planid).style.backgroundColor = "#"+color;
 		toggle_color_picker('picker'+planid);
 
 		var p = document.getElementsByName(taskid);
