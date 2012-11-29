@@ -59,6 +59,7 @@ ul.planslist li {
 *.thumb {
 	width:16px;
 	height: 16px;
+	border:0px;
 }
 
 *.thumb:hover{

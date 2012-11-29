@@ -131,7 +131,7 @@
 									{else}
 										{str section="artefact.plans" tag='task'}
 									{/if}	
-									({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})
+									({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})			
 										
 								</p>
 					    </td>
@@ -150,12 +150,14 @@
 										style="display:none;"
 									{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
 									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/clock.gif' alt='reminder'></a>
-									{include file="color_picker.tpl"}
+									<input type="hidden" id="saved_color{$id}" value="#{$colors[$id]}"></input>
+									<a style="z-index:1;" onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}artefact/calendar/theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
 					    </td>
 					</tr>		
 				{/foreach}
 			</table>
 		</div>
+		{include file="color_picker.tpl"}
 		<p  class="description" style="text-align:center;">{$plan_count} 
 			
 		{if $plan_count != 1}

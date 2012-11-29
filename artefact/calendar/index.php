@@ -110,14 +110,29 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('done_sw').style.display = 'none';
 	}
 
-	function toggle_color_picker(planid){
-		if(document.getElementById(planid).style.display == 'none')
-			document.getElementById(planid).style.display = 'block';
-		else 
-			document.getElementById(planid).style.display = 'none';
+	function toggle_color_picker(picker, planid, oldcolor){
+		if(document.getElementById(picker).style.display == 'none'){
+			document.getElementById(picker).style.display = 'block';
+			document.getElementById("close_color_picker").onclick = function() {toggle_color_picker(picker, planid, '')};
+			document.getElementById("color_picker_id").value = planid;
+			document.getElementById(oldcolor).style.border = '2px dotted black';//marks old color
+			document.getElementById(oldcolor).style.width = '12px';
+			document.getElementById(oldcolor).style.height = '12px';
+			document.getElementById("old_color").value = oldcolor;
+		}
+		else {
+			document.getElementById(picker).style.display = 'none';
+			document.getElementById("color_picker_id").value = '';
+
+			var old = document.getElementById("old_color").value;
+			document.getElementById(old).style.border = '0px';
+			document.getElementById(old).style.width = '16px';
+			document.getElementById(old).style.height = '16px';
+
+		}
 	}
 
-	function save_color(planid, taskid, color){
+	function save_color(planid, color){
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -127,12 +142,20 @@ $javascript = <<< JAVASCRIPT
 
 		document.getElementById('color'+planid).style.backgroundColor = "#"+color;
 		document.getElementById('color_button'+planid).style.backgroundColor = "#"+color;
-		toggle_color_picker('picker'+planid);
+		document.getElementById('saved_color'+planid).value = "#"+color;
+		toggle_color_picker('picker',planid,'');
 
-		var p = document.getElementsByName(taskid);
+
+		var p = document.getElementsByName('task'+planid);
 			
 			for (var i=0; i < p.length; i++) {
 					p[i].style.backgroundColor = "#"+color;
+			}
+
+		var p = document.getElementsByName(planid);
+			
+			for (var i=0; i < p.length; i++) {
+					p[i].name = 'color';
 			}
 
 		xmlhttp.open("GET","index.php?color="+color+"&picker="+planid+"&ajax=true",true);
