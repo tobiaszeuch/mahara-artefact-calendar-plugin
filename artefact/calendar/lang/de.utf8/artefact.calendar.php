@@ -74,4 +74,6 @@ $string['subject'] = 'Benachrichtigung für Aufgabe(n)';
 $string['message'] = 'Dies ist eine Benachrichtigung für die folgenden Aufgabe(n):';
 $string['on'] = 'Am';
 
+$string['yes'] = 'Ja';
+$string['no'] = 'Nein';
 ?>

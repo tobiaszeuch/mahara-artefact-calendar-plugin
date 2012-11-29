@@ -74,4 +74,7 @@ $string['subject'] = 'Reminder for task(s)';
 $string['message'] = 'This is a reminder for the following task(s):';
 $string['on'] = 'On';
 
+$string['yes'] = 'Yes';
+$string['no'] = 'No';
+
 ?>
