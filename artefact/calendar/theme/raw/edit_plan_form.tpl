@@ -1,5 +1,5 @@
 <div class="overlay_control" style='position: absolute;right: 0;top: 0;'>
-    <a href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}'> 
+    <a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
     	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X"/>
     </a>
 </div>

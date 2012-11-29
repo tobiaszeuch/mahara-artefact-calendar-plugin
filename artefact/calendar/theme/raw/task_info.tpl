@@ -8,14 +8,14 @@
 		     					
 		     					{if $form['completed'] == 0}
 		     						{assign var=status value=1}
-									<input type="image" id="done_sw" src='{$WWWROOT}artefact/calendar/theme/raw/static/images/done_sw.gif' alt='done' />
+									<input type="image" id="done_sw" src='{$WWWROOT}{$cal}theme/raw/static/images/done_sw.gif' alt='done' />
 								{else}
 									{assign var=status value=0}
-									<input type="image" id="done" src='{$WWWROOT}artefact/calendar/theme/raw/static/images/done_gruen.gif' alt='done' />
+									<input type="image" id="done" src='{$WWWROOT}{$cal}theme/raw/static/images/done_gruen.gif' alt='done' />
 								{/if}
 				        	
-				     			<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task_info}">
-									<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>			
+				     			<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task_info}">
+									<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>			
 				            	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick='hide_overlay();' />
 
 		            			<input type="hidden" name="task" value="{$task_info}" />

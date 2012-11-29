@@ -1,15 +1,15 @@
 <div class="overlay_control" style='position: absolute;right: 0;top: 0;'>
-	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}&edit_plan_itself=1">
-		<img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
-    <a href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}'> 
+	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}&edit_plan_itself=1">
+		<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
+    <a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
     	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X"/>
     </a>
 </div>
 <div id="overlay_content">
 	<h3>{$edit_plan_title} </h3>
 	<div style="padding-bottom:20px;">{$edit_plan_description}<br/>
-		<a style='float:right;text-decoration:none;' href='{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}'> 
-			<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
+		<a style='float:right;text-decoration:none;' href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}'> 
+			<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
 		</a>
 	</div>
 	<div style="height:300px;overflow:auto;">
@@ -20,26 +20,26 @@
 		            <b>{$task->completiondate}</b>
 		            {$task->title}
 		            {if $delete_task eq $task->task}					           
-			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
-			            	<img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
+			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
+			            	<img src="{$WWWROOT}{$cal}theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
 			            	 
 			            </a> 
-			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 		        	</p>
 		        	<div style="z-index:3;float:right;position:relative;">
 		          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;right:10px;z-index:3;">
 			            	{str section="artefact.calendar" tag='deleteconfirm'}
-			            	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
+			            	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
 			            		{str section="artefact.calendar" tag='yes'}
 			            	</a>
-			            	<a style="float:right;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}">{str section="artefact.calendar" tag='no'}</a>
+			            	<a style="float:right;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}">{str section="artefact.calendar" tag='no'}</a>
 			            </div>
 			   		</div>
 		            {else}
-			            <a style='color:#CD2626;float:right' href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task={$task->task}&edit_plan={$edit_plan_id}">
-			            	<img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
+			            <a style='color:#CD2626;float:right' href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task={$task->task}&edit_plan={$edit_plan_id}">
+			            	<img src="{$WWWROOT}{$cal}theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
 			            </a> 
-			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 		       		 </p>
 		            {/if}			         
 		    {else}
@@ -51,25 +51,25 @@
 		             	<img src="{$WWWROOT}theme/raw/static/images/success.gif" alt="" />
 		            {/if}
 		            {if $delete_task eq $task->task}
-			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
-							<img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
+			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
+							<img src="{$WWWROOT}{$cal}theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
 			            </a> 
-			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 			    </p>
        			<div style="z-index:3;float:right;position:relative;">
 	          	    <div style="display: block; width: 100px; position: absolute; border: 4px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 1px 5px; color:#CD2626;right:10px;z-index:3;">
 		            	{str section="artefact.calendar" tag='deleteconfirm'}
-		            	<a href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
+		            	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task_final={$task->task}&edit_plan={$edit_plan_id}">
 			            		{str section="artefact.calendar" tag='yes'}
 			            	</a>
-		            	<a style="float:right;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}">{str section="artefact.calendar" tag='no'}</a>
+		            	<a style="float:right;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}">{str section="artefact.calendar" tag='no'}</a>
 		            </div>
 	   			</div>
 		            {else}
-			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&delete_task={$task->task}&edit_plan={$edit_plan_id}">
-			            	<img src="{$WWWROOT}artefact/calendar/theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
+			            <a style='color:#CD2626;float:right;' href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&delete_task={$task->task}&edit_plan={$edit_plan_id}">
+			            	<img src="{$WWWROOT}{$cal}theme/raw/static/images/delete.png" class="deletebutton" alt="X"/>
 			            </a> 
-			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}artefact/calendar/index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}artefact/calendar/theme/raw/static/images/edit.gif' alt='edit'></a>
+			            <a style="float:right;padding-right:2px;" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 		        </p>
 		            {/if}
 	    	{/if}
