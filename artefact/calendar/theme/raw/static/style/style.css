@@ -71,3 +71,27 @@ ul.planslist li {
 a.taskname{
 	color: #ffffff;
 }
+
+th.calendar_th {
+	width:14%;
+	text-align:center;
+}
+
+td.day{
+	height:96px;
+	padding: 2px;
+}
+
+*.overflow{
+	overflow-x:hidden; 
+	overflow-y:auto;
+}
+
+*.planbox{
+	position:relative;
+	width:10px;
+	height:16pt;
+	float:left;
+	margin-right:3px;
+}
+

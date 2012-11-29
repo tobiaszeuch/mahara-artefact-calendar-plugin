@@ -40,16 +40,16 @@
 			</tr>
 			<tr>
 				{if $week_start == 0}
-					<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='sunday'}</th>
+					<th class="calendar_th">{str section="artefact.calendar" tag='sunday'}</th>
 				{/if}
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='monday'}</th>
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='tuesday'}</th>
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='wednesday'}</th>
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='thursday'}</th>
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='friday'}</th>
-				<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='saturday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='monday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='tuesday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='wednesday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='thursday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='friday'}</th>
+				<th class="calendar_th">{str section="artefact.calendar" tag='saturday'}</th>
 				{if $week_start == 1}
-					<th style="width:14%;text-align:center;">{str section="artefact.calendar" tag='sunday'}</th>
+					<th class="calendar_th">{str section="artefact.calendar" tag='sunday'}</th>
 				{/if}
 			</tr>
 
@@ -59,15 +59,15 @@
 					{foreach from=$week item=day}						
 						
 						{if $day == $today}
-							<td style="background-color:lightgray;padding: 2px;height:96px;border:2px solid #f4f4f4;">
+							<td class="day" style="background-color:lightgray;border:2px solid #f4f4f4;">
 							<b>&ensp;{$day}</b>
 						{elseif $day == ""}
-							<td style="background-color:white;height:96px;border-bottom: 2px solid #f4f4f4;">
+							<td class="day" style="background-color:white;border-bottom: 2px solid #f4f4f4;">
 						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
-							<td style="padding: 2px;height:96px;background-color:#F3F7EC;border:2px solid white;">
+							<td class="day" style="background-color:#F3F7EC;border:2px solid white;">
 							&ensp;{$day}
 						{else}
-							<td style="height:96px;padding: 2px;border:2px solid #f4f4f4;">
+							<td class="day" style="border:2px solid #f4f4f4;">
 							&ensp;{$day}
 						{/if}
 
@@ -97,7 +97,7 @@
 		</table>
 	</td>
 	<td>
-		<div style="height:520px;overflow-x:hidden; overflow-y:auto;">
+		<div class="overflow" style="height:520px;">
 			<table>
 				{counter start=0 assign=plan_count}
 				{foreach from=$plans.data item=plan}
@@ -112,9 +112,9 @@
 								{/if}
 
 								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" style="text-decoration:none;" >
-								<div id='color{$id}' style='position:relative;width:10px;height:16pt;background-color:#{$colors[$id]};float:left;margin-right:3px;'>
+								<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
 								</div>					
-								<div id="gray{$id}" style='position:relative;width:10px;height:16pt;background-color:lightgray;float:left;margin-right:3px;display:none;'>
+								<div id="gray{$id}" class="planbox" style='background-color:lightgray;display:none;'>
 								</div>
 									<h3 id='link{$id}' style="position:relative;">
 										{$plan->title}
