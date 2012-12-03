@@ -102,8 +102,8 @@
 				{counter start=0 assign=plan_count}
 				{foreach from=$plans.data item=plan}
 				{assign var=id value=$plan->id}
-				{counter}
-					    	<td style="min-width:150px;">	
+				{counter}	
+					    	<td class="plan">	
 
 								{if $plans_status[$id] == '0'}
 									{assign var=stat value='1'}										
@@ -123,9 +123,8 @@
 										<script language="JavaScript">
 												toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
 										</script>
-									{/if}
-								</a>
-								<p  class="description" style="margin:0px;">
+									{/if}					
+								<div  class="description" style="margin:0px;">
 									{$task_count[$id]}
 									{if $task_count[$id] != 1}
 										{str section="artefact.plans" tag='tasks'}
@@ -134,7 +133,8 @@
 									{/if}	
 									({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})			
 										
-								</p>
+								</div>
+								</a>
 					    </td>
 					    <td style="min-width:60px;position:relative;padding-right:20px;text-align:right;">
 					        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$id}" >

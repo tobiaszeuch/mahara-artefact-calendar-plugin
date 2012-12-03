@@ -95,3 +95,9 @@ td.day{
 	margin-right:3px;
 }
 
+td.plan {
+	min-width:150px;
+}
+
+td.plan:hover{
+	background-color: #f4f4f4;
