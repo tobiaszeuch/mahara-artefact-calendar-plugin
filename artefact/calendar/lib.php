@@ -30,7 +30,7 @@ require_once('activity.php');
 
 class PluginArtefactCalendar extends PluginArtefact {
 
-  private static $max_reminder_days = 7;
+  private static $max_reminder_days = 28;
 
 	public static function get_artefact_types() {
 		return array(
@@ -225,7 +225,13 @@ class ArtefactTypeCalendar extends ArtefactType {
                                          '1',
                                          '2',
                                          '3',
-                                         '7');
+                                         '4',
+                                         '5',
+                                         '6',
+                                         '7',
+                                         '14',
+                                         '21',
+                                         '28');
 
 	public function render_self($options) {
 		return get_string('calendar', 'artefact.calendar');
