@@ -681,8 +681,8 @@ return $return;
     $calender = array();
     $i = 1;
     $row = 0;
-    while($i <= $dates['days_total']){ 
-      for($j = 1; count($week) < 7; $j++){
+    while($i <= $dates['num_days']){ 
+      while(count($week) < 7){
         if($i <= $dates['num_days']){//number of date is pushed into the calendar, two-dimensional array, inner array per week
           array_push($week, $i);
         }
