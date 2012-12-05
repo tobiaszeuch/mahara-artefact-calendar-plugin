@@ -125,10 +125,11 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById("color_picker_id").value = '';
 
 			var old = document.getElementById("old_color").value;
-			document.getElementById(old).style.border = '0px';
-			document.getElementById(old).style.width = '16px';
-			document.getElementById(old).style.height = '16px';
-
+			if(old != ""){
+				document.getElementById(old).style.border = '0px';
+				document.getElementById(old).style.width = '16px';
+				document.getElementById(old).style.height = '16px';
+			}
 		}
 	}
 

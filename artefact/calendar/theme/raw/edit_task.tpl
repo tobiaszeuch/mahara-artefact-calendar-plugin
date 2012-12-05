@@ -1,8 +1,4 @@
-<script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
-<script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
-<script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.min.js"></script>
-<link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" />
-<link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css" />
+
 <script>
     $(function() {
         $("#datepicker").datepicker({
@@ -37,11 +33,10 @@
         });
     });
 </script>
-
 <div id='aufgabenoverlay'>
-		<div id='overlay' style='z-index:3;'></div>
-			<div id='overlay_window' style="display: block; width: 500px; left: 100px; top: 50px; position: absolute; z-index: 3; border: 7px solid #EEE; background: white;text-align: left; margin-left: auto; margin-right: auto; padding: 10px;">
-				<div class="overlay_control" style='position: absolute;right: 0;top: 0;'>
+		<div id='overlay'></div>
+			<div id='overlay_window' class="overlay">
+				<div class="overlay_control" style='min-width:0;'>
 		            	<a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
 		            		<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick='hide_overlay();'/>
 		            	</a>
@@ -51,7 +46,7 @@
 						<p>
 							<label for="edittask_title">{str section="artefact.calendar" tag='title'}</label>
 							<span class="requiredmarker">*</span><br/>
-							<input type="text" class="required text autofocus" id="edittask_title" name="title" size="30" tabindex="1" value="{$form['title']}"
+							<input type="text" class="required text autofocus" id="edittask_title" name="title" size="30" tabindex="1" value="{$form['title']}">
 						</p>
 						<p>
 						<label for="edittask_completiondate">{str section="artefact.calendar" tag='completiondate'}</label> 

@@ -1,10 +1,16 @@
 {assign var=cal value="artefact/calendar/"}
+{assign var=img value="theme/raw/static/images/"}
+
+{* date picker plugin *}
 <script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-1.8.2.js"></script>
 <script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
 <script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.min.js"></script>
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/ui-lightness/jquery-ui-1.9.0.custom.css" />
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/ui-lightness/jquery-ui-1.9.0.custom.min.css" />
+<link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" />
+<link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css" />
 
+{* includes for overlay windows *}
 {if $edit_plan_tasks != '0' && $new_task != '1'}
 	{include file="edit_plan.tpl"} 
 {elseif $new_task == 1}
@@ -16,23 +22,24 @@
 	{include file="edit_task.tpl"}
 {/if}
 
+{* calendar *}
 <tr class="{cycle values='r0,r1'}">
 	<td style="width:75%;">
 		<table>
 			<tr >
 				<th colspan='7'>
-					<a style="float:right;" href="{$WWWROOT}{$cal}index.php?month={$this_month}&year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
+					<a class="flright" href="{$WWWROOT}{$cal}index.php?month={$this_month}&year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
 						<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-up.gif' alt='this' />
 					</a>
 				</th>
 			</tr>
 			<tr >
-				<th colspan='7' style="text-align:center;">
+				<th colspan='7' class="txtcenter">
 					<h3>
-						<a href="{$WWWROOT}{$cal}index.php?month={$past_month}&year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" style="padding-right:20px;">
+						<a href="{$WWWROOT}{$cal}index.php?month={$past_month}&year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" class="pdright20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-left.gif' alt='back' /></a>
 						{$month_name} {$year}
-						<a href="{$WWWROOT}{$cal}index.php?month={$next_month}&year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" style="padding-left:20px;">
+						<a href="{$WWWROOT}{$cal}index.php?month={$next_month}&year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" class="pdleft20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-right.gif' alt='next' /></a>
 				</h3>
 					
@@ -59,15 +66,15 @@
 					{foreach from=$week item=day}						
 						
 						{if $day == $today}
-							<td class="day" style="background-color:lightgray;border:2px solid #f4f4f4;">
+							<td class="day bggrey bordergrey">
 							<b>&ensp;{$day}</b>
 						{elseif $day == ""}
-							<td class="day" style="background-color:white;border-bottom: 2px solid #f4f4f4;">
+							<td class="day bgwhite" style="border-bottom: 2px solid #f4f4f4;">
 						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
-							<td class="day" style="background-color:#F3F7EC;border:2px solid white;">
+							<td class="day borderwhite bgweekend">
 							&ensp;{$day}
 						{else}
-							<td class="day" style="border:2px solid #f4f4f4;">
+							<td class="day bordergrey">
 							&ensp;{$day}
 						{/if}
 
@@ -82,7 +89,7 @@
 
 								{* The name tag has to be in p tag and each child tag, so IE toggels the tasks correctly *}
 								
-								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&task_info={$task['task_id']}' title="{$task['full_title']}" style="text-decoration:none;background-color:#{$colors[$p_id]};padding-left:3px;margin: 2px;display:block;">{$task['title']}
+								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&task_info={$task['task_id']}' title="{$task['full_title']}" style="background-color:#{$colors[$p_id]};">{$task['title']}
 									{if $task['completed'] == '1'}
 										<img name="task{$task['parent_id']}" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
 									{/if}</a>
@@ -111,10 +118,10 @@
 									{assign var=stat value='0'}
 								{/if}
 
-								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" style="text-decoration:none;" >
+								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" >
 								<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
 								</div>					
-								<div id="gray{$id}" class="planbox" style='background-color:lightgray;display:none;'>
+								<div id="gray{$id}" class="planbox bggrey disp_none">
 								</div>
 									<h3 id='link{$id}' style="position:relative;">
 										{$plan->title}
@@ -136,30 +143,30 @@
 								</div>
 								</a>
 					    </td>
-					    <td style="min-width:60px;position:relative;padding-right:20px;text-align:right;">
+					    <td class="plan_controls">
 					        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$id}" >
 									<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 
 									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
 									{if $reminder_status_per_plan[$id] == 0}
-										style="display:none;"
+										class="disp_none"
 									{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
 									<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder'  ></a>
 									
 									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
 									{if $reminder_status_per_plan[$id] == 1}
-										style="display:none;"
+										class="disp_none"
 									{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
 									<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt='reminder'></a>
 									<input type="hidden" id="saved_color{$id}" value="#{$colors[$id]}"></input>
-									<a style="z-index:1;" onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}{$cal}theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
+									<a onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}{$cal}theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
 					    </td>
 					</tr>		
 				{/foreach}
 			</table>
 		</div>
 		{include file="color_picker.tpl"}
-		<p  class="description" style="text-align:center;">{$plan_count} 
+		<p  class="description txtcenter">{$plan_count} 
 			
 		{if $plan_count != 1}
 			{str section="artefact.plans" tag='plans'}
@@ -167,9 +174,9 @@
 			{str section="artefact.plans" tag='plan'}
 		{/if}
 		{if $plan_count != 0}	
-				<a style="text-decoration:none;padding-left:20px;" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
+				<a class="deco_none pdleft20" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
 				</a> / 
-				<a style="text-decoration:none;" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt="reminder"></a>
+				<a class="deco_none" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt="reminder"></a>
 		{/if}
 		</p>
 		{if $plan_count != 0}
@@ -185,7 +192,7 @@
 					{/foreach}			
 				</a>
 			</p>
-			<div id='set_notification' style="display:none;">
+			<div id='set_notification' class="disp_none">
 				{str section="artefact.calendar" tag='remind_me'}
 				<select name="reminder" onchange="set_reminder_date_ajax(this.value,'all','{str section="artefact.calendar" tag='set_reminder'}: ',{$reminder_strings});">
 					{foreach key=date_key item=date_string from=$reminder_dates}

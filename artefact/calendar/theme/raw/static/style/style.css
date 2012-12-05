@@ -4,57 +4,124 @@
  * Copyright (C) 2006-2009 Catalyst IT
  * This file is distributed under the same terms as Mahara itself
  */
-th.planscontrols {
-    width: 50px; !important;
-}
 
 #planswrap table {
 	width: 100%;
-}
-
-#planswrap table tr.incomplete {
-    background: #f5e8e9;
-    color: #DD0221;
-	border-top: 1px solid #FFF;
-	border-bottom: 2px solid #FFF;
-}
-
-#planswrap table td {
-    text-align: left
-}
-
-#planswrap table th {
-	text-align: left;
-	padding: 0.25em;
-}
-
-#planswrap table td div.completed {
-    margin: 3px;
-    text-align:center;
-    width: 60px;
-}
-
-#container #planswrap table td.errmsg {
-   padding-left: 2em;
-}
-
-fieldset legend.plansh3 a {
-	background: none;
-	padding: 0;
-}
-
-ul.planslist {
-	margin: 0;
-}
-ul.planslist li {
-	list-style: none;
-	margin: 0 0 0.25em;
 }
 
 
 /**
 *	CSS rules for the calendar artefact plugin
 */
+
+*.bordergrey{
+	border:2px solid #f4f4f4;
+}
+
+*.borderwhite{
+	border:2px solid white;
+}
+
+*.bggrey{
+	background-color:lightgray !important;
+}
+
+*.bgwhite{
+	background-color: white !important;
+}
+
+*.bgweekend{
+	background-color:#F3F7EC !important;
+}
+
+*.overlay {
+	display: block;
+ 	width: 500px;
+ 	left: 100px;
+ 	top: 50px;
+ 	position: absolute;
+ 	z-index: 3;
+ 	border: 7px solid #EEE;
+ 	background: white;
+	text-align: left;
+ 	margin-left: auto; 
+ 	margin-right: auto; 
+ 	padding: 10px;
+	}
+
+*.overlay_control {
+	position: absolute;
+	right: 0;
+	top: 0;
+	min-width:54px;
+}
+
+*.mini {
+	position: absolute;
+	right: 1px;
+	top: 1px;
+	min-width:0;
+}
+
+*.delete {
+	display: block;
+	position: absolute;
+	background: white;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+	z-index:3;
+	width: 100px;
+	border: 4px solid #EEE; 
+	padding: 1px 5px;
+ 	right:10px;
+}
+
+*.color_picker {
+	display: none;
+	position:absolute;
+	z-index: 3;
+	border: 3px solid #EEE;
+	background: white;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 5px;
+	right:-100px;
+	top:40px;
+}
+
+*.txtcenter{
+	text-align: center;
+}
+
+*.tasklist {
+	padding:3px;
+	margin:0px;
+}
+
+*.red {	
+	color:#CD2626;
+}
+
+*.bgpink {
+	background-color:pink;
+}
+
+*.flright{
+	float:right;
+}
+
+*.pdright2 {
+	padding-right: 2px;
+}
+
+*.pdright20{
+	padding-right: 20px;
+}
+
+*.pdleft20{
+	padding-left: 20px;
+}
 
 *.thumb {
 	width:16px;
@@ -68,8 +135,20 @@ ul.planslist li {
 	border:2px solid black;
 }
 
+*.disp_none{
+	display: none;
+}
+
+a.deco_none{
+	text-decoration: none;
+}
+
 a.taskname{
 	color: #ffffff;
+	text-decoration:none;
+	padding-left:3px;
+	margin: 2px;
+	display:block;
 }
 
 th.calendar_th {
@@ -93,6 +172,13 @@ td.day{
 	height:16pt;
 	float:left;
 	margin-right:3px;
+}
+
+td.plan_controls{
+	min-width:60px;
+	position:relative;
+	padding-right:20px;
+	text-align:right;
 }
 
 td.plan {
