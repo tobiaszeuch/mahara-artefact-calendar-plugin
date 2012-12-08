@@ -53,6 +53,15 @@
  	padding: 10px;
 	}
 
+*.description_overlay {
+	display: block;
+ 	width: 80px;
+ 	position: absolute;
+	bottom:0;
+	text-align: center;
+	padding-top: 1px;
+	}
+
 *.overlay_control {
 	position: absolute;
 	right: 0;
@@ -161,8 +170,13 @@ th.calendar_th {
 }
 
 td.day{
-	height:96px;
 	padding: 2px;
+}
+
+div.day{
+	height:8em;
+	overflow: hidden;
+	position:relative;
 }
 
 *.overflow{

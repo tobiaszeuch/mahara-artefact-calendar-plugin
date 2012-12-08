@@ -369,7 +369,11 @@ class ArtefactTypeCalendar extends ArtefactType {
       $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
 
       $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
-
+      
+      $number_of_tasks_per_day = array(); //if more than 3, displayed in calendar
+      for($j = 1; $j <= count($task_per_day); $j++)
+        $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
+    
       $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
 
       $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
@@ -414,6 +418,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('plan_count', $plan_count);
       $smarty->assign_by_ref('task_count', $task_count);
       $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
+      $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
 
       //reminder
       $smarty->assign_by_ref('planids_js', $planids_js);

@@ -67,14 +67,18 @@
 						
 						{if $day == $today}
 							<td class="day bggrey bordergrey">
+								<div class="day">
 							<b>&ensp;{$day}</b>
 						{elseif $day == ""}
 							<td class="day bgwhite" style="border-bottom: 2px solid #f4f4f4;">
+								<div class="day">
 						{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
 							<td class="day borderwhite bgweekend">
+								<div class="day">
 							&ensp;{$day}
 						{else}
 							<td class="day bordergrey bgday">
+								<div class="day">
 							&ensp;{$day}
 						{/if}
 
@@ -96,8 +100,22 @@
 									
 
 							{/foreach}
-						{/if}
-							</td>
+						{/if}							
+							{if $day != "" & $number_of_tasks_per_day[$day] > 3}
+								<div class="description description_overlay
+								{if $day == $today}
+									bggrey
+								{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
+									bgweekend
+								{else}
+									bgday
+								{/if}
+								">
+									{$number_of_tasks_per_day[$day]} {str section="artefact.plans" tag='tasks'}
+								</div>
+							{/if}
+							</div>
+						</td>
 					{/foreach}
 				</tr>
 			{/foreach}
