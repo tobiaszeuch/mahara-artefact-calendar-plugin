@@ -1,0 +1,193 @@
+/**
+ * CSS rules for the resume artefact plugin
+ *
+ * Copyright (C) 2006-2009 Catalyst IT
+ * This file is distributed under the same terms as Mahara itself
+ */
+
+#planswrap table {
+	width: 100%;
+}
+
+
+/**
+*	CSS rules for the calendar artefact plugin
+*/
+
+*.bordergrey{
+	border:2px solid #f4f4f4;
+}
+
+*.borderwhite{
+	border:2px solid white;
+}
+
+*.bgday{
+	background-color: #F0F8FF !important;
+}
+
+*.bggrey{
+	background-color:lightgray !important;
+}
+
+*.bgwhite{
+	background-color: white !important;
+}
+
+*.bgweekend{
+	background-color:#CAE1FF !important;
+}
+
+*.overlay {
+	display: block;
+ 	width: 500px;
+ 	left: 100px;
+ 	top: 50px;
+ 	position: absolute;
+ 	z-index: 3;
+ 	border: 7px solid #EEE;
+ 	background: white;
+	text-align: left;
+ 	margin-left: auto; 
+ 	margin-right: auto; 
+ 	padding: 10px;
+	}
+
+*.overlay_control {
+	position: absolute;
+	right: 0;
+	top: 0;
+	min-width:54px;
+}
+
+*.mini {
+	position: absolute;
+	right: 1px;
+	top: 1px;
+	min-width:0;
+}
+
+*.delete {
+	display: block;
+	position: absolute;
+	background: white;
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+	z-index:3;
+	width: 100px;
+	border: 4px solid #EEE; 
+	padding: 1px 5px;
+ 	right:10px;
+}
+
+*.color_picker {
+	display: none;
+	position:absolute;
+	z-index: 3;
+	border: 3px solid #EEE;
+	background: white;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 5px;
+	right:-100px;
+	top:40px;
+}
+
+*.txtcenter{
+	text-align: center;
+}
+
+*.tasklist {
+	padding:3px;
+	margin:0px;
+}
+
+*.red {	
+	color:#CD2626;
+}
+
+*.bgpink {
+	background-color:pink;
+}
+
+*.flright{
+	float:right;
+}
+
+*.pdright2 {
+	padding-right: 2px;
+}
+
+*.pdright20{
+	padding-right: 20px;
+}
+
+*.pdleft20{
+	padding-left: 20px;
+}
+
+*.thumb {
+	width:16px;
+	height: 16px;
+	border:0px;
+}
+
+*.thumb:hover{
+	width:12px;
+	height: 12px;
+	border:2px solid black;
+}
+
+*.disp_none{
+	display: none;
+}
+
+a.deco_none{
+	text-decoration: none;
+}
+
+a.taskname{
+	color: #ffffff;
+	text-decoration:none;
+	padding-left:3px;
+	margin: 2px;
+	display:block;
+}
+
+th.calendar_th {
+	width:14%;
+	text-align:center;
+}
+
+td.day{
+	height:96px;
+	padding: 2px;
+}
+
+*.overflow{
+	overflow-x:hidden; 
+	overflow-y:auto;
+}
+
+*.planbox{
+	position:relative;
+	width:10px;
+	height:16pt;
+	float:left;
+	margin-right:3px;
+}
+
+td.plan_controls{
+	min-width:60px;
+	position:relative;
+	padding-right:20px;
+	text-align:right;
+}
+
+td.plan {
+	min-width:150px;
+}
+
+td.plan:hover{
+	background-color: #f4f4f4;
