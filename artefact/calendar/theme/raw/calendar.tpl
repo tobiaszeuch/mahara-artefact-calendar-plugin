@@ -23,7 +23,7 @@
 {/if}
 
 {* calendar *}
-<tr class="{cycle values='r0,r1'}">
+<tr class="bgday">
 	<td style="width:75%;">
 		<table>
 			<tr >
@@ -61,7 +61,7 @@
 			</tr>
 
 			{foreach from=$calendar item=week}
-				<tr class="r0">
+				<tr class="bgday">
 					{counter start=0 assign=week_count}
 					{foreach from=$week item=day}						
 						
@@ -74,7 +74,7 @@
 							<td class="day borderwhite bgweekend">
 							&ensp;{$day}
 						{else}
-							<td class="day bordergrey">
+							<td class="day bordergrey bgday">
 							&ensp;{$day}
 						{/if}
 
@@ -110,57 +110,58 @@
 				{foreach from=$plans.data item=plan}
 				{assign var=id value=$plan->id}
 				{counter}	
-					    	<td class="plan">	
+					<tr>
+				    	<td class="plan">	
 
+							{if $plans_status[$id] == '0'}
+								{assign var=stat value='1'}										
+							{else}
+								{assign var=stat value='0'}
+							{/if}
+
+							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" >
+							<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
+							</div>					
+							<div id="gray{$id}" class="planbox bggrey disp_none">
+							</div>
+								<h3 id='link{$id}' style="position:relative;">
+									{$plan->title}
+								</h3>
 								{if $plans_status[$id] == '0'}
-									{assign var=stat value='1'}										
+									<script language="JavaScript">
+											toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
+									</script>
+								{/if}					
+							<div  class="description" style="margin:0px;">
+								{$task_count[$id]}
+								{if $task_count[$id] != 1}
+									{str section="artefact.plans" tag='tasks'}
 								{else}
-									{assign var=stat value='0'}
-								{/if}
-
-								<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" >
-								<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
-								</div>					
-								<div id="gray{$id}" class="planbox bggrey disp_none">
-								</div>
-									<h3 id='link{$id}' style="position:relative;">
-										{$plan->title}
-									</h3>
-									{if $plans_status[$id] == '0'}
-										<script language="JavaScript">
-												toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
-										</script>
-									{/if}					
-								<div  class="description" style="margin:0px;">
-									{$task_count[$id]}
-									{if $task_count[$id] != 1}
-										{str section="artefact.plans" tag='tasks'}
-									{else}
-										{str section="artefact.plans" tag='task'}
-									{/if}	
-									({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})			
-										
-								</div>
-								</a>
+									{str section="artefact.plans" tag='task'}
+								{/if}	
+								({$task_count_completed[$id]} {str section="artefact.plans" tag='completed'})			
+									
+							</div>
+							</a>
 					    </td>
 					    <td class="plan_controls">
-					        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$id}" >
-									<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
+				        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$id}" >
+								<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 
-									<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
-									{if $reminder_status_per_plan[$id] == 0}
-										class="disp_none"
-									{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
-									<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder'  ></a>
-									
-									<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
-									{if $reminder_status_per_plan[$id] == 1}
-										class="disp_none"
-									{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
-									<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt='reminder'></a>
-									<input type="hidden" id="saved_color{$id}" value="#{$colors[$id]}"></input>
-									<a onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}{$cal}theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
-					    </td>
+								<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
+								{if $reminder_status_per_plan[$id] == 0}
+									class="disp_none"
+								{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
+								<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder'  ></a>
+								
+								<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
+								{if $reminder_status_per_plan[$id] == 1}
+									class="disp_none"
+								{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
+								<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt='reminder'></a>
+								<input type="hidden" id="saved_color{$id}" value="#{$colors[$id]}"></input>
+								<a onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}{$cal}theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
+				    	</td>
 					</tr>		
 				{/foreach}
 			</table>

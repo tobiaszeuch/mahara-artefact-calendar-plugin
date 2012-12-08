@@ -22,6 +22,10 @@
 	border:2px solid white;
 }
 
+*.bgday{
+	background-color: #FAFBF7 !important;
+}
+
 *.bggrey{
 	background-color:lightgray !important;
 }
