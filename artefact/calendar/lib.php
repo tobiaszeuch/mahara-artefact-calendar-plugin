@@ -348,10 +348,18 @@ class ArtefactTypeCalendar extends ArtefactType {
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
       }
 
-      // if task needs to be deleted
+      // if plan is finally to be deleted
 
-      if(isset($_GET['delete_task']))
-        $delete_task = $_GET['delete_task'];
+      if(isset($_GET['delete_plan_final'])){
+        $delete_plan_id = $_GET['delete_plan_final'];
+        $todelete = new ArtefactTypePlan($delete_plan_id);
+        
+        if (!$USER->can_edit_artefact($todelete)) 
+          throw new AccessDeniedException(get_string('accessdenied', 'error'));
+        
+        $todelete->delete();
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+      }
 
        // if task is finally to be deleted
 
@@ -460,7 +468,6 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('edit_plan_description', $edit_plan_description);
       $smarty->assign_by_ref('parent_id', $parent);
       $smarty->assign_by_ref('new_task', $new_task);
-      $smarty->assign_by_ref('delete_task', $delete_task);
       $smarty->assign_by_ref('task_info', $task_info);
 
       // colors and status
