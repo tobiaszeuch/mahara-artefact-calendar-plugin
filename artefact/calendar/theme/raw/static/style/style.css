@@ -55,7 +55,7 @@
 
 *.description_overlay {
 	display: block;
- 	width: 80px;
+ 	width: 85px;
  	position: absolute;
 	bottom:0;
 	text-align: center;
@@ -171,6 +171,7 @@ th.calendar_th {
 
 td.day{
 	padding: 2px;
+	min-width: 85px;
 }
 
 div.day{
