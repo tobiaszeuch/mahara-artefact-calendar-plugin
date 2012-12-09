@@ -4,7 +4,7 @@
 				{if $edit_plan_itself == '1'}
 					{include file="edit_plan_form.tpl"}
 				{else}
-					{include file="show_task_list.tpl"}
+					{include file="task_list_plan.tpl"}
 				{/if}
 	        </div>
 	   </div>
