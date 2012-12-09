@@ -140,13 +140,13 @@
 								{assign var=stat value='0'}
 							{/if}
 
-							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" >
+							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" title="{$plan->title}">
 							<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
 							</div>					
 							<div id="gray{$id}" class="planbox bggrey disp_none">
 							</div>
 								<h3 id='link{$id}' style="position:relative;">
-									{$plan->title}
+									{$plan_short_titles[$id]}
 								</h3>
 								{if $plans_status[$id] == '0'}
 									<script language="JavaScript">

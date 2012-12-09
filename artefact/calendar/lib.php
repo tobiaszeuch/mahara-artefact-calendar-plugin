@@ -413,6 +413,21 @@ class ArtefactTypeCalendar extends ArtefactType {
           $planids_js .= ',';
       }
       $planids_js .= ")";
+    
+      $plan_short_titles = array(); //short titles for plans, if plan title is too long
+
+      for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+        
+        $id = $plans['data'][$m]->id;
+        $plan_title = $plans['data'][$m]->title;
+        if(strlen($plan_title) > 12){ //shortens title (long titles kill calendar view)
+          mb_internal_encoding("UTF-8");
+          $plan_short_titles[$id] = mb_substr($plan_title,0,11).'…';
+        }
+        else {
+          $plan_short_titles[$id] = $plan_title;
+        }
+      }
 
       /**
       * assigns for smarty
@@ -423,6 +438,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       // plans
       $smarty->assign_by_ref('plans', $plans);
       $smarty->assign_by_ref('plan_count', $plan_count);
+      $smarty->assign_by_ref('plan_short_titles', $plan_short_titles);
       $smarty->assign_by_ref('task_count', $task_count);
       $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
       $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
