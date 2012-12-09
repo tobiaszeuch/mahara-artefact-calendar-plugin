@@ -24,6 +24,7 @@ $string['sunday_short'] = 'So';
 $string['datepicker_format'] = 'dd.mm.yy';
 $string['datepicker_firstday'] = 1;
 $string['display_format'] = 'd.m.Y';
+$string['full_format'] = '$day. $month_name $year';
 
 $string['last_month'] = 'Letzter Monat';
 $string['next_month'] = 'Nächster Monat';

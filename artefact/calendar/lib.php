@@ -371,8 +371,15 @@ class ArtefactTypeCalendar extends ArtefactType {
       $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
       
       $number_of_tasks_per_day = array(); //if more than 3, displayed in calendar
-      for($j = 1; $j <= count($task_per_day); $j++)
+      $full_format = get_string('full_format', 'artefact.calendar'); //full date format
+      $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
+      $full_format = str_replace('$year', $dates['year'], $full_format);
+      $full_dates = array(); //full date for each day
+
+      for($j = 1; $j <= count($task_per_day); $j++){   
+        $full_dates[$j] = str_replace('$day', $j, $full_format);
         $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
+      }
     
       $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
 
@@ -459,6 +466,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('month_name', $dates['month_name']);
       $smarty->assign_by_ref('task_per_day', $task_per_day);
       $smarty->assign_by_ref('week_start', $dates['week_start']);
+      $smarty->assign_by_ref('full_dates', $full_dates);
       $smarty->assign_by_ref('calendar', $calendar);
 
       // smarty fetch

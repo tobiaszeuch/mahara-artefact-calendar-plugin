@@ -146,8 +146,17 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('saved_color'+planid).value = "#"+color;
 		toggle_color_picker('picker',planid,'');
 
+		//tasks in calendar view of one plan
 
 		var p = document.getElementsByName('task'+planid);
+			
+			for (var i=0; i < p.length; i++) {
+					p[i].style.backgroundColor = "#"+color;
+			}
+
+		// tasks in overlay for one day
+
+		var p = document.getElementsByName('day'+planid);
 			
 			for (var i=0; i < p.length; i++) {
 					p[i].style.backgroundColor = "#"+color;

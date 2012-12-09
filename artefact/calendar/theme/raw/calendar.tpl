@@ -111,10 +111,13 @@
 									bgday
 								{/if}
 								">
-									{$number_of_tasks_per_day[$day]} {str section="artefact.plans" tag='tasks'}
+									<a onclick="document.getElementById('task_list_day{$day}').style.display='block';">{$number_of_tasks_per_day[$day]} {str section="artefact.plans" tag='tasks'}</a>
 								</div>
 							{/if}
 							</div>
+							{if $day != "" & $number_of_tasks_per_day[$day] > 3}
+								{include file="task_list_day.tpl"} {* task list overlay for the specific date *}
+							{/if}
 						</td>
 					{/foreach}
 				</tr>
