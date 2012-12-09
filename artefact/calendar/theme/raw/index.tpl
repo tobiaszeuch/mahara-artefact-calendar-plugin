@@ -1,7 +1,7 @@
 {include file="header.tpl"}
 <div id="planswrap">
     <div class="rbuttons">
-        <a class="btn" href="{$WWWROOT}artefact/plans/new.php">{str section="artefact.plans" tag="newplan"}</a>
+        <a class="btn" onclick="document.getElementById('planoverlay').style.display='block';">{str section="artefact.plans" tag="newplan"}</a>
     </div>
 	<table id="planslist" class="fullwidth listing">
 	    <tbody>

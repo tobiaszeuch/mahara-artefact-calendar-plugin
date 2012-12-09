@@ -348,6 +348,28 @@ class ArtefactTypeCalendar extends ArtefactType {
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
       }
 
+      //if new plan form was send, get data
+      
+      if(isset($_GET['newplan_title'])){
+        $artefact = new ArtefactTypePlan();
+        $artefact->set('owner', $USER->get('id'));
+        $artefact->set('title', $_GET['newplan_title']);
+        $artefact->set('description', $_GET['newplan_description']);
+        $artefact->commit();
+        $new_plan_id = $artefact->get('id');
+        if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
+          ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
+        if(isset($_GET['newplan_reminder'])){
+          echo 'active';
+          ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
+        }
+        else{
+          echo 'inactive';
+          ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
+        }
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
+      }
+
       // if plan is finally to be deleted
 
       if(isset($_GET['delete_plan_final'])){

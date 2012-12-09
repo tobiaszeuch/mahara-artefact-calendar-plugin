@@ -84,4 +84,7 @@ $string['on'] = 'On';
 $string['yes'] = 'Yes';
 $string['no'] = 'No';
 
+$string['color'] = 'Color';
+$string['reminder'] = 'Enable reminder?';
+
 ?>

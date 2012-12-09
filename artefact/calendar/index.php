@@ -106,8 +106,7 @@ $javascript = <<< JAVASCRIPT
 	function hide_overlay(){
 
 		document.getElementById('aufgabenoverlay').style.display = 'none'; 
-		document.getElementById('done').style.display = 'none';
-		document.getElementById('done_sw').style.display = 'none';
+		
 	}
 
 	function toggle_color_picker(picker, planid, oldcolor){
@@ -259,6 +258,15 @@ $javascript = <<< JAVASCRIPT
 		
 		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder=all&ajax=true",true);
 		xmlhttp.send();
+	}
+
+	function choose_color_new_plan(color){
+		var last = document.getElementById('newplan_color').value; //remove highlighting of last chosen color
+		if(last != '')
+			document.getElementById(last).className = 'thumb';
+
+		document.getElementById('newplan_color').value = color;	//set color to chosen one
+		document.getElementById(color).className += ' borderblack'; //highlight chosen color
 	}
 	
 JAVASCRIPT;

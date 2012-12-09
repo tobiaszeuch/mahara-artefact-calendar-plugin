@@ -22,6 +22,8 @@
 	{include file="edit_task.tpl"}
 {/if}
 
+{include file="new_plan.tpl"}
+
 {* calendar *}
 <tr class="bgday">
 	<td style="width:75%;">

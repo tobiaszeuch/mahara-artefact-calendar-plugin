@@ -83,4 +83,7 @@ $string['on'] = 'Am';
 
 $string['yes'] = 'Ja';
 $string['no'] = 'Nein';
+
+$string['color'] = 'Farbe';
+$string['reminder'] = 'Benachrichtigung aktivieren?';
 ?>

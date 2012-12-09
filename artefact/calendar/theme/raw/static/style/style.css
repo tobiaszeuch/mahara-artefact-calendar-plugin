@@ -22,6 +22,12 @@
 	border:2px solid white;
 }
 
+*.borderblack{
+	border: 2px solid black !important;
+	width: 12px !important;
+	height: 12px !important;
+}
+
 *.bgday{
 	background-color: #FAFBF7 !important;
 }
