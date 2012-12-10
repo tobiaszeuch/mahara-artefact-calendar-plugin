@@ -1,6 +1,6 @@
 
 <div id='picker' class="color_picker">
-	<div class="overlay_control mini">
+	<div class="overlay_control mini" style="display:block;">
 		<img id="close_color_picker" src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" style="width:12px;" alt="X"/>
     </div>
     <input type="hidden" id="color_picker_id"></input>
@@ -14,7 +14,7 @@
 				<tr>		
 			{/if}	
 				<td>
-					<a onclick="save_color(getElementById('color_picker_id').value,'{$color}');" ><img   src="" id="#{$color}" class="thumb" style="background-color:#{$color};"> </img></a>
+					<a onclick="save_color(getElementById('color_picker_id').value,'{$color}');" ><img id="#{$color}" class="thumb" style="background-color:#{$color};"></img></a>
 				</td>
 			{if $color_count % 3 == 2}	
 				</tr>

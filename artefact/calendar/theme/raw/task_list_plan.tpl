@@ -39,6 +39,9 @@
 		    {/if}
 		            <b>{$task->completiondate}</b>
 		            {$task->title}
+		            {if $task->completed == '1'}
+							<img src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
+					{/if}
 		            <a class="flright" onclick="document.getElementById('delete{$task->task}').style.display='block';">
 			            	<img src="{$WWWROOT}{$cal}{$img}delete.png" alt="X"/>
 			            </a> 

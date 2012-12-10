@@ -61,7 +61,7 @@
 
 *.description_overlay {
 	display: block;
- 	width: 85px;
+ 	min-width: 100%;
  	position: absolute;
 	bottom:0;
 	text-align: center;
@@ -144,6 +144,7 @@
 }
 
 *.thumb {
+	display:block;
 	width:16px;
 	height: 16px;
 	border:0px;
@@ -212,4 +213,4 @@ td.plan {
 }
 
 td.plan:hover{
-	background-color: #f4f4f4;
+	background-color: lightgray;
