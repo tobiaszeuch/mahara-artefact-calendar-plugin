@@ -81,7 +81,7 @@ $javascript = <<< JAVASCRIPT
 			var p = document.getElementsByName(taskid);
 			
 			for (var i=0; i < p.length; i++) {
-					 p[i].style.display = 'block'; 
+					 p[i].style.display = ''; 
 			}
 			document.getElementById(colorid).style.display = 'block'; 
 			document.getElementById(grayid).style.display = 'none'; 
