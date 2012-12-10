@@ -410,7 +410,9 @@ class ArtefactTypeCalendar extends ArtefactType {
         $full_dates[$j] = str_replace('$day', $j, $full_format);
         $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
       }
-    
+      
+      $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
+
       $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
 
       $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
@@ -472,6 +474,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('task_count', $task_count);
       $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
       $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
+      $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
 
       //reminder
       $smarty->assign_by_ref('planids_js', $planids_js);
@@ -673,7 +676,6 @@ return $return;
 
   private static function build_task_per_day($dates, $plans){
 
-    $ids = array();  //array for all plan ids
     $task_per_day = array(); //array with all tasks of one day
 
     for($m = 1; $m <= $dates['num_days']; $m++) //two-dimensional array for every day of the month
@@ -758,6 +760,58 @@ return $return;
       $row++;
     }
     return $calendar;
+  }
+
+  /**
+  * Returns an array with the number of tasks each plan has on each day
+  */
+
+  private static function get_number_of_tasks_per_plan_per_day($plans, $dates){
+    $plan_count = count($plans['data']);
+
+    for($i = 0; $i < $plan_count; $i++){
+      $id = $plans['data'][$i]->id;
+      $tasks_per_plan_per_day[$id] = array(); //array with plans as keys and arrays of days as values
+      for($m = 1; $m <= $dates['num_days']; $m++) //two-dimensional array for every day of the month
+        $tasks_per_plan_per_day[$id][$m] = 0; //array for each day, initialized with 0
+    }
+    
+    for($i = 0; $i < $plan_count; $i++){ //loop through all plans
+
+      $id = $plans['data'][$i]->id; //get id
+      $task[$i] = ArtefactTypeTask::get_tasks($id,0,100); //get all tasks
+      $task_count = $task[$i]['count'];
+
+      for($j = 0; $j < $task_count; $j++){  
+
+        $task_id = $task[$i]['data'][$j]->id; //id of the task
+
+        $completiondate_task = new ArtefactTypeTask($task_id);
+        $completiondate_task_elements = (ArtefactTypeTask::get_taskform_elements($completiondate_task->parent, $completiondate_task));
+        
+        $timestamp_completion = $completiondate_task_elements['completiondate']['defaultvalue'];
+        $timestamp_start_month = strtotime(date(($dates['end_of_last_month']),time()));
+        $timestamp_end_month = strtotime(date('1.'.$dates['next_month'].'.'.$dates['next_month_year'],time()));         
+
+        if(($timestamp_completion >  $timestamp_start_month) && ($timestamp_completion < $timestamp_end_month)) { //check if completiondate is in this month
+          $day_of_completion = date('j', $timestamp_completion);   
+          $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+        }
+      }
+
+      //turn into javascript array so number can be dynamically changed later on
+      $temp = $tasks_per_plan_per_day[$id];
+      $tasks_per_day = 'new Array('; //javascript array of plan ids
+
+      for($u = 1; $u <= count($temp); $u++){
+          $tasks_per_day .= '"'.$temp[$u].'"';
+          if($u < count($temp))
+            $tasks_per_day .= ',';
+        }
+        $tasks_per_day .= ")";
+        $tasks_per_plan_per_day[$id] = $tasks_per_day;
+      }
+    return $tasks_per_plan_per_day;
   }
 
   /**

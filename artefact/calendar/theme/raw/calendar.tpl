@@ -64,9 +64,9 @@
 
 			{foreach from=$calendar item=week}
 				<tr class="bgday">
+					
 					{counter start=0 assign=week_count}
 					{foreach from=$week item=day}						
-						
 						{if $day == $today}
 							<td class="day bggrey bordergrey">
 								<div class="day">
@@ -89,7 +89,8 @@
 						<br/>
 
 						{if  $day != ""}
-
+							
+							
 							{foreach from=$task_per_day[$day] item=task}
 								{assign var=p_id value=$task['parent_id']}
 
@@ -117,8 +118,12 @@
 								</div>
 							{/if}
 							</div>
-							{if $day != "" & $number_of_tasks_per_day[$day] > 3}
-								{include file="task_list_day.tpl"} {* task list overlay for the specific date *}
+							{if $day != ""}
+								<input name="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
+								{if $number_of_tasks_per_day[$day] > 3}
+									{include file="task_list_day.tpl"} {* task list overlay for the specific date *}
+								{/if}
+								
 							{/if}
 						</td>
 					{/foreach}
@@ -142,7 +147,7 @@
 								{assign var=stat value='0'}
 							{/if}
 
-							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}');" class="deco_none" title="{$plan->title}">
+							<a id="onclick{$id}" onclick="toggle_ajax('link{$id}', 'color{$id}', 'task{$id}', '{$stat}', '{$id}', 'gray{$id}', {$number_of_tasks_per_plan_per_day[$id]});" class="deco_none" title="{$plan->title}">
 							<div id='color{$id}' class="planbox" style='background-color:#{$colors[$id]};'>
 							</div>					
 							<div id="gray{$id}" class="planbox bggrey disp_none">
@@ -152,7 +157,7 @@
 								</h3>
 								{if $plans_status[$id] == '0'}
 									<script language="JavaScript">
-											toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}');
+											toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}', '{$number_of_tasks_per_plan_per_day[$id]}');
 									</script>
 								{/if}					
 							<div  class="description" style="margin:0px;">

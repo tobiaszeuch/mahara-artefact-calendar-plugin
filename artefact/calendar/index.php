@@ -54,7 +54,7 @@ ArtefactTypeCalendar::build_calendar_html($plans);
 //javascript
 $javascript = <<< JAVASCRIPT
 
-	function toggle_ajax(linkid, colorid, taskid, status, planid, grayid){//calls the toggle function and also saves status to db with ajax
+	function toggle_ajax(linkid, colorid, taskid, status, planid, grayid, tasks_per_day){//calls the toggle function and also saves status to db with ajax
 
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
@@ -73,8 +73,8 @@ $javascript = <<< JAVASCRIPT
 		xmlhttp.send();
 	}
 
-	function toggle(linkid, colorid, taskid, grayid){ //toggles tasks
-	if(document.getElementById(linkid).style.opacity == '0.5' || document.getElementById(linkid).style.filter == 'alpha(opacity=20)')
+	function toggle(linkid, colorid, taskid, grayid, tasks_per_day){ //toggles tasks
+		if(document.getElementById(linkid).style.opacity == '0.5' || document.getElementById(linkid).style.filter == 'alpha(opacity=20)')
 		{	
 			document.getElementById(linkid).style.opacity = '1'; 
 			document.getElementById(linkid).style.filter = 'alpha(opacity=100)';
@@ -99,9 +99,31 @@ $javascript = <<< JAVASCRIPT
 					p[i].style.display = 'none'; 
 			}
 
+			decrease_task_count(tasks_per_day);
+
 		}
 
 	}
+
+	//decreases the number of tasks for each day (which is only displayed if more than 3 per day
+
+	function decrease_task_count(tasks_per_day){
+		
+		var days = tasks_per_day;
+		//alert(tasks_per_day);
+
+		for (var i=1; i <= days; i++) {
+			var oldValue = document.getElementById('number_of_tasks'+i).value;
+			document.getElementById('number_of_tasks'+i).value = oldValue - tasks_per_day[i-1];
+		}
+	}
+
+	//increases the number of tasks for each day (which is only displayed if more than 3 per day
+
+	function increase_task_count(tasks_per_day){
+		
+	}
+
 
 	function hide_overlay(){
 
@@ -148,14 +170,6 @@ $javascript = <<< JAVASCRIPT
 		//tasks in calendar view of one plan
 
 		var p = document.getElementsByName('task'+planid);
-			
-			for (var i=0; i < p.length; i++) {
-					p[i].style.backgroundColor = "#"+color;
-			}
-
-		// tasks in overlay for one day
-
-		var p = document.getElementsByName('day'+planid);
 			
 			for (var i=0; i < p.length; i++) {
 					p[i].style.backgroundColor = "#"+color;
