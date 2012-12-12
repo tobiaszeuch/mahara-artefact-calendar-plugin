@@ -9,8 +9,8 @@
             <FIELD NAME="plan" TYPE="int" LENGTH="10" NOTNULL="true" />
             <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" />
             <FIELD NAME="color" TYPE="char" LENGTH="6" NOTNULL="true" />
-            <FIELD NAME="reminder_date" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="-1"/>
-            <FIELD NAME="reminder_status" TYPE="tinyint" LENGTH="1" NOTNULL="true" DEFAULT="0"/>
+            <FIELD NAME="reminder_date" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="-1"/>
+            <FIELD NAME="reminder_status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1"/>
         </FIELDS>
         <KEYS>
             <KEY NAME="primary" TYPE="primary" FIELDS="plan" />
