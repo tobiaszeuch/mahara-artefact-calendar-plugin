@@ -67,6 +67,11 @@ class PluginArtefactCalendar extends PluginArtefact {
       'callfunction' => 'remind_all_users',
       'hour' => '2',
       'minute' => '00',
+      ),
+      (object)array(
+      'callfunction' => 'clean_db_table',
+      'hour' => '2',
+      'minute' => '00',
       ));
   }
 
@@ -170,6 +175,24 @@ class PluginArtefactCalendar extends PluginArtefact {
      
       $message->message = get_string('message', 'artefact.calendar')."\n\n".$message_body;
       activity_occurred('maharamessage', $message);
+    }
+  }
+
+  /**
+  * Database table is cleaned of obsolete rows (deleted plans)
+  */
+
+  public static function clean_db_table(){
+    ($results = get_records_sql_array("SELECT plan FROM {artefact_calendar_calendar};", array()))
+            || ($results = array()); //get plans and user ids
+
+    if (!empty($results[0])) {
+      foreach ($results as $result) { 
+        ($temp_results = get_records_sql_array("SELECT * FROM {artefact} WHERE id = $result->plan AND artefacttype = 'plan' LIMIT 1;", array()))
+            || ($temp_results = array());
+        if (empty($temp_results[0]))
+          delete_records('artefact_calendar_calendar', 'plan', $result->plan);
+      }
     }
   }
 
