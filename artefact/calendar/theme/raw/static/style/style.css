@@ -210,6 +210,12 @@ td.plan_controls{
 
 td.plan {
 	min-width:150px;
+	-webkit-user-select: none; /** Text of plans isn't selectable */ 
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
 }
 
 td.plan:hover{
