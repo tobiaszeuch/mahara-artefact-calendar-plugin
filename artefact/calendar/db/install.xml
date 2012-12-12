@@ -10,11 +10,10 @@
             <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" />
             <FIELD NAME="color" TYPE="char" LENGTH="6" NOTNULL="true" />
             <FIELD NAME="reminder_date" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="-1"/>
-            <FIELD NAME="reminder_status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1"/>
+            <FIELD NAME="reminder_status" TYPE="int" LENGTH="1" NOTNULL="true"/>
         </FIELDS>
         <KEYS>
             <KEY NAME="primary" TYPE="primary" FIELDS="plan" />
-            <KEY NAME="foreign" TYPE="foreign" FIELDS="plan" REFTABLE="artefact" REFFIELDS="id" />
         </KEYS>
     </TABLE>
 </TABLES>
