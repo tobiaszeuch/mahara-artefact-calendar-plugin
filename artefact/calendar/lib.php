@@ -804,7 +804,7 @@ return $return;
       $tasks_per_day = 'new Array('; //javascript array of plan ids
 
       for($u = 1; $u <= count($temp); $u++){
-          $tasks_per_day .= '"'.$temp[$u].'"';
+          $tasks_per_day .= $temp[$u];
           if($u < count($temp))
             $tasks_per_day .= ',';
         }

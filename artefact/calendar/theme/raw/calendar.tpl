@@ -104,22 +104,25 @@
 
 							{/foreach}
 						{/if}							
-							{if $day != "" & $number_of_tasks_per_day[$day] > 3}
-								<div class="description description_overlay
-								{if $day == $today}
-									bggrey
-								{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
-									bgweekend
-								{else}
-									bgday
-								{/if}
-								">
-									<a onclick="document.getElementById('task_list_day{$day}').style.display='block';">{$number_of_tasks_per_day[$day]} {str section="artefact.plans" tag='tasks'}</a>
-								</div>
+							
+							<div id="link_number_tasks{$day}" class="description description_overlay
+							{if $day == $today}
+								bggrey
+							{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
+								bgweekend
+							{else}
+								bgday
 							{/if}
+							"
+							{if $day == "" || $number_of_tasks_per_day[$day] < 4}
+								style="display:none;"
+							{/if}>
+								<a onclick="document.getElementById('task_list_day{$day}').style.display='block';">
+									<div name="display_number{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
+								</a>
 							</div>
 							{if $day != ""}
-								<input name="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
+								<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
 								{if $number_of_tasks_per_day[$day] > 3}
 									{include file="task_list_day.tpl"} {* task list overlay for the specific date *}
 								{/if}
@@ -156,8 +159,9 @@
 									{$plan_short_titles[$id]}
 								</h3>
 								{if $plans_status[$id] == '0'}
+								
 									<script language="JavaScript">
-											toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}', '{$number_of_tasks_per_plan_per_day[$id]}');
+											toggle('link{$id}', 'color{$id}', 'task{$id}', 'gray{$id}', {$number_of_tasks_per_plan_per_day[$id]});
 									</script>
 								{/if}					
 							<div  class="description" style="margin:0px;">

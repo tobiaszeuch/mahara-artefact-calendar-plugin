@@ -62,12 +62,12 @@ $javascript = <<< JAVASCRIPT
 		else// code for IE6, IE5
 		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 
-	 	toggle(linkid, colorid, taskid, grayid);
+	 	toggle(linkid, colorid, taskid, grayid, tasks_per_day);
 	 	var new_status;
 	 	if(status == 1)
 	 		new_status = 0;
 	 	else new_status = 1;
-	 	document.getElementById("onclick"+planid).onclick = function() {toggle_ajax(linkid, colorid, taskid, new_status, planid, grayid)};
+	 	document.getElementById("onclick"+planid).onclick = function() {toggle_ajax(linkid, colorid, taskid, new_status, planid, grayid, tasks_per_day)};
 
 		xmlhttp.open("GET","index.php?status="+status+"&plan="+planid+"&ajax=true",true);
 		xmlhttp.send();
@@ -85,6 +85,8 @@ $javascript = <<< JAVASCRIPT
 			}
 			document.getElementById(colorid).style.display = 'block'; 
 			document.getElementById(grayid).style.display = 'none'; 
+
+			increase_task_count(tasks_per_day);
 		}
 		else
 		{	
@@ -109,19 +111,54 @@ $javascript = <<< JAVASCRIPT
 
 	function decrease_task_count(tasks_per_day){
 		
-		var days = tasks_per_day;
-		//alert(tasks_per_day);
+		var days = tasks_per_day.length;
 
 		for (var i=1; i <= days; i++) {
-			var oldValue = document.getElementById('number_of_tasks'+i).value;
-			document.getElementById('number_of_tasks'+i).value = oldValue - tasks_per_day[i-1];
+			var oldValue = document.getElementById('number_tasks'+i).value;
+			newValue = oldValue - tasks_per_day[i-1]
+			document.getElementById('number_tasks'+i).value = newValue;
+
+			var p = document.getElementsByName('display_number'+i);
+			
+			for (var j=0; j < p.length; j++) {
+					 p[j].innerHTML = newValue; 
+			}
+			
+			if(newValue < 4){
+				document.getElementById('link_number_tasks'+i).style.display = 'none';
+			}
+			else {
+				document.getElementById('link_number_tasks'+i).style.display = 'block';
+			}
+
+
+
 		}
 	}
 
 	//increases the number of tasks for each day (which is only displayed if more than 3 per day
 
 	function increase_task_count(tasks_per_day){
-		
+		var days = tasks_per_day.length;
+
+		for (var i=1; i <= days; i++) {
+			var oldValue = document.getElementById('number_tasks'+i).value;
+			newValue = Number(oldValue) + Number(tasks_per_day[i-1]);
+			document.getElementById('number_tasks'+i).value = newValue;
+
+			var p = document.getElementsByName('display_number'+i);
+			
+			for (var j=0; j < p.length; j++) {
+					 p[j].innerHTML = newValue; 
+			}
+
+			if(newValue < 4){
+				document.getElementById('link_number_tasks'+i).style.display = 'none';
+			}
+			else {
+				document.getElementById('link_number_tasks'+i).style.display = 'block';
+			}
+		}
 	}
 
 
