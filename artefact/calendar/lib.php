@@ -709,7 +709,7 @@ return $return;
     for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
 
       $id = $plans['data'][$i]->id; //get id
-      $task[$i] = ArtefactTypeTask::get_tasks($id,0,100); //get all tasks
+      $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
       $task_count = $task[$i]['count'];
 
       for($j = 0; $j < $task_count; $j++){  
@@ -754,7 +754,6 @@ return $return;
         }
       }
     }
-
     return $task_per_day;
   }
 
@@ -804,7 +803,7 @@ return $return;
     for($i = 0; $i < $plan_count; $i++){ //loop through all plans
 
       $id = $plans['data'][$i]->id; //get id
-      $task[$i] = ArtefactTypeTask::get_tasks($id,0,100); //get all tasks
+      $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
       $task_count = $task[$i]['count'];
 
       for($j = 0; $j < $task_count; $j++){  
@@ -1092,6 +1091,52 @@ return $return;
      }
     db_commit();
   }
+
+  /**
+  *
+  *
+  *  FEED
+  *
+  *
+  */
+  public static function build_feed(&$plans) {
+
+    $feed_todos = array();
+    $count = 0;
+
+    for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
+
+      $id = $plans['data'][$i]->id; //get id
+      $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
+      $task_count = $task[$i]['count'];
+
+      for($j = 0; $j < $task_count; $j++){  
+
+        $task_id = $task[$i]['data'][$j]->id;
+        $summary = $task[$i]['data'][$j]->title; //task title
+        $description = $task[$i]['data'][$j]->description; //task description
+        $completed = $task[$i]['data'][$j]->completed; // check if task is completed        
+        $due = $task[$i]['data'][$j]->completiondate; // completiondate
+        
+        //the get_tasks functions gets the completiondate with month name written out, which leads to problems in other languages, therefore we use a different function to get the timestamp
+        $due_task = new ArtefactTypeTask($task_id);
+        $due_date_timestamp = (ArtefactTypeTask::get_taskform_elements($due_task->parent, $due_task));
+        
+        $due = $due_date_timestamp['completiondate']['defaultvalue'];
+        $dtstart = date('Ymd', $due).'T000001';// format for feed
+        $due = date('Ymd', $due).'T235959';// format for feed
+
+        $feed_todos[$count] = array('summary' => $summary,
+                                    'description' => $description,
+                                    'completed' => $completed,
+                                    'dtstart' => $dtstart,
+                                    'due' => $due);
+        $count++;
+      }
+    } 
+    print_r($feed_todos);   
+  }
+
 
 }
 
