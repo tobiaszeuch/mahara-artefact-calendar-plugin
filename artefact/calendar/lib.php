@@ -382,14 +382,16 @@ class ArtefactTypeCalendar extends ArtefactType {
         $new_plan_id = $artefact->get('id');
         if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
           ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
+        else{
+          ArtefactTypeCalendar::save_random_color_to_db($new_plan_id);
+        }
         if(isset($_GET['newplan_reminder'])){
-          echo 'active';
           ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
         }
         else{
-          echo 'inactive';
           ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
         }
+        ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($new_plan_id, $plans);
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
       }
 
@@ -857,15 +859,21 @@ return $return;
       if (!empty($result[0])) 
         $colors[$plans['data'][$i]->id] = $result[0]->color;
       else { //if there is no color stored for the plan a random color is picked
-        $rand = rand(0,self::$color_num-1);
-        $available_colors = self::$available_colors;
-        $colors[$plans['data'][$i]->id] = $available_colors[$rand]; //random hex color
-        ArtefactTypeCalendar::save_color_to_db($plans['data'][$i]->id, $available_colors[$rand]); //choosen color is saved to db
+        ArtefactTypeCalendar::save_random_color_to_db($id);
       }
     }
-
     return $colors;
   } 
+
+  /**
+  * If no color is picker for a new plan, random color is saved to db
+  */
+  private static function save_random_color_to_db($plan){
+    $rand = rand(0,self::$color_num-1);
+    $available_colors = self::$available_colors;
+    $colors[$plans['data'][$i]->id] = $available_colors[$rand]; //random hex color
+    ArtefactTypeCalendar::save_color_to_db($plan, $available_colors[$rand]); //choosen color is saved to db
+  }
 
   /**
   * Color is stored in db
@@ -992,22 +1000,23 @@ return $return;
             'plan'  => $id,
             'reminder_status' => $reminder_status,
             );
-          update_record('artefact_calendar_calendar', $data, 'plan'); //update table
+        update_record('artefact_calendar_calendar', $data, 'plan'); //update table
         }
     }
     else{
-      $data = (object)array(
-          'plan'  => $reminder,
-          'reminder_status' => $reminder_status,
-          );
-        update_record('artefact_calendar_calendar', $data, 'plan'); //update table
+       $data = (object)array(
+            'plan'  => $reminder,
+            'reminder_status' => $reminder_status,
+            );
+
+      update_record('artefact_calendar_calendar', $data, 'plan'); //update table
      }
     db_commit();
   }
 
   /**
-  * Gets stored reminder status for each plan
-  * Set to 1 if new plan, reminder date is set according to other plans
+  * Gets stored reminder date for each plan
+  * Reminder date is set according to other plans, if new plan
   */
 
   private static function get_reminder_date($plans){
@@ -1028,29 +1037,38 @@ return $return;
 
       if (!empty($result[0])) 
         $reminder_date_per_plan[$id] = $result[0]->reminder_date;
-      else { //if there is no date stored for the plan, date is set according to other plans, if no other plans then -1 (inactive)       
-        $found = false;
-        for($j = 0; $j < $plan_count && $found == false; $j++){
-          $other_plan_id = $plans['data'][$j]->id;
-
-          ($result = get_records_sql_array("
-                SELECT plan, reminder_date
-                    FROM {artefact_calendar_calendar} WHERE plan = '$other_plan_id' AND reminder_date IS NOT NULL", array()))
-                || ($result = array());
-
-          if (!empty($result[0])) {
-            $found = true;
-            $reminder_date_per_plan[$id] = $result[0]->reminder_date;
-          }
-        }
-        if(!$found)
-           $reminder_date_per_plan[$id] = -1;
-         ArtefactTypeCalendar::save_reminder_date_to_db($id, $reminder_date_per_plan[$id]);
-      }
+      else  //if there is no date stored for the plan, date is set according to other plans, if no other plans then -1 (inactive)       
+       ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($id, $plans); 
     }
     return $reminder_date_per_plan;
   } 
 
+  /**
+  * Reminder date is set according to other plans
+  */
+
+  private static function set_reminder_date_according_to_other_plans($plan, $plans){
+    $found = false;
+    $plan_count = count($plans['data']);
+
+    for($j = 0; $j < $plan_count && $found == false; $j++){
+      $other_plan_id = $plans['data'][$j]->id;
+
+      ($result = get_records_sql_array("
+            SELECT plan, reminder_date
+                FROM {artefact_calendar_calendar} WHERE plan = '$other_plan_id' AND reminder_date IS NOT NULL", array()))
+            || ($result = array());
+
+      if (!empty($result[0])) {
+        $found = true;
+        $reminder_date_per_plan[$plan] = $result[0]->reminder_date;
+      }
+    }
+    if(!$found)
+       $reminder_date_per_plan[$plan] = -1;
+     ArtefactTypeCalendar::save_reminder_date_to_db($plan, $reminder_date_per_plan[$plan]);
+
+  }
 
   private static function save_reminder_date_to_db($reminder,$reminder_date, $plans){
      db_begin();
