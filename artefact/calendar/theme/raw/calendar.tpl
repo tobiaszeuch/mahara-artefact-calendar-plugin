@@ -24,6 +24,18 @@
 
 {include file="new_plan.tpl"}
 
+{* task list overlay each day with more than three tasks*}
+{foreach from=$calendar item=week}
+	{foreach from=$week item=day}
+		{if $day != ""}
+			<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
+				{if $number_of_tasks_per_day[$day] > 3}
+					{include file="task_list_day.tpl"}
+				{/if}
+		{/if}
+	{/foreach}
+{/foreach}
+
 {* calendar *}
 <tr class="bgday">
 	<td style="width:75%;">
@@ -121,13 +133,6 @@
 									<div name="display_number{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
 								</a>
 							</div>
-							{if $day != ""}
-								<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
-								{if $number_of_tasks_per_day[$day] > 3}
-									{include file="task_list_day.tpl"} {* task list overlay for the specific date *}
-								{/if}
-								
-							{/if}
 						</td>
 					{/foreach}
 				</tr>

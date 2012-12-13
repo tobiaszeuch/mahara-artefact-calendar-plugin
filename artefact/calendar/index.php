@@ -115,7 +115,7 @@ $javascript = <<< JAVASCRIPT
 
 		for (var i=1; i <= days; i++) {
 			var oldValue = document.getElementById('number_tasks'+i).value;
-			newValue = oldValue - tasks_per_day[i-1]
+			newValue = oldValue - tasks_per_day[i-1];
 			document.getElementById('number_tasks'+i).value = newValue;
 
 			var p = document.getElementsByName('display_number'+i);
