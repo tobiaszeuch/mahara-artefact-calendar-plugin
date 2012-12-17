@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Mahara: Electronic portfolio, weblog, resume builder and social networking
@@ -486,6 +487,8 @@ class ArtefactTypeCalendar extends ArtefactType {
         }
       }
 
+      $feed_url = ArtefactTypeCalendar::get_feed_url();
+
       /**
       * assigns for smarty
       */
@@ -541,6 +544,10 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('week_start', $dates['week_start']);
       $smarty->assign_by_ref('full_dates', $full_dates);
       $smarty->assign_by_ref('calendar', $calendar);
+
+      //feed
+      $smarty->assign_by_ref('uid', $USER->id);
+      $smarty->assign_by_ref('feed_url', $feed_url);
 
       // smarty fetch
       $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
@@ -1099,45 +1106,163 @@ return $return;
   *
   *
   */
-  public static function build_feed(&$plans) {
+
+  /**
+  *   Builds array of tasks for feed
+  */
+  public static function build_feed(&$plans, $user, $userkey) {
 
     $feed_todos = array();
     $count = 0;
 
-    for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
+    if(!ArtefactTypeCalendar::check_userkey($user, $userkey))
+      echo get_string('accessdenied', 'error');
 
-      $id = $plans['data'][$i]->id; //get id
-      $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
-      $task_count = $task[$i]['count'];
+    else{
+      for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
 
-      for($j = 0; $j < $task_count; $j++){  
+        $id = $plans['data'][$i]->id; //get id
+        $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
+        $task_count = $task[$i]['count'];
 
-        $task_id = $task[$i]['data'][$j]->id;
-        $summary = $task[$i]['data'][$j]->title; //task title
-        $description = $task[$i]['data'][$j]->description; //task description
-        $completed = $task[$i]['data'][$j]->completed; // check if task is completed        
-        $due = $task[$i]['data'][$j]->completiondate; // completiondate
-        
-        //the get_tasks functions gets the completiondate with month name written out, which leads to problems in other languages, therefore we use a different function to get the timestamp
-        $due_task = new ArtefactTypeTask($task_id);
-        $due_date_timestamp = (ArtefactTypeTask::get_taskform_elements($due_task->parent, $due_task));
-        
-        $due = $due_date_timestamp['completiondate']['defaultvalue'];
-        $dtstart = date('Ymd', $due).'T000001';// format for feed
-        $due = date('Ymd', $due).'T235959';// format for feed
+        for($j = 0; $j < $task_count; $j++){  
 
-        $feed_todos[$count] = array('summary' => $summary,
-                                    'description' => $description,
-                                    'completed' => $completed,
-                                    'dtstart' => $dtstart,
-                                    'due' => $due);
-        $count++;
-      }
-    } 
-    print_r($feed_todos);   
+          $task_id = $task[$i]['data'][$j]->id;
+          $summary = $task[$i]['data'][$j]->title; //task title
+          $description = $task[$i]['data'][$j]->description; //task description
+          $completed = $task[$i]['data'][$j]->completed; // check if task is completed        
+          $due = $task[$i]['data'][$j]->completiondate; // completiondate
+          
+          //the get_tasks functions gets the completiondate with month name written out, which leads to problems in other languages, therefore we use a different function to get the timestamp
+          $due_task = new ArtefactTypeTask($task_id);
+          $due_date_timestamp = (ArtefactTypeTask::get_taskform_elements($due_task->parent, $due_task));
+          
+          $due_date_timestamp = $due_date_timestamp['completiondate']['defaultvalue'];
+          $dtstart = date('Ymd', $due_date_timestamp).'T000001';// format for feed
+          $due = date('Ymd', $due_date_timestamp).'T235959';// format for feed
+          $key = md5($task_id.$summary);
+          $uid = date('Ymd', $due_date_timestamp).$key;//unique identifier for each task
+         
+          $feed_todos[$count] = array('uid' => $uid,
+                                      'summary' => $summary,
+                                      'description' => $description,
+                                      'completed' => $completed,
+                                      'dtstart' => $dtstart,
+                                      'due' => $due);
+          $count++;
+        }
+      } 
+      return ArtefactTypeCalendar::ical_feed($feed_todos);
+    }
   }
 
+  /**
+  * Transforms array of tasks to ical feed
+  */ 
 
+  private static function ical_feed($feed_todos){
+
+    $wwwroot = get_config('wwwroot');
+    $wwwroot = str_replace('https://', '', $wwwroot);
+    $prodid = $wwwroot;
+
+    $feed = 'BEGIN:VCALENDAR'."\r\n".
+            'VERSION:2.0'."\n".
+            'PRODID:'.$prodid."\n";
+
+    $task_count = count($feed_todos);
+
+    for($i = 0; $i < $task_count; $i++){  //each task is represented by a vtodo element
+      $uid = $feed_todos[$i]['uid'];
+      $summary = $feed_todos[$i]['summary'];
+      $description = $feed_todos[$i]['description'];
+      $dtstart = $feed_todos[$i]['dtstart'];
+      $due = $feed_todos[$i]['due'];
+
+      $feed .= "BEGIN:VTODO "."\n";
+      $feed .= 'UID:'.$uid.'@'.$wwwroot.'  \r\n';
+      $feed .= 'SUMMARY:'.$summary.'  \r\n';
+      if($description)
+        $feed .= 'DESCRIPTION:'.$description.'  \r\n';
+     // $feed .= 'DTSTART:'.$dtstart.' ';
+      $feed .= 'DUE:'.$due.'  \r\n';
+      $feed .= 'END:VTODO  \r\n';
+    }
+    $feed .= 'END:VCALENDAR  \r\n';
+    
+    return $feed;
+  }
+
+  /**
+  * Returns the feed url for the specific user
+  */
+
+  private static function get_feed_url(){
+    
+    global $USER;
+    $id = $USER->id;
+
+    ($result = get_records_sql_array("
+            SELECT userkey
+                FROM {artefact_calendar_feed} WHERE user = '$id';", array()))
+            || ($result = array());
+    if(!empty($result[0]))
+      return $result[0]->userkey;
+    else{ //new feed url is generated
+      return ArtefactTypeCalendar::generate_feed_url($id);
+    }
+  }
+
+  /**
+  * Generates feed url for given user and saves it to db
+  */
+
+  private static function generate_feed_url($user){
+    
+    $userkey = '';
+    //generate random string with length 30 to append to userkey
+
+    $letters = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $rand = '';
+    for($i=0; $i < 35; $i++)
+      $rand .= $letters[mt_rand(0, 29)];
+
+    $userkey .= $rand; //append random string to userkey
+
+    $data = (object)array(
+            'user'  => $user,
+            'userkey' => $userkey);
+
+    insert_record('artefact_calendar_feed', $data); //insert into table
+    return $userkey;
+  }
+
+  /**
+  * Checks if userkey and user match (and exist)
+  */
+
+  private static function check_userkey($user, $userkey){
+    ($result = get_records_sql_array("SELECT * FROM {artefact_calendar_feed} WHERE user = '$user' AND userkey = '$userkey' LIMIT 1;", array())) || ($result = array());
+    if(!empty($result[0]))
+      return true;
+    else 
+      return false;
+  }
+
+  /**
+  * See get_plans in Artefact Plans, returns plans for given user
+  */
+
+  public static function get_plans_of_user($user){
+     ($plans = get_records_sql_array("SELECT * FROM {artefact} WHERE owner = '$user' AND artefacttype = 'plan' ORDER BY id", array())) || ($plans = array());
+        $result = array(
+            'count'  => count_records('artefact', 'owner', $user, 'artefacttype', 'plan'),
+            'data'   => $plans,
+            'offset' => $offset,
+            'limit'  => $limit,
+        );
+      return $result;
+  }
 }
 
 ?>

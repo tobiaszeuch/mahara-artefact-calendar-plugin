@@ -230,6 +230,13 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('set_notification').style.display = 'block';
 	}
 
+	function toggle_feed_settings(){
+		if(document.getElementById('feed_settings').style.display == 'block')
+			document.getElementById('feed_settings').style.display = 'none';
+		else
+			document.getElementById('feed_settings').style.display = 'block';
+	}
+
 
 	function set_reminder_date_ajax(reminder_value, plan, prefix, reminder_strings){//changes the reminder settings
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari

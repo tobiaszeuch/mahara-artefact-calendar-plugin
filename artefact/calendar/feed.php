@@ -25,30 +25,35 @@
  *
  */
 
-define('INTERNAL', 0);
-define('MENUITEM', 'calendar');
-define('SECTION_PLUGINTYPE', 'artefact');
-define('SECTION_PLUGINNAME', 'calendar');
-define('SECTION_PAGE', 'index');
+
+define('INTERNAL', 1);
+define('PUBLIC', 1);
+define('MENUITEM', '');
+define('HOME', 1);
 
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/artefact/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/calendar/lib.php')      ;
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/plans/lib.php')  ;
-require_once('pieforms/pieform.php');
-require_once('pieforms/pieform/elements/calendar.php');
-require_once(get_config('docroot') . 'artefact/lib.php');
 
-define('TITLE', get_string('calendar', 'artefact.calendar'));
-
-// offset and limit for pagination
+// offset and limit
 $offset = param_integer('offset', 0);
-$limit  = param_integer('limit', 100);
+$limit  = param_integer('limit', 1000);
 
-$plans = ArtefactTypePlan::get_plans($offset, $limit);
+$userkey = $_GET['fid'];
+$user = $_GET['uid'];
 
-ArtefactTypeCalendar::build_feed($plans);
+if(!$userkey)
+	echo get_string('missingparamid', 'error').": feed id";
+else if(!$user)
+	echo get_string('missingparamid', 'error').": user id";
+else {
+	$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);
+	$feed = ArtefactTypeCalendar::build_feed($plans, $user, $userkey);
+	echo $feed;
+}	
 
 ?>

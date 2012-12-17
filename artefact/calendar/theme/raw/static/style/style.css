@@ -160,6 +160,10 @@
 	display: none;
 }
 
+img.sub {
+	vertical-align: sub !important;
+}
+
 a.deco_none{
 	text-decoration: none;
 }
@@ -220,3 +224,5 @@ td.plan {
 
 td.plan:hover{
 	background-color: lightgray;
+
+

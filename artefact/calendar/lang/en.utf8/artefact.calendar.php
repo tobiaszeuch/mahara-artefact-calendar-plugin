@@ -87,4 +87,6 @@ $string['no'] = 'No';
 $string['color'] = 'Color';
 $string['reminder'] = 'Enable reminder?';
 
+$string['feed'] = 'Share calendar';
+$string['feed_description'] = 'You can share this calendar with the following address';
 ?>

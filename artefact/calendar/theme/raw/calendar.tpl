@@ -242,8 +242,18 @@
 					{/foreach}
 				</select>	
 				<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
+			</div>
+			<p>
+				<a onclick='toggle_feed_settings();'>
+					{str section="artefact.calendar" tag='feed'} <img class="sub" src="{$WWWROOT}{$cal}theme/raw/static/images/ical.gif" />	
+				</a>
+			</p>
+			<div id='feed_settings' class="disp_none">
+				<p class="description"> {str section="artefact.calendar" tag='feed_description'}: <br/>
+					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&fid={$feed_url}</textarea>
+				</p>
+			</div>
 			{/if}
-		</div>
 	</td>
 </tr>
 
