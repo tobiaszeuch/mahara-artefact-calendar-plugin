@@ -1166,9 +1166,9 @@ return $return;
     $wwwroot = str_replace('https://', '', $wwwroot);
     $prodid = $wwwroot;
 
-    $feed = 'BEGIN:VCALENDAR'."\r\n".
-            'VERSION:2.0'."\n".
-            'PRODID:'.$prodid."\n";
+    $feed = "BEGIN:VCALENDAR\n"; 
+    $feed .= "VERSION:2.0\n";
+    $feed .= "PRODID:".$prodid."\n";
 
     $task_count = count($feed_todos);
 
@@ -1176,19 +1176,26 @@ return $return;
       $uid = $feed_todos[$i]['uid'];
       $summary = $feed_todos[$i]['summary'];
       $description = $feed_todos[$i]['description'];
+      $completed = $feed_todos[$i]['completed'];
       $dtstart = $feed_todos[$i]['dtstart'];
       $due = $feed_todos[$i]['due'];
 
-      $feed .= "BEGIN:VTODO "."\n";
-      $feed .= 'UID:'.$uid.'@'.$wwwroot.'  \r\n';
-      $feed .= 'SUMMARY:'.$summary.'  \r\n';
+      $feed .= "BEGIN:VTODO\n";
+      $feed .= 'UID:'.$uid.'@'.$wwwroot."\n";
+      $feed .= 'SUMMARY:'.$summary."\n";
       if($description)
-        $feed .= 'DESCRIPTION:'.$description.'  \r\n';
-     // $feed .= 'DTSTART:'.$dtstart.' ';
-      $feed .= 'DUE:'.$due.'  \r\n';
-      $feed .= 'END:VTODO  \r\n';
+        $feed .= 'DESCRIPTION:'.$description."\n";
+      //$feed .= 'DTSTART:'.$dtstart."\n";
+      //$feed .= 'DTEND:'.$due."\n";
+      if($completed){
+        $feed .= "STATUS:COMPLETED\n";
+        $feed .= "PERCENT-COMPLETE:100\n";
+        $feed .= "COMPLETED:19700101T235959Z\n";//ical doesn't display as completed without this field
+      }
+      $feed .= 'DUE:'.$due."\n";
+      $feed .= "END:VTODO\n";
     }
-    $feed .= 'END:VCALENDAR  \r\n';
+    $feed .= "END:VCALENDAR\n";
     
     return $feed;
   }
