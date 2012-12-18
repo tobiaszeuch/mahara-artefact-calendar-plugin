@@ -1187,10 +1187,10 @@ return $return;
         $feed .= 'DESCRIPTION:'.$description."\n";
       //$feed .= 'DTSTART:'.$dtstart."\n";
       //$feed .= 'DTEND:'.$due."\n";
-      if($completed){
+      if($completed == 1){
         $feed .= "STATUS:COMPLETED\n";
         $feed .= "PERCENT-COMPLETE:100\n";
-        $feed .= "COMPLETED:19700101T235959Z\n";//ical doesn't display as completed without this field
+        $feed .= "COMPLETED:19700101T235959Z\n";//ical doesn't display tasks as completed without this field
       }
       $feed .= 'DUE:'.$due."\n";
       $feed .= "END:VTODO\n";
@@ -1225,7 +1225,7 @@ return $return;
   */
 
   private static function generate_feed_url($user){
-    
+
     $userkey = '';
     //generate random string with length 30 to append to userkey
 

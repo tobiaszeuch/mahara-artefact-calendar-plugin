@@ -34,6 +34,8 @@ define('HOME', 1);
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
+header('Content-type: text/html; charset=utf-8');
+
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/lib.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/calendar/lib.php')      ;
@@ -53,6 +55,7 @@ else if(!$user)
 else {
 	$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);
 	$feed = ArtefactTypeCalendar::build_feed($plans, $user, $userkey);
+	ob_clean(); //cleans the output, otherwise additional empty lines show up which kills the feed
 	echo $feed;
 }	
 
