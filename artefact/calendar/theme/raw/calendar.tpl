@@ -29,9 +29,7 @@
 	{foreach from=$week item=day}
 		{if $day != ""}
 			<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
-				{if $number_of_tasks_per_day[$day] > 3}
 					{include file="task_list_day.tpl"}
-				{/if}
 		{/if}
 	{/foreach}
 {/foreach}
@@ -130,7 +128,7 @@
 								style="display:none;"
 							{/if}>
 								<a onclick="document.getElementById('task_list_day{$day}').style.display='block';">
-									<div name="display_number{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
+									<div id="display_number_calendar{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
 								</a>
 							</div>
 						</td>

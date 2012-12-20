@@ -87,6 +87,6 @@ $string['no'] = 'Nein';
 $string['color'] = 'Farbe';
 $string['reminder'] = 'Benachrichtigung aktivieren?';
 
-$string['feed'] = 'Kalendar freigeben';
+$string['feed'] = 'Kalender freigeben';
 $string['feed_description'] = 'Sie können ihren Kalender über folgende Adresse freigeben';
 ?>

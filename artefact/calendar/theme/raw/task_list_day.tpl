@@ -30,7 +30,7 @@
 					">		
 				</div>
 			</div>
-			<div class="description txtcenter" ><div name="display_number{$day}" style="display:inline;" >{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}</div>
+			<div class="description txtcenter" ><div id="display_number_overlay{$day}" style="display:inline;" >{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}</div>
 		</div>
 	</div>
 </div>

@@ -118,11 +118,9 @@ $javascript = <<< JAVASCRIPT
 			newValue = oldValue - tasks_per_day[i-1];
 			document.getElementById('number_tasks'+i).value = newValue;
 
-			var p = document.getElementsByName('display_number'+i);
-			
-			for (var j=0; j < p.length; j++) {
-					 p[j].innerHTML = newValue; 
-			}
+			document.getElementById('display_number_calendar'+i).innerHTML = newValue;
+			document.getElementById('display_number_overlay'+i).innerHTML = newValue;
+
 			
 			if(newValue < 4){
 				document.getElementById('link_number_tasks'+i).style.display = 'none';
@@ -146,11 +144,8 @@ $javascript = <<< JAVASCRIPT
 			newValue = Number(oldValue) + Number(tasks_per_day[i-1]);
 			document.getElementById('number_tasks'+i).value = newValue;
 
-			var p = document.getElementsByName('display_number'+i);
-			
-			for (var j=0; j < p.length; j++) {
-					 p[j].innerHTML = newValue; 
-			}
+			document.getElementById('display_number_calendar'+i).innerHTML = newValue;
+			document.getElementById('display_number_overlay'+i).innerHTML = newValue;
 
 			if(newValue < 4){
 				document.getElementById('link_number_tasks'+i).style.display = 'none';
