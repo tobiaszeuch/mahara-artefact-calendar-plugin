@@ -19,7 +19,7 @@
     <TABLE NAME="artefact_calendar_feed">
         <FIELDS>
             <FIELD NAME="user" TYPE="int" LENGTH="10" NOTNULL="true" />
-            <FIELD NAME="key" TYPE="char" LENGTH="40" NOTNULL="true" />
+            <FIELD NAME="userkey" TYPE="char" LENGTH="40" NOTNULL="true" />
         </FIELDS>
         <KEYS>
             <KEY NAME="primary" TYPE="primary" FIELDS="user" />
