@@ -26,9 +26,9 @@ $string['datepicker_firstday'] = 0;
 $string['display_format'] = 'Y/m/d';
 $string['full_format'] = '$month_name $day, $year';
 
-$string['last_month'] = 'Past Month';
-$string['next_month'] = 'Next Month';
-$string['this_month'] = 'This Month';
+$string['last_month'] = 'Previous month';
+$string['next_month'] = 'Next month';
+$string['this_month'] = 'This month';
 
 $string['1'] = 'January';
 $string['2'] = 'February';
@@ -48,7 +48,7 @@ $string['description'] = 'Description';
 $string['nodescription'] = 'No description';
 $string['completiondate'] = 'Completion Date';
 $string['completed'] = 'Completed';
-$string['format'] = 'Please use format YYYY/MM/DD';
+$string['format'] = 'Please use YYYY/MM/DD format';
 
 $string['savetask'] = 'Save task';
 $string['newtask'] = 'New task';
