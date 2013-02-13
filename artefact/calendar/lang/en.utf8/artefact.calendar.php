@@ -89,4 +89,7 @@ $string['reminder'] = 'Enable reminder?';
 
 $string['feed'] = 'Share calendar';
 $string['feed_description'] = 'You can share this calendar with the following address';
+
+$string['missing_title'] = 'Specify a title, please.';
+$string['missing_date'] = 'Specify a date, please.';
 ?>

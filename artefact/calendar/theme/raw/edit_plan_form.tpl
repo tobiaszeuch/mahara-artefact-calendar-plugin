@@ -4,7 +4,10 @@
     </a>
 </div>
 <div id="overlay_content">
-		<form name="editplan" method="get" action="" id="editplan"> 
+	<form name="editplan" method="get" action="" id="editplan"> 
+		{if $missing_title == 1}
+			<p class="errmsg">{str section="artefact.calendar" tag='missing_title'}</p>
+		{/if}
 		<p>
 			<label for="editplan_title">{str section="artefact.calendar" tag='title'}</label>
 			<span class="requiredmarker">*</span><br/>

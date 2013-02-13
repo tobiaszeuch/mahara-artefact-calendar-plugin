@@ -322,6 +322,17 @@ class ArtefactTypeCalendar extends ArtefactType {
       if($edit != 0){ //if task needs to be edited, get form
         $form = ArtefactTypeCalendar::get_task_form($edit);
       }     
+      else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified, error message is displayed and fields are refilled
+        $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
+        $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+        $form = array(
+            'title' => $_GET['missing_field_title'],
+            'description' => $_GET['missing_field_description'],
+            'completed' => $_GET['missing_field_completed'],
+            'completiondate' => $_GET['missing_field_completiondate'],
+            'completiondate_display' => $completiondate_display
+        );
+      }
       else 
           $form = 0;    
 
@@ -349,9 +360,9 @@ class ArtefactTypeCalendar extends ArtefactType {
 
          //get title and description of edited plan 
         if($id == $edit_plan){ //plan is edited plan
-             $edit_plan_title = $plans['data'][$i]->title;
-             $edit_plan_description = $plans['data'][$i]->description;
-           }
+         $edit_plan_title = $plans['data'][$i]->title;
+         $edit_plan_description = $plans['data'][$i]->description;
+        }
       }
 
       if(isset($_GET['edit_plan_itself']))
@@ -365,35 +376,42 @@ class ArtefactTypeCalendar extends ArtefactType {
 
       if(isset($_GET['plan_title'])){
         $plan_id = (int) $_GET['edit_plan'];
+        if($_GET['plan_title'] != ""){
         $artefact = new ArtefactTypePlan($plan_id);
         $artefact->set('title', $_GET['plan_title']);
         $artefact->set('description', $_GET['plan_description']);
         $artefact->commit();
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
+        }
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id.'&edit_plan_itself=1&missing_title=1&missing_field_description'.$_GET['newplan_description']);
       }
 
       //if new plan form was send, get data
       
       if(isset($_GET['newplan_title'])){
-        $artefact = new ArtefactTypePlan();
-        $artefact->set('owner', $USER->get('id'));
-        $artefact->set('title', $_GET['newplan_title']);
-        $artefact->set('description', $_GET['newplan_description']);
-        $artefact->commit();
-        $new_plan_id = $artefact->get('id');
-        if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
-          ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
-        else{
-          ArtefactTypeCalendar::save_random_color_to_db($new_plan_id);
+        if($_GET['newplan_title'] != ""){
+          $artefact = new ArtefactTypePlan();
+          $artefact->set('owner', $USER->get('id'));
+          $artefact->set('title', $_GET['newplan_title']);
+          $artefact->set('description', $_GET['newplan_description']);
+          $artefact->commit();
+          $new_plan_id = $artefact->get('id');
+          if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
+            ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
+          else{
+            ArtefactTypeCalendar::save_random_color_to_db($new_plan_id);
+          }
+          if(isset($_GET['newplan_reminder'])){
+            ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
+          }
+          else{
+            ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
+          }
+          ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($new_plan_id, $plans);
+          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
         }
-        if(isset($_GET['newplan_reminder'])){
-          ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
-        }
-        else{
-          ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
-        }
-        ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($new_plan_id, $plans);
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
+      else
+          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&missing_title=1&new=1&missing_field_description'.$_GET['newplan_description']);
       }
 
       // if plan is finally to be deleted
@@ -488,7 +506,6 @@ class ArtefactTypeCalendar extends ArtefactType {
       }
 
       $feed_url = ArtefactTypeCalendar::get_feed_url();
-
       /**
       * assigns for smarty
       */
@@ -503,6 +520,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
       $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
       $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
+      $smarty->assign_by_ref('new', $_GET['new']);
 
       //reminder
       $smarty->assign_by_ref('planids_js', $planids_js);
@@ -548,6 +566,10 @@ class ArtefactTypeCalendar extends ArtefactType {
       //feed
       $smarty->assign_by_ref('uid', $USER->id);
       $smarty->assign_by_ref('feed_url', $feed_url);
+
+      //missing title or date
+      $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
+      $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
 
       // smarty fetch
       $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
@@ -676,30 +698,49 @@ return $return;
   */
 
   private static function submit_task($dates, $task_info){
+   
     global $USER;
 
     $parent =  $_GET['parent'];
     $id = (int) $_GET['task'];
 
-    if ($id != 0) 
-      $artefact = new ArtefactTypeTask($id);
-    else {
-        $artefact = new ArtefactTypeTask();
-        $artefact->set('owner', $USER->get('id'));
-        $artefact->set('parent', $parent);
-    }
-    $artefact->set('title', $_GET['title']);
-    $artefact->set('description', $_GET['description']);
-    $artefact->set('completed', $_GET['completed'] ? 1 : 0);
-    $artefact->set('completiondate', $_GET['completiondate']);
-    $artefact->commit();
+    $title = $_GET['title'];
+    $description = $_GET['description'];
+    $completiondate = $_GET['completiondate'];
+    $completed = $_GET['completed'] ? 1 : 0;
 
-    if($parent != 0)
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$parent);
-    elseif ($task_info != 0) 
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&task_info='.$id);
-    else 
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+    if($title == "" || $completiondate == ""){
+      if($title == "")
+        $missing_title = "&missing_title=1";
+      if($completiondate == "")
+        $missing_date = "&missing_date=1";
+    }
+    else{
+      if ($id != 0) 
+        $artefact = new ArtefactTypeTask($id);
+      else {
+          $artefact = new ArtefactTypeTask();
+          $artefact->set('owner', $USER->get('id'));
+          $artefact->set('parent', $parent);
+      }
+
+      $artefact->set('title', $title);
+      $artefact->set('description', $description);
+      $artefact->set('completed', $completed);
+      $artefact->set('completiondate', $completiondate);
+      $artefact->commit();
+
+      if($parent != 0)
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$parent);
+      elseif ($task_info != 0) 
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&task_info='.$id);
+      else 
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+    }//no title or date were specified
+    if($id != 0)
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit='.$id.$missing_title.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_completiondate='.$completiondate.'&missing_field_completed='.$completed.'&parent='.$parent);
+    else
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&new_task=1'.$missing_title.$missing_date.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_completiondate='.$completiondate.'&missing_field_completed='.$completed.'&parent='.$parent);
   }
 
   /**

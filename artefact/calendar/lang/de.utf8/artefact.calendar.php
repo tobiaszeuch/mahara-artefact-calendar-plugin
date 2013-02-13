@@ -89,4 +89,7 @@ $string['reminder'] = 'Benachrichtigung aktivieren?';
 
 $string['feed'] = 'Kalender freigeben';
 $string['feed_description'] = 'Sie können ihren Kalender über folgende Adresse freigeben';
+
+$string['missing_title'] = 'Bitte geben Sie einen Titel an.';
+$string['missing_date'] = 'Bitte geben Sie ein Datum an.';
 ?>

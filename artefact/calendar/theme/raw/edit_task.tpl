@@ -42,7 +42,13 @@
 		            	</a>
 		        </div>
 		        <div id="overlay_content">
-					<form name="edittask" method="get" action="" id="edittask"> 
+					<form name="edittask" method="get" action="" id="edittask"> 						
+						{if $missing_title == 1}
+							<p class="errmsg">{str section="artefact.calendar" tag='missing_title'}</p>
+						{/if}
+						{if $missing_date == 1}
+							<p class="errmsg">{str section="artefact.calendar" tag='missing_date'}</p>
+						{/if}
 						<p>
 							<label for="edittask_title">{str section="artefact.calendar" tag='title'}</label>
 							<span class="requiredmarker">*</span><br/>

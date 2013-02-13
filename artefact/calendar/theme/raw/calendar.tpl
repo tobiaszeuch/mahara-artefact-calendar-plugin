@@ -18,11 +18,16 @@
 {/if}
 {if $task_info != '0'}
 	{include file="task_info.tpl"}
-{elseif $form != '0'}
+{elseif $form != '0' && $new_task != 1}
 	{include file="edit_task.tpl"}
 {/if}
 
 {include file="new_plan.tpl"}
+{if $new == 1}
+    		<script language="JavaScript">
+				document.getElementById('planoverlay').style.display='block';
+			</script>
+{/if}
 
 {* task list overlay each day with more than three tasks*}
 {foreach from=$calendar item=week}
