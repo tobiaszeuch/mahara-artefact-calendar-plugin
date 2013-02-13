@@ -7,8 +7,7 @@
 	<h3>{$edit_plan_title} 
 		<a class="deco_none" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$edit_plan_id}&edit_plan_itself=1">
 			<img src='{$WWWROOT}{$cal}{$img}edit.gif' alt='edit'>
-		</a>
-		<a onclick="document.getElementById('delete_plan').style.display='block';">
+		</a><a onclick="document.getElementById('delete_plan').style.display='block';">
 	    	<img src="{$WWWROOT}{$cal}{$img}delete.png" alt="X"/>
 	    </a> 
     </h3>

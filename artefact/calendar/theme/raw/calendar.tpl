@@ -108,7 +108,7 @@
 								
 								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&task_info={$task['task_id']}' title="{$task['full_title']}" style="background-color:#{$colors[$p_id]};">{$task['title']}
 									{if $task['completed'] == '1'}
-										<img name="task{$task['parent_id']}" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
+										<img name="task{$task['parent_id']}" class="sub" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
 									{/if}</a>
 									
 

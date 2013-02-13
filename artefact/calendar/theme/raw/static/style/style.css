@@ -156,6 +156,9 @@
 	border:2px solid black;
 }
 
+*.sub{
+	vertical-align: sub;
+}
 *.disp_none{
 	display: none;
 }
