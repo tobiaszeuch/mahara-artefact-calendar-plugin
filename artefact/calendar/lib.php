@@ -323,8 +323,13 @@ class ArtefactTypeCalendar extends ArtefactType {
         $form = ArtefactTypeCalendar::get_task_form($edit);
       }     
       else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified, error message is displayed and fields are refilled
-        $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
-        $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+        if( $_GET['missing_field_completiondate'] != ""){
+          $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
+          $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+        }
+        else
+          $completiondate_display = "";
+        // handling for tasks
         $form = array(
             'title' => $_GET['missing_field_title'],
             'description' => $_GET['missing_field_description'],
@@ -332,6 +337,8 @@ class ArtefactTypeCalendar extends ArtefactType {
             'completiondate' => $_GET['missing_field_completiondate'],
             'completiondate_display' => $completiondate_display
         );
+        //handling for plans
+        $edit_plan_description = $_GET['missing_field_description']; 
       }
       else 
           $form = 0;    
@@ -360,8 +367,9 @@ class ArtefactTypeCalendar extends ArtefactType {
 
          //get title and description of edited plan 
         if($id == $edit_plan){ //plan is edited plan
-         $edit_plan_title = $plans['data'][$i]->title;
-         $edit_plan_description = $plans['data'][$i]->description;
+          $edit_plan_title = $plans['data'][$i]->title;
+          if($edit_plan_description == "")
+            $edit_plan_description = $plans['data'][$i]->description;
         }
       }
 
@@ -377,13 +385,13 @@ class ArtefactTypeCalendar extends ArtefactType {
       if(isset($_GET['plan_title'])){
         $plan_id = (int) $_GET['edit_plan'];
         if($_GET['plan_title'] != ""){
-        $artefact = new ArtefactTypePlan($plan_id);
-        $artefact->set('title', $_GET['plan_title']);
-        $artefact->set('description', $_GET['plan_description']);
-        $artefact->commit();
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
+          $artefact = new ArtefactTypePlan($plan_id);
+          $artefact->set('title', $_GET['plan_title']);
+          $artefact->set('description', $_GET['plan_description']);
+          $artefact->commit();
+          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
         }
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id.'&edit_plan_itself=1&missing_title=1&missing_field_description'.$_GET['newplan_description']);
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id.'&edit_plan_itself=1&missing_title=1&missing_field_description='.$_GET['plan_description']);
       }
 
       //if new plan form was send, get data
@@ -411,7 +419,7 @@ class ArtefactTypeCalendar extends ArtefactType {
           redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
         }
       else
-          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&missing_title=1&new=1&missing_field_description'.$_GET['newplan_description']);
+          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&missing_title=1&new=1&missing_field_description='.$_GET['newplan_description']);
       }
 
       // if plan is finally to be deleted
