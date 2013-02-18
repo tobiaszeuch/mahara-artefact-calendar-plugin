@@ -1187,11 +1187,9 @@ return $return;
           
           $due_date_timestamp = $due_date_timestamp['completiondate']['defaultvalue'];
           $dtstart = date('Ymd', $due_date_timestamp);// format for feed
-          //$dtend =  mktime(0, 0, 0, date("m",$due_date_timestamp)  , date("d",$due_date_timestamp)+1, date("Y",$due_date_timestamp));
           $due = date('Ymd', $due_date_timestamp).'T235959';// format for feed
           $dtend =date('Ymd', $due_date_timestamp);
-          $key = md5($task_id.$summary);
-          $uid = date('Ymd', $due_date_timestamp).$key;//unique identifier for each task
+          $uid = $task_id.date('Ymd', $due_date_timestamp);//unique identifier for each task
          
           $feed_todos[$count] = array('uid' => $uid,
                                       'summary' => $summary,
@@ -1242,7 +1240,7 @@ return $return;
       if($completed == 1){
         $feed .= "STATUS:COMPLETED\n";
         $feed .= "PERCENT-COMPLETE:100\n";
-        $feed .= "COMPLETED:19700101T235959Z\n";//ical doesn't display tasks as completed without this field
+        $feed .= "COMPLETED:19700101T235959Z\n";//iCal doesn't display tasks as completed without this field
       }
       $feed .= 'DUE:'.$due."\n";
       $feed .= "END:VTODO\n";
