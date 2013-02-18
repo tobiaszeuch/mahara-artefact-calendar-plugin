@@ -45,7 +45,7 @@
 		<table>
 			<tr >
 				<th colspan='7'>
-					<a class="flright" href="{$WWWROOT}{$cal}index.php?month={$this_month}&year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
+					<a class="flright" href="{$WWWROOT}{$cal}index.php?month={$this_month}&amp;year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
 						<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-up.gif' alt='this' />
 					</a>
 				</th>
@@ -53,10 +53,10 @@
 			<tr >
 				<th colspan='7' class="txtcenter">
 					<h3>
-						<a href="{$WWWROOT}{$cal}index.php?month={$past_month}&year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" class="pdright20">
+						<a href="{$WWWROOT}{$cal}index.php?month={$past_month}&amp;year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" class="pdright20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-left.gif' alt='back' /></a>
 						{$month_name} {$year}
-						<a href="{$WWWROOT}{$cal}index.php?month={$next_month}&year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" class="pdleft20">
+						<a href="{$WWWROOT}{$cal}index.php?month={$next_month}&amp;year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" class="pdleft20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-right.gif' alt='next' /></a>
 				</h3>
 					
@@ -111,7 +111,7 @@
 
 								{* The name tag has to be in p tag and each child tag, so IE toggels the tasks correctly *}
 								
-								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&task_info={$task['task_id']}' title="{$task['full_title']}" style="background-color:#{$colors[$p_id]};">{$task['title']}
+								<a name="task{$task['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;task_info={$task['task_id']}' title="{$task['full_title']}" style="background-color:#{$colors[$p_id]};">{$task['title']}
 									{if $task['completed'] == '1'}
 										<img name="task{$task['parent_id']}" class="sub" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
 									{/if}</a>
@@ -185,7 +185,7 @@
 							</a>
 					    </td>
 					    <td class="plan_controls">
-				        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_plan={$id}" >
+				        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;edit_plan={$id}" >
 								<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 
 								<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
@@ -253,8 +253,12 @@
 			</p>
 			<div id='feed_settings' class="disp_none">
 				<p class="description"> {str section="artefact.calendar" tag='feed_description'}: <br/>
-					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&fid={$feed_url}</textarea>
+					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}</textarea>
 				</p>
+				<p class="description"> {str section="artefact.calendar" tag='feed_description_event'}: <br/>
+					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}&amp;type=event</textarea>
+				</p>
+			</div>
 			</div>
 			{/if}
 	</td>

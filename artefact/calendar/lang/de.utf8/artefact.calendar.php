@@ -88,7 +88,8 @@ $string['color'] = 'Farbe';
 $string['reminder'] = 'Benachrichtigung aktivieren?';
 
 $string['feed'] = 'Kalender freigeben';
-$string['feed_description'] = 'Sie können ihren Kalender über folgende Adresse freigeben';
+$string['feed_description'] = 'Sie können ihre Aufgaben über folgende Adresse freigeben';
+$string['feed_description_event'] = 'Alternativ: Sie können ihre Aufgaben über folgende Adresse <b>als Termine</b> freigeben (dies ist notwendig für Kalenderprogramme, die das Anzeigen von Aufgaben nicht unterstützen) ';
 
 $string['missing_title'] = 'Bitte geben Sie einen Titel an.';
 $string['missing_date'] = 'Bitte geben Sie ein Datum an.';

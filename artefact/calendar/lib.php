@@ -1166,7 +1166,6 @@ return $return;
 
     if(!ArtefactTypeCalendar::check_userkey($user, $userkey))
       echo get_string('accessdenied', 'error');
-
     else{
       for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
 
@@ -1187,8 +1186,10 @@ return $return;
           $due_date_timestamp = (ArtefactTypeTask::get_taskform_elements($due_task->parent, $due_task));
           
           $due_date_timestamp = $due_date_timestamp['completiondate']['defaultvalue'];
-          $dtstart = date('Ymd', $due_date_timestamp).'T000001';// format for feed
+          $dtstart = date('Ymd', $due_date_timestamp);// format for feed
+          //$dtend =  mktime(0, 0, 0, date("m",$due_date_timestamp)  , date("d",$due_date_timestamp)+1, date("Y",$due_date_timestamp));
           $due = date('Ymd', $due_date_timestamp).'T235959';// format for feed
+          $dtend =date('Ymd', $due_date_timestamp);
           $key = md5($task_id.$summary);
           $uid = date('Ymd', $due_date_timestamp).$key;//unique identifier for each task
          
@@ -1197,11 +1198,15 @@ return $return;
                                       'description' => $description,
                                       'completed' => $completed,
                                       'dtstart' => $dtstart,
+                                      'dtend' => $dtend,
                                       'due' => $due);
           $count++;
         }
       } 
-      return ArtefactTypeCalendar::ical_feed($feed_todos);
+      if($_GET['type'] == 'event')
+        return ArtefactTypeCalendar::ical_feed_events($feed_todos);
+      else 
+        return ArtefactTypeCalendar::ical_feed($feed_todos);
     }
   }
 
@@ -1234,8 +1239,6 @@ return $return;
       $feed .= 'SUMMARY:'.$summary."\n";
       if($description)
         $feed .= 'DESCRIPTION:'.$description."\n";
-      //$feed .= 'DTSTART:'.$dtstart."\n";
-      //$feed .= 'DTEND:'.$due."\n";
       if($completed == 1){
         $feed .= "STATUS:COMPLETED\n";
         $feed .= "PERCENT-COMPLETE:100\n";
@@ -1246,6 +1249,46 @@ return $return;
     }
     $feed .= "END:VCALENDAR\n";
     
+    return $feed;
+  }
+
+
+  /**
+  * Transforms array of tasks to ical feed of events
+  */ 
+
+  private static function ical_feed_events($feed_todos){
+
+    $wwwroot = get_config('wwwroot');
+    $wwwroot = str_replace('https://', '', $wwwroot);
+    $prodid = $wwwroot;
+
+    $feed = "BEGIN:VCALENDAR\n"; 
+    $feed .= "VERSION:2.0\n";
+    $feed .= "PRODID:".$prodid."\n";
+
+    $task_count = count($feed_todos);
+
+    for($i = 0; $i < $task_count; $i++){  //each task is represented by a vtodo element
+      $uid = $feed_todos[$i]['uid'];
+      $summary = $feed_todos[$i]['summary'];
+      $description = $feed_todos[$i]['description'];
+      $completed = $feed_todos[$i]['completed'];
+      $dtstart = $feed_todos[$i]['dtstart'];
+      $dtend = $feed_todos[$i]['dtend'];
+      $due = $feed_todos[$i]['due'];
+
+      $feed .= "BEGIN:VEVENT\n";
+      $feed .= 'UID:'.$uid.'@'.$wwwroot."\n";
+      $feed .= 'SUMMARY:'.$summary."\n";
+      if($description)
+        $feed .= 'DESCRIPTION:'.$description."\n";
+      $feed .= 'DTSTART:'.$dtstart."\n";
+      $feed .= 'DTEND:'.$dtend."\n";
+      $feed .= "END:VEVENT\n";
+    }
+    $feed .= "END:VCALENDAR\n";
+
     return $feed;
   }
 
