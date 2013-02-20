@@ -307,8 +307,10 @@ class ArtefactTypeCalendar extends ArtefactType {
       $plan_count = count($plans['data']);
      	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
       
-      $new_task = $_GET['new_task']; //is set to 1 if new task is added
-      $parent = $_GET['parent'];
+      if(isset($_GET['new_task']))
+        $new_task = $_GET['new_task']; //is set to 1 if new task is added
+      if(isset($_GET['parent']))
+        $parent = $_GET['parent'];
 
       if(isset($_GET['task_info']))
         $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
