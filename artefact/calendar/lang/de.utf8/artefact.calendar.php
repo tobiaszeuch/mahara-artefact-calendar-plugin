@@ -88,9 +88,15 @@ $string['color'] = 'Farbe';
 $string['reminder'] = 'Benachrichtigung aktivieren?';
 
 $string['feed'] = 'Kalender freigeben';
-$string['feed_description'] = 'Sie können ihre Aufgaben über folgende Adresse freigeben';
-$string['feed_description_event'] = 'Alternativ: Sie können ihre Aufgaben über folgende Adresse <b>als Termine</b> freigeben (dies ist notwendig für Kalenderprogramme, die das Anzeigen von Aufgaben nicht unterstützen) ';
+$string['feed_description'] = 'Als Aufgaben exportieren';
+$string['feed_description_event'] = 'Alternativ: <b>Als Termin</b> exportieren (dies ist notwendig für Kalenderprogramme, die das Anzeigen von Aufgaben nicht unterstützen) ';
 
 $string['missing_title'] = 'Bitte geben Sie einen Titel an.';
 $string['missing_date'] = 'Bitte geben Sie ein Datum an.';
+
+$string['export_old'] = 'Keine Aufgaben exportieren, die älter sind als ';
+$string['export_done'] = 'Keine Aufgaben exportieren, die erledigt sind.';
+$string['month_plural'] = 'Monate';
+$string['month'] = 'Monat';
+$string['generate'] = 'Export-Link generieren';
 ?>

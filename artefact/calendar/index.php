@@ -232,6 +232,37 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed_settings').style.display = 'block';
 	}
 
+	function toggle_feed_url(toggle){
+		if(toggle == 'off'){
+			document.getElementById('feed_url').style.display = 'none';
+			document.getElementById('feed').innerHTML = document.getElementById('feed_url_base').value; //url is reset
+		}
+		else
+			document.getElementById('feed_url').style.display = 'block';
+	}
+
+	function generate_feed_url(){
+		if(document.getElementById('export_old').checked == true){
+			document.getElementById('feed').innerHTML += '&export_old=0';
+			var months = document.getElementById('feed_months').value;
+			document.getElementById('feed').innerHTML += "&export_months="+months;
+		} 
+		else
+			document.getElementById('feed').innerHTML += '&export_old=1'; 
+
+		if(document.getElementById('export_done').checked == true)
+			document.getElementById('feed').innerHTML += '&export_done=0'; 
+		else
+			document.getElementById('feed').innerHTML += '&export_done=1'; 
+
+		if(document.getElementById('export_event').checked == true)
+			document.getElementById('feed').innerHTML += '&type=event'; 
+		else if(document.getElementById('export_task').checked == true)
+			document.getElementById('feed').innerHTML += '&type=task'; 
+		else
+			document.getElementById('feed').innerHTML += '&type=task'; 
+	}
+
 
 	function set_reminder_date_ajax(reminder_value, plan, prefix, reminder_strings){//changes the reminder settings
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari

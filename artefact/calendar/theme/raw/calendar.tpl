@@ -247,17 +247,63 @@
 				<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
 			</div>
 			<p>
-				<a onclick='toggle_feed_settings();'>
+				<a onclick='toggle_feed_settings();toggle_feed_url("off");'>
 					{str section="artefact.calendar" tag='feed'} <img class="sub" src="{$WWWROOT}{$cal}theme/raw/static/images/ical.gif" />	
 				</a>
 			</p>
 			<div id='feed_settings' class="disp_none">
-				<p class="description"> {str section="artefact.calendar" tag='feed_description'}: <br/>
-					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}</textarea>
-				</p>
-				<p class="description"> {str section="artefact.calendar" tag='feed_description_event'}: <br/>
-					<textarea rows='5' style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}&amp;type=event</textarea>
-				</p>
+				<table>
+					<tr>
+						<td>
+						<input type="checkbox" id="export_old" />
+						</td>
+						<td class="description">{str section="artefact.calendar" tag='export_old'}
+							<select id="feed_months">
+							{counter start=0 assign=month_count}
+								{section name=months loop=6} 
+								    {$smarty.section.months.iteration} 
+								    {counter}
+								    <option value="{$month_count}">
+									    {if $month_count == 1}
+									    	{$month_count} {str section="artefact.calendar" tag='month'}
+									    {else}
+									    	{$month_count} {str section="artefact.calendar" tag='month_plural'}
+									    {/if}
+									</option>
+								{/section}
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="checkbox" id="export_done" />
+						</td>
+						<td class="description"> 
+							{str section="artefact.calendar" tag='export_done'}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" name="export_type" id="export_task" value="task" checked/>
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description'}
+						</td>
+					</tr>
+					<tr>
+						<td>
+						   <input type="radio" name="export_type" id="export_event" value="event" />
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description_event'}
+						</td>
+					</tr>
+				</table>
+				<button onclick='toggle_feed_url("off");toggle_feed_url("on");generate_feed_url();'>{str section="artefact.calendar" tag='generate'}</button>
+			</div>
+			<div id='feed_url' class="disp_none">			
+				<textarea rows='5' id="feed" style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}</textarea>
+				<input type="hidden" id="feed_url_base" value="{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}">
 			</div>
 			</div>
 			{/if}

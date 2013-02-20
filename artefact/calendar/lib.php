@@ -1161,16 +1161,29 @@ return $return;
   */
   public static function build_feed(&$plans, $user, $userkey) {
 
-    $feed_todos = array();
-    $count = 0;
-
     if(!ArtefactTypeCalendar::check_userkey($user, $userkey))
       echo get_string('accessdenied', 'error');
     else{
+
+      $feed_todos = array();
+      $count = 0;
+      $export_old = 0;
+      $export_done = 0;
+
+      if(isset($_GET['export_old']) && isset($_GET['export_months'])){
+        $export_old = $_GET['export_old'];
+        if($export_old == '0')
+          $export_range_timestamp = ArtefactTypeCalendar::calculate_export_timestamp($_GET['export_months']);
+        else
+          $export_range_timestamp = 0;
+      }
+      if(isset($_GET['export_done']))
+        $export_done = $_GET['export_done'];
+
       for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
 
         $id = $plans['data'][$i]->id; //get id
-        $task[$i] = ArtefactTypeTask::get_tasks($id,0,1000); //get all tasks
+        $task[$i] = ArtefactTypeTask::get_tasks($id,0,10000); //get all tasks
         $task_count = $task[$i]['count'];
 
         for($j = 0; $j < $task_count; $j++){  
@@ -1179,32 +1192,38 @@ return $return;
           $summary = $task[$i]['data'][$j]->title; //task title
           $description = $task[$i]['data'][$j]->description; //task description
           $completed = $task[$i]['data'][$j]->completed; // check if task is completed        
-          $due = $task[$i]['data'][$j]->completiondate; // completiondate
           
           //the get_tasks functions gets the completiondate with month name written out, which leads to problems in other languages, therefore we use a different function to get the timestamp
           $due_task = new ArtefactTypeTask($task_id);
           $due_date_timestamp = (ArtefactTypeTask::get_taskform_elements($due_task->parent, $due_task));
           
           $due_date_timestamp = $due_date_timestamp['completiondate']['defaultvalue'];
-          $dtstart = date('Ymd', $due_date_timestamp);// format for feed
-          $due = date('Ymd', $due_date_timestamp).'T235959';// format for feed
-          $dtend =date('Ymd', $due_date_timestamp);
-          $uid = $task_id.date('Ymd', $due_date_timestamp);//unique identifier for each task
-         
-          $feed_todos[$count] = array('uid' => $uid,
-                                      'summary' => $summary,
-                                      'description' => $description,
-                                      'completed' => $completed,
-                                      'dtstart' => $dtstart,
-                                      'dtend' => $dtend,
-                                      'due' => $due);
-          $count++;
+            if(!($export_old == 0 && ($due_date_timestamp < $export_range_timestamp))){ //only export this task, if either the user wants to export old tasks or the task isn't too old
+              if(!($completed == 1 && $export_done == 0)){//only export this task, if either the user wants to export tasks which are completed or the task isn't completed
+            
+              $dtstart = date('Ymd', $due_date_timestamp);// format for feed
+              $due = date('Ymd', $due_date_timestamp).'T235959';// format for feed
+              $dtend =date('Ymd', $due_date_timestamp);
+              $uid = $task_id.date('Ymd', $due_date_timestamp);//unique identifier for each task
+             
+              $feed_todos[$count] = array('uid' => $uid,
+                                          'summary' => $summary,
+                                          'description' => $description,
+                                          'completed' => $completed,
+                                          'dtstart' => $dtstart,
+                                          'dtend' => $dtend,
+                                          'due' => $due);
+              $count++;
+            }
+         }
         }
       } 
-      if($_GET['type'] == 'event')
-        return ArtefactTypeCalendar::ical_feed_events($feed_todos);
-      else 
-        return ArtefactTypeCalendar::ical_feed($feed_todos);
+      if(isset($_GET['type'])){
+        if($_GET['type'] == 'event')
+          return ArtefactTypeCalendar::ical_feed_events($feed_todos);
+        else 
+          return ArtefactTypeCalendar::ical_feed($feed_todos);
+      }
     }
   }
 
@@ -1360,6 +1379,17 @@ return $return;
         );
       return $result;
   }
+
+  /**
+  * If user doesn't want to export old tasks, this function calculates the timestamp that marks the according date (older tasks won't be exported) 
+  */
+
+  private static function calculate_export_timestamp($export_months){
+    $timestamp_now = time();
+    $timestamp_export_months = $export_months * 31 * 24 * 60 * 60; //number of months in milliseconds
+    return $timestamp_now - $timestamp_export_months;
+  }
+
 }
 
 ?>

@@ -88,9 +88,15 @@ $string['color'] = 'Color';
 $string['reminder'] = 'Enable reminder?';
 
 $string['feed'] = 'Share calendar';
-$string['feed_description'] = 'You can share your tasks with the following address';
-$string['feed_description_event'] = "Alternative: You can share your tasks <b>as events</b> with the following address (necessary if the calendar program doesn't support the display of tasks) ";
+$string['feed_description'] = 'Export as tasks';
+$string['feed_description_event'] = "Alternative: Export <b>as events</b> (necessary if the calendar program doesn't support the display of tasks) ";
 
 $string['missing_title'] = 'Specify a title, please.';
 $string['missing_date'] = 'Specify a date, please.';
+
+$string['export_old'] = "Don't export tasks, which are older than ";
+$string['export_done'] = "Don't export tasks, which are done.";
+$string['month_plural'] = 'months';
+$string['month'] = 'month';
+$string['generate'] = 'Generate export link';
 ?>
