@@ -34,7 +34,9 @@ define('HOME', 1);
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
-header('Content-type: text/html; charset=utf-8');
+//header('Content-type: text/html; charset=utf-8');
+header('Content-type: text/calendar'); 
+header('Content-Disposition: attachment; filename="plans.ics"');
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/lib.php');
