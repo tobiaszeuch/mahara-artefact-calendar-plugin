@@ -164,26 +164,31 @@ $javascript = <<< JAVASCRIPT
 	}
 
 	function toggle_color_picker(picker, planid, oldcolor){
-		if(document.getElementById(picker).style.display == 'none'){
 			document.getElementById(picker).style.display = 'block';
-			document.getElementById("close_color_picker").onclick = function() {toggle_color_picker(picker, planid, '')};
+			document.getElementById("close_color_picker").onclick = function() {close_color_picker(picker, planid, '')};
 			document.getElementById("color_picker_id").value = planid;
-			document.getElementById(oldcolor).style.border = '2px dotted black';//marks old color
-			document.getElementById(oldcolor).style.width = '12px';
-			document.getElementById(oldcolor).style.height = '12px';
-			document.getElementById("old_color").value = oldcolor;
-		}
-		else {
-			document.getElementById(picker).style.display = 'none';
-			document.getElementById("color_picker_id").value = '';
-
 			var old = document.getElementById("old_color").value;
 			if(old != ""){
 				document.getElementById(old).style.border = '0px';
 				document.getElementById(old).style.width = '16px';
 				document.getElementById(old).style.height = '16px';
 			}
-		}
+			document.getElementById(oldcolor).style.border = '2px dotted black';//marks old color
+			document.getElementById(oldcolor).style.width = '12px';
+			document.getElementById(oldcolor).style.height = '12px';
+			document.getElementById("old_color").value = oldcolor;
+	}
+
+	function close_color_picker(picker, planid, oldcolor){
+	 	document.getElementById(picker).style.display = 'none';
+		document.getElementById("color_picker_id").value = '';
+
+		var old = document.getElementById("old_color").value;
+		if(old != ""){
+			document.getElementById(old).style.border = '0px';
+			document.getElementById(old).style.width = '16px';
+			document.getElementById(old).style.height = '16px';
+	 	}
 	}
 
 	function save_color(planid, color){
@@ -197,7 +202,7 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('color'+planid).style.backgroundColor = "#"+color;
 		document.getElementById('color_button'+planid).style.backgroundColor = "#"+color;
 		document.getElementById('saved_color'+planid).value = "#"+color;
-		toggle_color_picker('picker',planid,'');
+		close_color_picker('picker',planid,'');
 
 		//tasks in calendar view of one plan
 
