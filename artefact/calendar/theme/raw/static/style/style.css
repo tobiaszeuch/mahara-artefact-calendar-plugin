@@ -50,7 +50,7 @@
  	left: 100px;
  	top: 50px;
  	position: absolute;
- 	z-index: 3;
+ 	z-index: 12 !important; 
  	border: 7px solid #EEE;
  	background: white;
 	text-align: left;
@@ -177,6 +177,7 @@ a.taskname{
 	padding-left:3px;
 	margin: 2px;
 	display:block;
+	line-height: 1.6667em;
 }
 
 th.calendar_th {
