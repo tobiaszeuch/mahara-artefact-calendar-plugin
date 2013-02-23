@@ -928,7 +928,7 @@ return $return;
       if (!empty($result[0])) 
         $colors[$plans['data'][$i]->id] = $result[0]->color;
       else { //if there is no color stored for the plan a random color is picked
-        ArtefactTypeCalendar::save_random_color_to_db($id);
+        $colors[$plans['data'][$i]->id] = ArtefactTypeCalendar::save_random_color_to_db($id);
       }
     }
     return $colors;
@@ -940,8 +940,8 @@ return $return;
   private static function save_random_color_to_db($plan){
     $rand = rand(0,self::$color_num-1);
     $available_colors = self::$available_colors;
-    $colors[$plans['data'][$i]->id] = $available_colors[$rand]; //random hex color
     ArtefactTypeCalendar::save_color_to_db($plan, $available_colors[$rand]); //choosen color is saved to db
+    return $available_colors[$rand]; //random hex color
   }
 
   /**
