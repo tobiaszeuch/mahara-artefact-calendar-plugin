@@ -268,7 +268,6 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed').innerHTML += '&type=task'; 
 	}
 
-
 	function set_reminder_date_ajax(reminder_value, plan, prefix, reminder_strings){//changes the reminder settings
 		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
 		  xmlhttp=new XMLHttpRequest();
