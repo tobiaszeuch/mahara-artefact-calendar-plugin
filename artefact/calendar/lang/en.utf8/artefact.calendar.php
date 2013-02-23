@@ -99,4 +99,7 @@ $string['export_done'] = "Don't export tasks, which are done.";
 $string['month_plural'] = 'months';
 $string['month'] = 'month';
 $string['generate'] = 'Generate export link';
+$string['regenerate'] = 'You can regenerate the security key which is part of the link.<br/> The old link becomes invalid.';
+$string['regenerate_link'] = 'Regenerate key';
+
 ?>

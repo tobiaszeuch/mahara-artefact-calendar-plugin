@@ -311,6 +311,9 @@ class ArtefactTypeCalendar extends ArtefactType {
         $new_task = $_GET['new_task']; //is set to 1 if new task is added
       if(isset($_GET['parent']))
         $parent = $_GET['parent'];
+      if(isset($_GET['newfeed']))
+        $newfeed = $_GET['newfeed'];
+      else $newfeed = 0;
 
       if(isset($_GET['task_info']))
         $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
@@ -449,6 +452,14 @@ class ArtefactTypeCalendar extends ArtefactType {
         $todelete->delete();
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
       }
+
+      // if feed url needs to be regenerated
+      if(isset($_GET['regenerate'])){
+        if($_GET['regenerate'] == 1){
+          ArtefactTypeCalendar::generate_feed_url($USER->id, 0);
+          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&newfeed=1');
+        }
+      }
     
       $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
 
@@ -576,6 +587,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       //feed
       $smarty->assign_by_ref('uid', $USER->id);
       $smarty->assign_by_ref('feed_url', $feed_url);
+      $smarty->assign_by_ref('newfeed', $newfeed);
 
       //missing title or date
       $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
@@ -1335,7 +1347,7 @@ return $return;
   * Generates feed url for given user and saves it to db
   */
 
-  private static function generate_feed_url($user){
+  private static function generate_feed_url($user, $new = '1'){
 
     $userkey = '';
     //generate random string with length 30 to append to userkey
@@ -1350,8 +1362,10 @@ return $return;
     $data = (object)array(
             'user'  => $user,
             'userkey' => $userkey);
-
-    insert_record('artefact_calendar_feed', $data); //insert into table
+    if($new)
+      insert_record('artefact_calendar_feed', $data); //insert into table
+    else
+      update_record('artefact_calendar_feed', $data, 'user'); //insert into table
     return $userkey;
   }
 

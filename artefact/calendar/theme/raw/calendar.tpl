@@ -300,11 +300,20 @@
 					</tr>
 				</table>
 				<button onclick='toggle_feed_url("off");toggle_feed_url("on");generate_feed_url();'>{str section="artefact.calendar" tag='generate'}</button>
+				
+				{if $newfeed == 1}
+					<script language="JavaScript">
+						toggle_feed_settings();
+						toggle_feed_url("off");
+					</script>
+				{/if}
+				<p class="description">{str section="artefact.calendar" tag='regenerate'} <br/><a href="{$WWWROOT}{$cal}index.php?regenerate=1">{str section="artefact.calendar" tag='regenerate_link'}</a></p>
 			</div>
 			<div id='feed_url' class="disp_none">			
 				<textarea rows='5' id="feed" style="width:100%;">{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}</textarea>
 				<input type="hidden" id="feed_url_base" value="{$WWWROOT}{$cal}feed.php?uid={$uid}&amp;fid={$feed_url}">
 			</div>
+
 			</div>
 			{/if}
 	</td>
