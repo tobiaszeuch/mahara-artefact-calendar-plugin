@@ -23,6 +23,6 @@
 			<input type="hidden" name="year" value="{$year}"/>
 		</p>
 		<p>
-			<input type="submit" class="submitcancel submit" id="editplan_submit" name="submit" tabindex="1" value="{str section="artefact.calendar" tag='saveplan'}">
+			<input type="submit" class="submitcancel submit" id="editplan_submit" name="submit" tabindex="1" value="{str section="artefact.plans" tag='saveplan'}">
 		</p>
 	</form> 

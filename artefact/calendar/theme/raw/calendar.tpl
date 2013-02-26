@@ -244,7 +244,7 @@
 						</option>
 					{/foreach}
 				</select>	
-				<p class="description">{str section="artefact.calendar" tag='disable_reminder'}</p>
+				<p class="description">{str section="artefact.calendar" tag='disable_reminder1'}{str section="artefact.plans" tag='plan'}{str section="artefact.calendar" tag='disable_reminder2'}</p>
 			</div>
 			<p>
 				<a onclick='toggle_feed_settings();toggle_feed_url("off");'>

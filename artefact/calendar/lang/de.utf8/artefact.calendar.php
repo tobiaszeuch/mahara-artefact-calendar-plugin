@@ -52,13 +52,11 @@ $string['format'] = 'Bitte benutzen Sie das Format TT.MM.JJJJ';
 
 $string['savetask'] = 'Aufgabe speichern';
 $string['newtask'] = 'Neue Aufgabe';
-$string['saveplan'] = 'Vorhaben speichern';
 $string['deleteconfirm'] = 'Wirklich l&ouml;schen?';
 
 $string['set_reminder'] = 'Benachrichtigungszeitpunkt';
 $string['remind_me'] = 'Benachrichtige mich per E-Mail über Aufgaben';
 $string['of'] = 'von';
-$string['all_plans'] = 'allen Vorhaben';
 $string['reminder_date-1'] = "niemals";
 $string['reminder_date0'] = 'am selben Tag';
 $string['reminder_date1'] = 'einen Tag davor';
@@ -71,7 +69,8 @@ $string['reminder_date7'] = 'eine Woche davor';
 $string['reminder_date14'] = 'zwei Wochen davor';
 $string['reminder_date21'] = 'drei Wochen davor';
 $string['reminder_date28'] = 'vier Wochen davor';
-$string['disable_reminder'] = 'Sie können die Benachrichtung der einzelnen Vorhaben aktivieren/deaktiviern indem Sie auf den Uhr-Button neben dem Vorhaben klicken.';
+$string['disable_reminder1'] = 'Sie können die Benachrichtung für einen ';
+$string['disable_reminder2'] = ' aktivieren/deaktivieren indem Sie auf den Uhr-Button neben ihm klicken.';
 $string['all'] = 'Alle';
 $string['reminder_enabled_tooltip'] = 'Benachrichtigung ist aktiv';
 $string['reminder_disabled_tooltip'] = 'Benachrichtigung ist inaktiv';

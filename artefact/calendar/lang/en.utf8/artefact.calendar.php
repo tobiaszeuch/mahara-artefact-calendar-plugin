@@ -52,13 +52,11 @@ $string['format'] = 'Please use YYYY/MM/DD format';
 
 $string['savetask'] = 'Save task';
 $string['newtask'] = 'New task';
-$string['saveplan'] = 'Save plan';
 $string['deleteconfirm'] = 'Confirm deletion?';
 
 $string['set_reminder'] = 'Reminder date';
 $string['remind_me'] = 'Remind me by email about tasks';
 $string['of'] = 'of';
-$string['all_plans'] = 'all plans';
 $string['reminder_date-1']= 'never';
 $string['reminder_date0'] = 'on the same day';
 $string['reminder_date1'] = 'one day ahead';
@@ -71,7 +69,8 @@ $string['reminder_date7'] = 'one week ahead';
 $string['reminder_date14'] = 'two weeks ahead';
 $string['reminder_date21'] = 'three weeks ahead';
 $string['reminder_date28'] = 'four weeks ahead';
-$string['disable_reminder'] = 'You can disable/enable the reminders of each plan by clickung on the clock button next to it.';
+$string['disable_reminder1'] = 'You can disable/enable the reminders of each ';
+$string['disable_reminder2'] = ' by clickung on the clock button next to it.';
 $string['all'] = 'All';
 $string['reminder_enabled_tooltip'] = 'Reminder is enabled';
 $string['reminder_disabled_tooltip'] = 'Reminder is disabled';
