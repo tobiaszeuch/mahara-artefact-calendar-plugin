@@ -306,7 +306,8 @@ class ArtefactTypeCalendar extends ArtefactType {
       
       $plan_count = count($plans['data']);
      	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
-      
+      $calendar_weeks = ArtefactTypeCalendar::get_calendar_weeks($dates['month'], $dates['year']);
+
       if(isset($_GET['new_task']))
         $new_task = $_GET['new_task']; //is set to 1 if new task is added
       if(isset($_GET['parent']))
@@ -583,6 +584,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $smarty->assign_by_ref('week_start', $dates['week_start']);
       $smarty->assign_by_ref('full_dates', $full_dates);
       $smarty->assign_by_ref('calendar', $calendar);
+      $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
 
       //feed
       $smarty->assign_by_ref('uid', $USER->id);
@@ -689,6 +691,23 @@ $return = array('today' => $today,
         'week_start' => $week_start);
         
 return $return;
+}
+
+/**
+* Returns array with number of calender weeks in specific month
+*/
+
+private static function get_calendar_weeks($month, $year){
+  $start = mktime(0,0,0,$month,1,$year);
+  $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+  $calendar_weeks = array();
+
+  for($i = 1; $i <= $num_days; $i++){
+    $day = mktime(0,0,0,$month,$i,$year);
+    if(date('w', $day) == 1) //weekday is monday
+      $calendar_weeks[$i] = date('W', $day);
+  }
+ return $calendar_weeks;
 }
 
   /**

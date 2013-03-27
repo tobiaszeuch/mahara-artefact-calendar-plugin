@@ -68,6 +68,14 @@
 	padding-top: 1px;
 	}
 
+*.calendar_week {
+	color:white;
+	background-color: #aaa;
+	line-height: 1.4em;
+	padding: 0 2px;
+	font-size: .9167em;
+	}
+
 *.overlay_control {
 	position: absolute;
 	right: 0;
