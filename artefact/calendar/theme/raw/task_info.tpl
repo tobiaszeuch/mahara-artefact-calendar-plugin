@@ -14,7 +14,7 @@
 									<input type="image" id="done" src="{$WWWROOT}{$cal}theme/raw/static/images/done_gruen.gif" alt="done" />
 								{/if}
 				        	
-				     			<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task_info}">
+				     			<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_task_id={$task_info}">
 									<img src="{$WWWROOT}{$cal}theme/raw/static/images/edit.gif" alt="edit"></a>			
 				            	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick="hide_overlay();" />
 

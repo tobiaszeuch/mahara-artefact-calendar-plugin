@@ -166,7 +166,7 @@
 							<div id="gray{$id}" class="planbox bggrey disp_none">
 							</div>
 								<h3 id='link{$id}' style="position:relative;">
-									{$plan_short_titles[$id]}
+									{$short_plan_titles[$id]}
 								</h3>
 								{if $plans_status[$id] == '0'}
 								
@@ -217,9 +217,9 @@
 			{str section="artefact.plans" tag='plan'}
 		{/if}
 		{if $plan_count != 0}	
-				<a class="deco_none pdleft20" id="reminder_enabled_all" onclick="toggle_all_reminders({$planids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
+				<a class="deco_none pdleft20" id="reminder_enabled_all" onclick="toggle_all_reminders({$plan_ids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
 				</a> / 
-				<a class="deco_none" id="reminder_disabled_all" onclick="toggle_all_reminders({$planids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt="reminder"></a>
+				<a class="deco_none" id="reminder_disabled_all" onclick="toggle_all_reminders({$plan_ids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt="reminder"></a>
 		{/if}
 		</p>
 		{if $plan_count != 0}

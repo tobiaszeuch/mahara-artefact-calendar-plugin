@@ -21,8 +21,8 @@
         </div>
 	</div>
 	<div style="padding-bottom:20px;">{$edit_plan_description}<br/>
-		<a class="flright" style='text-decoration:none;' href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}'> 
-			<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
+		<a class="flright" style='text-decoration:none;' href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent_id={$edit_plan_id}'> 
+			<button type="button"  class="submitcancel submit" onclick="window.location.href = '{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&new_task=1&parent_id={$edit_plan_id}';">{str section="artefact.calendar" tag='newtask'}</button>
 		</a>
 	</div>
 	<br/>
@@ -42,7 +42,7 @@
 		            <a class="flright" onclick="document.getElementById('delete{$task->task}').style.display='block';">
 			            	<img src="{$WWWROOT}{$cal}{$img}delete.png" alt="X"/>
 			            </a> 
-			            <a class="flright pdright2" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit={$task->task}&parent={$edit_plan_id}"><img src='{$WWWROOT}{$cal}{$img}edit.gif' alt='edit'></a>
+			            <a class="flright pdright2" href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_task_id={$task->task}&parent_id={$edit_plan_id}"><img src='{$WWWROOT}{$cal}{$img}edit.gif' alt='edit'></a>
 		        	</p>
 		        	<div class="flright disp_none" id="delete{$task->task}" style="position:relative;">
 		          	    <div  class="red delete">

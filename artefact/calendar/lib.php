@@ -273,10 +273,6 @@ class ArtefactTypeCalendar extends ArtefactType {
 		
 	}
 
-  
-
-
-
   /**
    * Builds the plans calendar
    *
@@ -287,428 +283,383 @@ class ArtefactTypeCalendar extends ArtefactType {
     global $SESSION,$USER;
 
      //if status is changed
-    if(isset($_GET['ajax'])){
+    if(isset($_GET['ajax']))
+      ArtefactTypeCalendar::ajax_handling($plans);
 
-      if(isset($_GET['status']))//status gets changed
-        ArtefactTypeCalendar::save_status_to_db($_GET['plan'], $_GET['status']);
-
-      else if (isset($_GET['color'])) //color gets changed
-        ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
-
-      else if (isset($_GET['reminder'])){
-        if(isset($_GET['reminder_status']))
-          ArtefactTypeCalendar::save_reminder_status_to_db($_GET['reminder'],$_GET['reminder_status'], $plans);
-        else 
-          ArtefactTypeCalendar::save_reminder_date_to_db($_GET['reminder'],$_GET['reminder_date'], $plans);
-        }
-    }
     else{
+      $dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
+
+      if(isset($_GET['title'])) //if edit task form was send, submit the task
+        ArtefactTypeCalendar::submit_task($dates, $cal_variables['task_info']); 
+
+      else if(isset($_GET['plan_title'])) //if edit plan form was sent
+       ArtefactTypeCalendar::edit_plan_handler($dates);
+
+      else if(isset($_GET['newplan_title']))  //if new plan form was sent
+        ArtefactTypeCalendar::new_plan_handler($dates);
       
-      $plan_count = count($plans['data']);
-     	$dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
-      $calendar_weeks = ArtefactTypeCalendar::get_calendar_weeks($dates['month'], $dates['year']);
+      else if(isset($_GET['delete_plan_final']))// if plan is to be deleted
+        ArtefactTypeCalendar::delete_plan_handler($dates);
 
-      if(isset($_GET['new_task']))
-        $new_task = $_GET['new_task']; //is set to 1 if new task is added
-      if(isset($_GET['parent']))
-        $parent = $_GET['parent'];
-      if(isset($_GET['newfeed']))
-        $newfeed = $_GET['newfeed'];
-      else $newfeed = 0;
-
-      if(isset($_GET['task_info']))
-        $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
-      else $task_info = 0;
-
-      if(isset($_GET['edit'])) //is set to task id if task is edited
-        $edit = param_integer('edit');
-      else
-        $edit = $task_info;
-
-      if($edit != 0){ //if task needs to be edited, get form
-        $form = ArtefactTypeCalendar::get_task_form($edit);
-      }     
-      else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified, error message is displayed and fields are refilled
-        if( $_GET['missing_field_completiondate'] != ""){
-          $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
-          $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
-        }
-        else
-          $completiondate_display = "";
-        // handling for tasks
-        $form = array(
-            'title' => $_GET['missing_field_title'],
-            'description' => $_GET['missing_field_description'],
-            'completed' => $_GET['missing_field_completed'],
-            'completiondate' => $_GET['missing_field_completiondate'],
-            'completiondate_display' => $completiondate_display
-        );
-        //handling for plans
-        $edit_plan_description = $_GET['missing_field_description']; 
-      }
-      else 
-          $form = 0;    
-
-      if(isset($_GET['edit_plan'])){
-        $edit_plan = param_integer('edit_plan');
-        $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan,0,100); //if plan needs to be edited, get form
-      }
-      else 
-          $edit_plan_tasks = 0;
-
-      $task_count = array(); //array with number of tasks per plan
-      $task_count_completed = array(); //array with number of completed tasks per plan
-
-      for($i = 0; $i < $plan_count; $i++){ //loop through all plans
-
-        $id = $plans['data'][$i]->id; //get ids
-        $tasks = ArtefactTypeTask::get_tasks($id,0,100);
-        $task_count[$id] = $tasks['count']; 
-        $task_count_completed[$id] = 0;
-
-        for($j = 0; $j < $task_count[$id]; $j++){
-           if($tasks['data'][$j]->completed == 1)
-            $task_count_completed[$id]++;
-        }
-
-         //get title and description of edited plan 
-        if($id == $edit_plan){ //plan is edited plan
-          $edit_plan_title = $plans['data'][$i]->title;
-          if($edit_plan_description == "")
-            $edit_plan_description = $plans['data'][$i]->description;
-        }
-      }
-
-      if(isset($_GET['edit_plan_itself']))
-        $edit_plan_itself = isset($_GET['edit_plan_itself']);      
-
-      if(isset($_GET['title'])){
-        ArtefactTypeCalendar::submit_task($dates, $task_info); //if edit task form was send, submit the task
-      }
-
-      //if edit plan form was send, get data
-
-      if(isset($_GET['plan_title'])){
-        $plan_id = (int) $_GET['edit_plan'];
-        if($_GET['plan_title'] != ""){
-          $artefact = new ArtefactTypePlan($plan_id);
-          $artefact->set('title', $_GET['plan_title']);
-          $artefact->set('description', $_GET['plan_description']);
-          $artefact->commit();
-          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
-        }
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id.'&edit_plan_itself=1&missing_title=1&missing_field_description='.$_GET['plan_description']);
-      }
-
-      //if new plan form was send, get data
+      else if(isset($_GET['delete_task_final']))  // if task is to be deleted
+        ArtefactTypeCalendar::delete_task_handler($dates);
       
-      if(isset($_GET['newplan_title'])){
-        if($_GET['newplan_title'] != ""){
-          $artefact = new ArtefactTypePlan();
-          $artefact->set('owner', $USER->get('id'));
-          $artefact->set('title', $_GET['newplan_title']);
-          $artefact->set('description', $_GET['newplan_description']);
-          $artefact->commit();
-          $new_plan_id = $artefact->get('id');
-          if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
-            ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
-          else{
-            ArtefactTypeCalendar::save_random_color_to_db($new_plan_id);
-          }
-          if(isset($_GET['newplan_reminder'])){
-            ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
-          }
-          else{
-            ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
-          }
-          ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($new_plan_id, $plans);
-          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
-        }
-      else
-          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&missing_title=1&new=1&missing_field_description='.$_GET['newplan_description']);
-      }
-
-      // if plan is finally to be deleted
-
-      if(isset($_GET['delete_plan_final'])){
-        $delete_plan_id = $_GET['delete_plan_final'];
-        $todelete = new ArtefactTypePlan($delete_plan_id);
-        
-        if (!$USER->can_edit_artefact($todelete)) 
-          throw new AccessDeniedException(get_string('accessdenied', 'error'));
-        
-        $todelete->delete();
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
-      }
-
-       // if task is finally to be deleted
-
-      if(isset($_GET['delete_task_final'])){
-        $delete_task_id = $_GET['delete_task_final'];
-        $todelete = new ArtefactTypeTask($delete_task_id);
-        
-        if (!$USER->can_edit_artefact($todelete)) 
-          throw new AccessDeniedException(get_string('accessdenied', 'error'));
-        
-        $todelete->delete();
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
-      }
-
-      // if feed url needs to be regenerated
-      if(isset($_GET['regenerate'])){
+      else if(isset($_GET['regenerate'])){ // if feed url needs to be regenerated
         if($_GET['regenerate'] == 1){
           ArtefactTypeCalendar::generate_feed_url($USER->id, 0);
           redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&newfeed=1');
         }
       }
-    
-      $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
-
-      $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
-      
-      $number_of_tasks_per_day = array(); //if more than 3, displayed in calendar
-      $full_format = get_string('full_format', 'artefact.calendar'); //full date format
-      $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
-      $full_format = str_replace('$year', $dates['year'], $full_format);
-      $full_dates = array(); //full date for each day
-
-      for($j = 1; $j <= count($task_per_day); $j++){   
-        $full_dates[$j] = str_replace('$day', $j, $full_format);
-        $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
-      }
-      
-      $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
-
-      $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
-
-      $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
-      $available_colors = self::$available_colors; //available colors for color picker
-
-      $reminder_status_per_plan = ArtefactTypeCalendar::get_reminder_status($plans);
-
-      $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date($plans);
-
-      $available_dates = self::$available_dates;
-      $reminder_dates = array();
-      $reminder_strings = 'new Array('; //javascript array of reminder strings
-      $num_dates = count($available_dates);
-
-      for($u = 0; $u < $num_dates; $u++){
-        $reminder_string = get_string('reminder_date'.$available_dates[$u], 'artefact.calendar');
-        $reminder_dates[$available_dates[$u]] = $reminder_string; //php array
-        $reminder_strings .= 'new Array('.$available_dates[$u].',"'.$reminder_string.'")'; //javascript array
-        if($u < $num_dates - 1)
-          $reminder_strings .= ',';
-      }
-      $reminder_strings .= ')';
-      
-      $planids_js = 'new Array('; //javascript array of plan ids
-      for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+      else{
+        $cal_variables = ArtefactTypeCalendar::get_cal_variables(); 
         
-        $id = $plans['data'][$m]->id;
-        $planids_js .= '"'.$id.'"';
-        if($m < $plan_count - 1)
-          $planids_js .= ',';
-      }
-      $planids_js .= ")";
-    
-      $plan_short_titles = array(); //short titles for plans, if plan title is too long
+        $form = 0;
+        $edit_task_id = $cal_variables['edit_task_id'];
+        if($edit_task_id != 0){ //if task needs to be edited, get form
+          $form = ArtefactTypeCalendar::get_task_form($edit_task_id);
+        }     
+        else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified for a new task/plan, error message is displayed and fields are refilled    
+          $form = ArtefactTypeCalendar::get_missing_field_info(); //handling for tasks
+          if(isset($_GET['missing_field_description']))//handling for plans
+            $missing_field_description = $_GET['missing_field_description']; 
+          else $missing_field_description = "";   
+        }
 
-      for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+        $plan_count = count($plans['data']);
+        $calendar_weeks = ArtefactTypeCalendar::get_calendar_weeks($dates['month'], $dates['year']);
+        $edit_plan_info = ArtefactTypeCalendar::get_edit_plan_info($plans, $missing_field_description);
+        $task_count_info = ArtefactTypeCalendar::get_task_count_info($plans);
+        $feed_url = ArtefactTypeCalendar::get_feed_url();
+        $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
+        $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
+        $full_format = get_string('full_format', 'artefact.calendar'); //full date format
+        $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
+        $full_format = str_replace('$year', $dates['year'], $full_format);
         
-        $id = $plans['data'][$m]->id;
-        $plan_title = $plans['data'][$m]->title;
-        if(strlen($plan_title) > 12){ //shortens title (long titles kill calendar view)
-          mb_internal_encoding("UTF-8");
-          $plan_short_titles[$id] = mb_substr($plan_title,0,11).'…';
+        $full_dates = array(); //full date for each day
+        $number_of_tasks_per_day = array(); //if more than 3, displayed in calendar
+        
+        for($j = 1; $j <= count($task_per_day); $j++){   
+          $full_dates[$j] = str_replace('$day', $j, $full_format);
+          $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
         }
-        else {
-          $plan_short_titles[$id] = $plan_title;
-        }
+        
+        $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
+        $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
+        $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
+        $available_colors = self::$available_colors; //available colors for color picker
+        $reminder_status_per_plan = ArtefactTypeCalendar::get_reminder_status($plans);
+        $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date($plans);
+        $reminder_array = ArtefactTypeCalendar::get_reminder_array();
+        $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
+        $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
+
+        /**
+        * assigns for smarty
+        */
+
+        $smarty = smarty_core();
+       
+        // plans
+        $smarty->assign_by_ref('plans', $plans);
+        $smarty->assign_by_ref('plan_count', $plan_count);
+        $smarty->assign_by_ref('short_plan_titles', $short_plan_titles);
+        $smarty->assign_by_ref('task_count', $task_count_info['task_count']);
+        $smarty->assign_by_ref('task_count_completed', $task_count_info['task_count_completed']); 
+        $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
+        $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
+        $smarty->assign_by_ref('new', $_GET['new']);
+
+        //reminder
+        $smarty->assign_by_ref('plan_ids_js', $plan_ids_js);
+        $smarty->assign_by_ref('reminder_status_per_plan', $reminder_status_per_plan);
+        $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
+        $smarty->assign_by_ref('reminder_dates', $reminder_array['reminder_dates']);
+        $smarty->assign_by_ref('reminder_strings', $reminder_array['reminder_strings']);
+
+        // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
+        $smarty->assign_by_ref('form', $form);
+        $smarty->assign_by_ref('edit_task_id', $edit_task_id);
+        $smarty->assign_by_ref('edit_plan_id', $edit_plan_info['edit_plan_id']);
+        $smarty->assign_by_ref('edit_plan_itself', $cal_variables['edit_plan_itself']);
+        $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_info['edit_plan_tasks']);
+        $smarty->assign_by_ref('edit_plan_title', $edit_plan_info['edit_plan_title']);
+        $smarty->assign_by_ref('edit_plan_description', $edit_plan_info['edit_plan_description']);
+        $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
+        $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
+        $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
+
+        // colors and status
+        $smarty->assign_by_ref('colors', $colors);
+        $smarty->assign_by_ref('available_colors', $available_colors);
+        $smarty->assign_by_ref('plans_status', $plans_status);
+
+        // dates
+        $smarty->assign_by_ref('year', $dates['year']);
+        $smarty->assign_by_ref('month', $dates['month']);
+        $smarty->assign_by_ref('today', $dates['today']);
+        $smarty->assign_by_ref('num_days', $dates['num_days']);
+        $smarty->assign_by_ref('next_month',$dates['next_month']);
+       	$smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
+       	$smarty->assign_by_ref('this_month',$dates['this_month']);
+       	$smarty->assign_by_ref('this_year', $dates['this_year']);
+       	$smarty->assign_by_ref('past_month', $dates['past_month']);
+       	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
+        $smarty->assign_by_ref('month_name', $dates['month_name']);
+        $smarty->assign_by_ref('task_per_day', $task_per_day);
+        $smarty->assign_by_ref('week_start', $dates['week_start']);
+        $smarty->assign_by_ref('full_dates', $full_dates);
+        $smarty->assign_by_ref('calendar', $calendar);
+        $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
+
+        //feed
+        $smarty->assign_by_ref('uid', $USER->id);
+        $smarty->assign_by_ref('feed_url', $feed_url);
+        $smarty->assign_by_ref('newfeed', $ $cal_variables['newfeed']);
+
+        //missing title or date
+        $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
+        $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
+
+        // smarty fetch
+        $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
       }
-
-      $feed_url = ArtefactTypeCalendar::get_feed_url();
-      /**
-      * assigns for smarty
-      */
-
-      $smarty = smarty_core();
-     
-      // plans
-      $smarty->assign_by_ref('plans', $plans);
-      $smarty->assign_by_ref('plan_count', $plan_count);
-      $smarty->assign_by_ref('plan_short_titles', $plan_short_titles);
-      $smarty->assign_by_ref('task_count', $task_count);
-      $smarty->assign_by_ref('task_count_completed', $task_count_completed); 
-      $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
-      $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
-      $smarty->assign_by_ref('new', $_GET['new']);
-
-      //reminder
-      $smarty->assign_by_ref('planids_js', $planids_js);
-      $smarty->assign_by_ref('reminder_status_per_plan', $reminder_status_per_plan);
-      $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
-      $smarty->assign_by_ref('reminder_dates', $reminder_dates);
-      $smarty->assign_by_ref('reminder_strings', $reminder_strings);
-
-      // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
-      $smarty->assign_by_ref('form', $form);
-      $smarty->assign_by_ref('edit_id', $edit);
-      $smarty->assign_by_ref('edit_plan_id', $edit_plan);
-      $smarty->assign_by_ref('edit_plan_itself', $edit_plan_itself);
-      $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_tasks);
-      $smarty->assign_by_ref('edit_plan_title', $edit_plan_title);
-      $smarty->assign_by_ref('edit_plan_description', $edit_plan_description);
-      $smarty->assign_by_ref('parent_id', $parent);
-      $smarty->assign_by_ref('new_task', $new_task);
-      $smarty->assign_by_ref('task_info', $task_info);
-
-      // colors and status
-      $smarty->assign_by_ref('colors', $colors);
-      $smarty->assign_by_ref('available_colors', $available_colors);
-      $smarty->assign_by_ref('plans_status', $plans_status);
-
-      // dates
-      $smarty->assign_by_ref('year', $dates['year']);
-      $smarty->assign_by_ref('month', $dates['month']);
-      $smarty->assign_by_ref('today', $dates['today']);
-      $smarty->assign_by_ref('num_days', $dates['num_days']);
-      $smarty->assign_by_ref('next_month',$dates['next_month']);
-     	$smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
-     	$smarty->assign_by_ref('this_month',$dates['this_month']);
-     	$smarty->assign_by_ref('this_year', $dates['this_year']);
-     	$smarty->assign_by_ref('past_month', $dates['past_month']);
-     	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
-      $smarty->assign_by_ref('month_name', $dates['month_name']);
-      $smarty->assign_by_ref('task_per_day', $task_per_day);
-      $smarty->assign_by_ref('week_start', $dates['week_start']);
-      $smarty->assign_by_ref('full_dates', $full_dates);
-      $smarty->assign_by_ref('calendar', $calendar);
-      $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
-
-      //feed
-      $smarty->assign_by_ref('uid', $USER->id);
-      $smarty->assign_by_ref('feed_url', $feed_url);
-      $smarty->assign_by_ref('newfeed', $newfeed);
-
-      //missing title or date
-      $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
-      $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
-
-      // smarty fetch
-      $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
     }
   }
 
+  /**
+  * Gets all calendar variables
+  */
+  private static function get_cal_variables(){
+    $new_task = $newfeed = $task_info = $edit_plan_itself = 0;
+    $parent_id = "";
+
+    if(isset($_GET['new_task']))
+      $new_task = $_GET['new_task']; //is set to 1 if new task is added
+    if(isset($_GET['parent_id']))
+      $parent_id = $_GET['parent_id'];
+    if(isset($_GET['newfeed']))
+      $newfeed = $_GET['newfeed'];
+    if(isset($_GET['task_info']))
+      $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
+    if(isset($_GET['edit_task_id'])) //is set to task id if task is edited
+      $edit_task_id = param_integer('edit_task_id');
+    else
+      $edit_task_id  = $task_info;
+    if(isset($_GET['edit_plan_itself']))
+      $edit_plan_itself = $_GET['edit_plan_itself'];  
+
+    return array("new_task" => $new_task,
+                 "parent_id" => $parent_id,
+                 "newfeed" => $newfeed,
+                 "task_info" => $task_info,
+                 "edit_task_id" => $edit_task_id,
+                 "edit_plan_itself" => $edit_plan_itself); 
+  }
 
   /**
- * Calculates all dates for build_calendar_html
- */
- private static function get_calendar_dates(){
-  
-  if(isset($_GET['month'])){ //date is specified in URL 
-  
-    $month = $_GET['month'];
+  * Calculates all dates for build_calendar_html
+  */
+  private static function get_calendar_dates(){
+    
+    if(isset($_GET['month'])){ //date is specified in URL 
+    
+      $month = $_GET['month'];
+          
+      if(isset($_GET['year']))
+        $year = $_GET['year'];
+      else 
+         $year = date('Y',time());  
+         
+      if(($month != date('n',time())) || ($year != date('Y',time())))
+        $today = -1; 
+      else 
+        $today = date('d',time());
+    }
+    
+    else{ //this month
+      $today = date('d',time()); //used for marking today (only if it's this month)
+        $month = date('n',time());
+        $year = date('Y',time());  
+    }
+    
+    $this_month = date('n',time());
+    $this_year = date('Y',time());
+     
+    $weekday = date('w', mktime(0,0,0,$month,1,$year)); //numeric day of the week the month started (0 = sunday, 6 = saturday)
+    $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    
+    $week_start = get_string('week_start', 'artefact.calendar');  //week starts monday/sunday, depending on language, filled with empty days, depending on day the month starts with
+
+    if($week_start == 1){ //monday is start day of each week
+      if($weekday == 0) 
+        $empty_days = 6;
+      else $empty_days = $weekday - 1;
+    }
+    else {//sunday is start of each week
+      $empty_days = $weekday;
+    }
+
+    $days_total = $empty_days + $num_days;
+
+    //number of days of past month, number of past month, number of year of past month
+    if($month == 1)
+      {
+        $past_month = 12;
+        $num_days_past = 31;
+        $past_month_year = $year - 1;  //the year of the past month         
+      }   
+    else
+      {
+        $past_month = $month - 1;
+        $past_month_year = $year; //the year of the past month   
+        $num_days_past = cal_days_in_month(CAL_GREGORIAN, date($past_month,time()), $past_month_year);
         
-    if(isset($_GET['year']))
-      $year = $_GET['year'];
-    else 
-       $year = date('Y',time());  
-       
-    if(($month != date('n',time())) || ($year != date('Y',time())))
-      $today = -1; 
-    else 
-      $today = date('d',time());
-  }
-  
-  else{ //this month
-    $today = date('d',time()); //used for marking today (only if it's this month)
-      $month = date('n',time());
-      $year = date('Y',time());  
-  }
-  
-  $this_month = date('n',time());
-  $this_year = date('Y',time());
+      }         
+    $end_of_last_month = $num_days_past.'.'.$past_month.'.'.$past_month_year;
    
-  $weekday = date('w', mktime(0,0,0,$month,1,$year)); //numeric day of the week the month started (0 = sunday, 6 = saturday)
-  $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-  
-  $week_start = get_string('week_start', 'artefact.calendar');  //week starts monday/sunday, depending on language, filled with empty days, depending on day the month starts with
+    if($month == 12){
+      $next_month = 1;
+      $next_month_year = $year + 1; //the year of next month
+    }
+    else {
+      $next_month = $month+1;
+      $next_month_year = $year;   
+    }
 
-  if($week_start == 1){ //monday is start day of each week
-    if($weekday == 0) 
-      $empty_days = 6;
-    else $empty_days = $weekday - 1;
+    $month_name = get_string($month, 'artefact.calendar'); //name of the month    
+
+    $return = array('today' => $today, 
+          'month' => $month, 
+          'year' => $year, 
+          'weekday' => $weekday, 
+          'num_days' => $num_days,
+          'empty_days' => $empty_days,
+          'days_total' => $days_total,
+          'end_of_last_month' => $end_of_last_month,
+          'next_month' => $next_month,
+          'next_month_year' => $next_month_year,
+          'past_month' => $past_month,
+          'past_month_year' => $past_month_year,
+          'this_month' => $this_month,
+          'this_year' => $this_year,
+          'month_name' => $month_name,
+          'week_start' => $week_start);
+          
+    return $return;
   }
-  else {//sunday is start of each week
-    $empty_days = $weekday;
+
+  /**
+  * Returns array with number of calender weeks in specific month
+  */
+
+  private static function get_calendar_weeks($month, $year){
+    $start = mktime(0,0,0,$month,1,$year);
+    $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+    $calendar_weeks = array();
+
+    for($i = 1; $i <= $num_days; $i++){
+      $day = mktime(0,0,0,$month,$i,$year);
+      if(date('w', $day) == 1) //weekday is monday
+        $calendar_weeks[$i] = date('W', $day);
+    }
+   return $calendar_weeks;
   }
 
-  $days_total = $empty_days + $num_days;
+  /**
+  * Handles db actions if ajax was used
+  */
+  private static function ajax_handling($plans){
+    if(isset($_GET['status']))//status gets changed
+      ArtefactTypeCalendar::save_status_to_db($_GET['plan'], $_GET['status']);
+    else if (isset($_GET['color'])) //color gets changed
+        ArtefactTypeCalendar::save_color_to_db($_GET['picker'], $_GET['color']);
+    else if (isset($_GET['reminder'])){
+      if(isset($_GET['reminder_status']))
+        ArtefactTypeCalendar::save_reminder_status_to_db($_GET['reminder'],$_GET['reminder_status'], $plans);
+      else 
+        ArtefactTypeCalendar::save_reminder_date_to_db($_GET['reminder'],$_GET['reminder_date'], $plans);
+    }
+  }
 
-  //number of days of past month, number of past month, number of year of past month
-  if($month == 1)
-    {
-      $past_month = 12;
-      $num_days_past = 31;
-      $past_month_year = $year - 1;  //the year of the past month         
-    }   
-  else
-    {
-      $past_month = $month - 1;
-      $past_month_year = $year; //the year of the past month   
-      $num_days_past = cal_days_in_month(CAL_GREGORIAN, date($past_month,time()), $past_month_year);
+  /**
+  * Commits plan information
+  */
+
+  private static function edit_plan_handler($dates){
+    $plan_id = (int) $_GET['edit_plan'];
+    if($_GET['plan_title'] != ""){
+      $artefact = new ArtefactTypePlan($plan_id);
+      $artefact->set('title', $_GET['plan_title']);
+      $artefact->set('description', $_GET['plan_description']);
+      $artefact->commit();
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id);
+    }
+    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$plan_id.'&edit_plan_itself=1&missing_title=1&missing_field_description='.$_GET['plan_description']);
+  }
+
+  /**
+  * Commits new plan information
+  */
+
+  private static function new_plan_handler($dates){
+    global $USER;
+
+    if($_GET['newplan_title'] != ""){
+      $artefact = new ArtefactTypePlan();
+      $artefact->set('owner', $USER->get('id'));
+      $artefact->set('title', $_GET['newplan_title']);
+      $artefact->set('description', $_GET['newplan_description']);
+      $artefact->commit();
+      $new_plan_id = $artefact->get('id');
+      if(isset($_GET['newplan_color']) && $_GET['newplan_color'] != "")
+        ArtefactTypeCalendar::save_color_to_db($new_plan_id, $_GET['newplan_color']);
+      else{
+        ArtefactTypeCalendar::save_random_color_to_db($new_plan_id);
+      }
+      if(isset($_GET['newplan_reminder'])){
+        ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 1);
+      }
+      else{
+        ArtefactTypeCalendar::save_reminder_status_to_db($new_plan_id, 0);
+      }
+      ArtefactTypeCalendar::set_reminder_date_according_to_other_plans($new_plan_id, $plans);
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$new_plan_id);
+    }
+    else
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&missing_title=1&new=1&missing_field_description='.$_GET['newplan_description']);  
+  }
+
+  /**
+  * Delete plan
+  */
+
+  private static function delete_plan_handler($dates){
+    global $USER;
+    $delete_plan_id = $_GET['delete_plan_final'];
+    $todelete = new ArtefactTypePlan($delete_plan_id);
+    
+    if (!$USER->can_edit_artefact($todelete)) 
+      throw new AccessDeniedException(get_string('accessdenied', 'error'));
+    
+    $todelete->delete();
+    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+  }
+
+  /**
+  * Delete task
+  */
+
+  private static function delete_task_handler($dates){
+    $delete_task_id = $_GET['delete_task_final'];
+    $todelete = new ArtefactTypeTask($delete_task_id);
+    
+    if (!$USER->can_edit_artefact($todelete)) 
+        throw new AccessDeniedException(get_string('accessdenied', 'error'));
       
-    }         
-  $end_of_last_month = $num_days_past.'.'.$past_month.'.'.$past_month_year;
- 
-  if($month == 12){
-    $next_month = 1;
-    $next_month_year = $year + 1; //the year of next month
+    $todelete->delete();
+    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
   }
-  else {
-    $next_month = $month+1;
-    $next_month_year = $year;   
-  }
-
-  $month_name = get_string($month, 'artefact.calendar'); //name of the month    
-
-$return = array('today' => $today, 
-        'month' => $month, 
-        'year' => $year, 
-        'weekday' => $weekday, 
-        'num_days' => $num_days,
-        'empty_days' => $empty_days,
-        'days_total' => $days_total,
-        'end_of_last_month' => $end_of_last_month,
-        'next_month' => $next_month,
-        'next_month_year' => $next_month_year,
-        'past_month' => $past_month,
-        'past_month_year' => $past_month_year,
-        'this_month' => $this_month,
-        'this_year' => $this_year,
-        'month_name' => $month_name,
-        'week_start' => $week_start);
-        
-return $return;
-}
-
-/**
-* Returns array with number of calender weeks in specific month
-*/
-
-private static function get_calendar_weeks($month, $year){
-  $start = mktime(0,0,0,$month,1,$year);
-  $num_days = cal_days_in_month(CAL_GREGORIAN, $month, $year);
-  $calendar_weeks = array();
-
-  for($i = 1; $i <= $num_days; $i++){
-    $day = mktime(0,0,0,$month,$i,$year);
-    if(date('w', $day) == 1) //weekday is monday
-      $calendar_weeks[$i] = date('W', $day);
-  }
- return $calendar_weeks;
-}
 
   /**
   * Gets all data for task form
@@ -732,6 +683,25 @@ private static function get_calendar_weeks($month, $year){
       'completed' => $form_completed);
 
     return $form;
+  }
+
+  /**
+  * If a field is missing when a new task/plan is created, the information of the other fields is preserved
+  */
+  private static function get_missing_field_info(){
+    if($_GET['missing_field_completiondate'] != ""){
+      $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
+      $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+    }
+    else
+      $completiondate_display = "";
+        
+    return array(
+        'title' => $_GET['missing_field_title'],
+        'description' => $_GET['missing_field_description'],
+        'completed' => $_GET['missing_field_completed'],
+        'completiondate' => $_GET['missing_field_completiondate'],
+        'completiondate_display' => $completiondate_display);
   }
 
   /**
@@ -925,6 +895,90 @@ private static function get_calendar_weeks($month, $year){
         $tasks_per_plan_per_day[$id] = $tasks_per_day;
       }
     return $tasks_per_plan_per_day;
+  }
+
+  /**
+  * Gets information about the plan that will be edited
+  */
+
+  private static function get_edit_plan_info($plans, $edit_plan_old_description){
+    $edit_plan_id = $edit_plan_tasks = 0;
+    $edit_plan_title = "";
+    $edit_plan_description = $edit_plan_old_description;
+
+    if(isset($_GET['edit_plan'])){
+      $edit_plan_id = param_integer('edit_plan');
+      $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan_id,0,1000); //if plan needs to be edited, get form
+
+      $plan_count = count($plans['data']);
+      for($i = 0; $i < $plan_count; $i++){ //loop through all plans
+
+        $id = $plans['data'][$i]->id; //get ids
+
+         //get title and description of edited plan 
+        if($id == $edit_plan_id){ //plan is edited plan
+          $edit_plan_title = $plans['data'][$i]->title;
+          if($edit_plan_old_description == "")
+            $edit_plan_description = $plans['data'][$i]->description;
+          else 
+            $edit_plan_description = $edit_plan_old_description;
+        }
+      }
+    }
+
+    return array("edit_plan_id" => $edit_plan_id,
+                 "edit_plan_tasks" => $edit_plan_tasks,
+                 "edit_plan_title" => $edit_plan_title,
+                 "edit_plan_description" => $edit_plan_description);
+  }
+
+
+  /**
+  * Get information about task count
+  */
+
+  private static function get_task_count_info($plans){
+    $plan_count = count($plans['data']);
+    $task_count = array(); //array with number of tasks per plan
+    $task_count_completed = array(); //array with number of completed tasks per plan
+
+    for($i = 0; $i < $plan_count; $i++){ //loop through all plans
+
+      $id = $plans['data'][$i]->id; //get ids
+      $tasks = ArtefactTypeTask::get_tasks($id,0,1000);
+      $task_count[$id] = $tasks['count']; 
+      $task_count_completed[$id] = 0;
+
+      for($j = 0; $j < $task_count[$id]; $j++){
+         if($tasks['data'][$j]->completed == 1)
+          $task_count_completed[$id]++;
+      }
+    }
+    return array("task_count" => $task_count,
+                 "task_count_completed" => $task_count_completed);
+  }
+
+  /**
+  * Gets plan titles and shortens them
+  **/
+
+  private static function get_short_plan_titles($plans){
+    $short_plan_titles = array(); //short titles for plans, if plan title is too long
+    $plan_count = count($plans['data']);
+
+    for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+      
+      $id = $plans['data'][$m]->id;
+      $plan_title = $plans['data'][$m]->title;
+      if(strlen($plan_title) > 12){ //shortens title (long titles kill calendar view)
+        mb_internal_encoding("UTF-8");
+        $short_plan_titles[$id] = mb_substr($plan_title,0,11).'…';
+      }
+      else {
+        $short_plan_titles[$id] = $plan_title;
+      }
+    }
+    return $short_plan_titles;
   }
 
   /**
@@ -1179,6 +1233,46 @@ private static function get_calendar_weeks($month, $year){
         update_record('artefact_calendar_calendar', $data, 'plan'); //update table
      }
     db_commit();
+  }
+  /**
+  * Returns array with reminder dates, and javascript array with reminder dates (string)
+  **/
+
+  private static function get_reminder_array(){
+    $available_dates = self::$available_dates;
+    $reminder_dates = array(); //array of reminder dates
+    $reminder_strings = 'new Array('; //javascript array of reminder strings
+    $num_dates = count($available_dates);
+
+    for($u = 0; $u < $num_dates; $u++){
+      $reminder_string = get_string('reminder_date'.$available_dates[$u], 'artefact.calendar');
+      $reminder_dates[$available_dates[$u]] = $reminder_string; //php array
+      $reminder_strings .= 'new Array('.$available_dates[$u].',"'.$reminder_string.'")'; //javascript array
+      if($u < $num_dates - 1)
+        $reminder_strings .= ',';
+    }
+    $reminder_strings .= ')';
+    return array("reminder_dates" => $reminder_dates,
+                 "reminder_strings" => $reminder_strings);
+  }
+
+  /**
+  * Returns javascript array of plan ids (string)
+  **/
+
+  private static function get_plan_ids_js($plans){
+    $plan_ids_js = 'new Array('; //javascript array of plan ids
+    $plan_count = count($plans['data']);
+
+    for($m = 0; $m < $plan_count; $m++){ //loop through all plans
+      $id = $plans['data'][$m]->id;
+      $plan_ids_js .= '"'.$id.'"';
+      if($m < $plan_count - 1)
+        $plan_ids_js .= ',';
+    }
+    $plan_ids_js .= ")";
+
+    return $plan_ids_js;
   }
 
   /**

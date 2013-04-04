@@ -73,9 +73,9 @@
 								checked
 							{/if}
 							>
-							<input type="hidden" name="task" value="{$edit_id}"/>
-							<input type="hidden" name="parent" value="{$parent_id}"/>
-							<input type="hidden" name="task_info" value="{$edit_id}"/>
+							<input type="hidden" name="task" value="{$edit_task_id}"/>
+							<input type="hidden" name="parent_id" value="{$parent_id}"/>
+							<input type="hidden" name="task_info" value="{$edit_task_id}"/>
 							<input type="hidden" name="month" value="{$month}"/>
 							<input type="hidden" name="year" value="{$year}"/>
 						</p>
