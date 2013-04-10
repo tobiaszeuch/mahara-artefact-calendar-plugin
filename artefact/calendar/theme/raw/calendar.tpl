@@ -98,7 +98,7 @@
 							&ensp;{$day}
 						{/if}
 						{if $calendar_weeks[$day] != "" && $day != ""}{*start of new calendar week*}
-							<div class="calendar_week flright">{$calendar_weeks[$day]}</div>
+							<div class="calendar_week flright">	{$calendar_weeks[$day]}</div>
 						{/if}
 						{counter}{* counts the week days*}
 
@@ -133,7 +133,7 @@
 							{if $day == "" || $number_of_tasks_per_day[$day] < 4}
 								style="display:none;"
 							{/if}>
-								<a onclick="document.getElementById('task_list_day{$day}').style.display='block';">
+								<a class="cursor_pointer" onclick="document.getElementById('task_list_day{$day}').style.display='block';">
 									<div id="display_number_calendar{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
 								</a>
 							</div>
@@ -186,7 +186,7 @@
 							</a>
 					    </td>
 					    <td class="plan_controls">
-				        	<a href="{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;edit_plan={$id}" >
+				        	<a class="cursor_default" href="{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;edit_plan={$id}" >
 								<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
 
 								<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
@@ -223,7 +223,7 @@
 		</p>
 		{if $plan_count != 0}
 			<p>
-				<a onclick='toggle_notification_settings();' id="reminder">{str section="artefact.calendar" tag='set_reminder'}: 
+				<a class="cursor_pointer" onclick='toggle_notification_settings();' id="reminder">{str section="artefact.calendar" tag='set_reminder'}: 
 				{* Shows reminder date of first plan, display of date for each plan not yet implemented*}
 				
 					{assign var=time value=$reminder_date_per_plan[$plans.data[0]->id]}
@@ -248,7 +248,7 @@
 				<p class="description">{str section="artefact.calendar" tag='disable_reminder1'}{str section="artefact.plans" tag='plan'}{str section="artefact.calendar" tag='disable_reminder2'}</p>
 			</div>
 			<p>
-				<a onclick='toggle_feed_settings();toggle_feed_url("off");'>
+				<a class="cursor_pointer" onclick='toggle_feed_settings();toggle_feed_url("off");'>
 					{str section="artefact.calendar" tag='feed'} <img class="sub" src="{$WWWROOT}{$cal}theme/raw/static/images/ical.gif" />	
 				</a>
 			</p>

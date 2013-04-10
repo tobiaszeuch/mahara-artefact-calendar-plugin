@@ -239,3 +239,10 @@ td.plan:hover{
 	background-color: lightgray;
 }
 
+a.cursor_pointer{
+	cursor: pointer;
+}
+
+a.cursor_default{
+	cursor: default;
+}
