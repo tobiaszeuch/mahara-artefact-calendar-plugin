@@ -98,7 +98,7 @@
 							&ensp;{$day}
 						{/if}
 						{if $calendar_weeks[$day] != "" && $day != ""}{*start of new calendar week*}
-							<div class="calendar_week flright">{str section="artefact.calendar" tag='calendar_week'} {$calendar_weeks[$day]}</div>
+							<div class="calendar_week flright">{$calendar_weeks[$day]}</div>
 						{/if}
 						{counter}{* counts the week days*}
 

@@ -12,7 +12,6 @@ $string['saturday'] = 'Samstag';
 $string['sunday'] = 'Sonntag';
 
 $string['week_start'] = '1'; //monday
-$string['calendar_week'] = 'KW';
 
 $string['monday_short'] = 'Mo';
 $string['tuesday_short'] = 'Di';
