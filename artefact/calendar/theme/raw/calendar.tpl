@@ -46,7 +46,6 @@
 			<tr >
 				<th colspan='7'>
 					<a class="flright" href="{$WWWROOT}{$cal}index.php?month={$this_month}&amp;year={$this_year}" title="{str section="artefact.calendar" tag='this_month'}">	{str section="artefact.calendar" tag='this_month'}		
-						<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-up.gif' alt='this' />
 					</a>
 				</th>
 			</tr>
