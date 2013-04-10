@@ -386,6 +386,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('edit_plan_title', $edit_plan_info['edit_plan_title']);
         $smarty->assign_by_ref('edit_plan_description', $edit_plan_info['edit_plan_description']);
         $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
+        $smarty->assign_by_ref('specify_parent', $cal_variables['specify_parent']);
         $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
         $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
 
@@ -431,7 +432,7 @@ class ArtefactTypeCalendar extends ArtefactType {
   * Gets all calendar variables
   */
   private static function get_cal_variables(){
-    $new_task = $newfeed = $task_info = $edit_plan_itself = 0;
+    $new_task = $newfeed = $task_info = $edit_plan_itself = $specify_parent = 0;
     $parent_id = "";
 
     if(isset($_GET['new_task']))
@@ -448,13 +449,16 @@ class ArtefactTypeCalendar extends ArtefactType {
       $edit_task_id  = $task_info;
     if(isset($_GET['edit_plan_itself']))
       $edit_plan_itself = $_GET['edit_plan_itself'];  
+    if(isset($_GET['specify_parent']))
+      $specify_parent = $_GET['specify_parent'];  
 
     return array("new_task" => $new_task,
                  "parent_id" => $parent_id,
                  "newfeed" => $newfeed,
                  "task_info" => $task_info,
                  "edit_task_id" => $edit_task_id,
-                 "edit_plan_itself" => $edit_plan_itself); 
+                 "edit_plan_itself" => $edit_plan_itself,
+                 "specify_parent" => $specify_parent); 
   }
 
   /**
@@ -712,7 +716,7 @@ class ArtefactTypeCalendar extends ArtefactType {
    
     global $USER;
 
-    $parent =  $_GET['parent'];
+    $parent =  $_GET['parent_id'];
     $id = (int) $_GET['task'];
 
     $title = $_GET['title'];
@@ -741,9 +745,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $artefact->set('completiondate', $completiondate);
       $artefact->commit();
 
-      if($parent != 0)
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$parent);
-      elseif ($task_info != 0) 
+      if ($task_info != 0) 
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&task_info='.$id);
       else 
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);

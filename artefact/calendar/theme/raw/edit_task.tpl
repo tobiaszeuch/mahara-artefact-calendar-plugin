@@ -49,6 +49,18 @@
 						{if $missing_date == 1}
 							<p class="errmsg">{str section="artefact.calendar" tag='missing_date'}</p>
 						{/if}
+						{if $specify_parent == 1}
+							<p>
+								<label for="edittask_title">{str section="artefact.plans" tag='plan'}</label>
+								<span class="requiredmarker">*</span><br/>
+								<select class="required" id="edittask_parent" name="parent_id">
+									{foreach from=$plans.data item=plan}
+									{assign var=id value=$plan->id}
+										<option value='{$id}'>{$plan->title}</option>
+									{/foreach}
+								</select>
+							</p>
+						{/if}
 						<p>
 							<label for="edittask_title">{str section="artefact.calendar" tag='title'}</label>
 							<span class="requiredmarker">*</span><br/>
@@ -74,7 +86,9 @@
 							{/if}
 							>
 							<input type="hidden" name="task" value="{$edit_task_id}"/>
-							<input type="hidden" name="parent_id" value="{$parent_id}"/>
+							{if $specify_parent == 0}
+								<input type="hidden" name="parent_id" value="{$parent_id}"/>
+							{/if}
 							<input type="hidden" name="task_info" value="{$edit_task_id}"/>
 							<input type="hidden" name="month" value="{$month}"/>
 							<input type="hidden" name="year" value="{$year}"/>

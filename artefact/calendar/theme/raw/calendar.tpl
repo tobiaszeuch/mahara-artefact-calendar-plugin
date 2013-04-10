@@ -13,7 +13,7 @@
 {* includes for overlay windows *}
 {if $edit_plan_tasks != '0' && $new_task != '1'}
 	{include file="edit_plan.tpl"} 
-{elseif $new_task == 1}
+{elseif $new_task == '1'}
 	{include file="edit_task.tpl"}
 {/if}
 {if $task_info != '0'}

@@ -359,9 +359,21 @@ $javascript = <<< JAVASCRIPT
 	
 JAVASCRIPT;
 
+
+if(isset($_GET['month']))
+	$month = $_GET['month'];
+else
+	$month = date('n',time());
+if(isset($_GET['year']))
+	$year = $_GET['year'];
+else
+	$year = date('Y',time());
+
 $smarty = smarty(array('paginator'));
 $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign_by_ref('plans', $plans);
+$smarty->assign_by_ref('year', $year);
+$smarty->assign_by_ref('month', $month);
 $smarty->assign('PAGEHEADING', hsc(get_string("calendar", "artefact.calendar")));
 if(!($_GET["ajax"] == true))
 	$smarty->display('artefact:calendar:index.tpl');
