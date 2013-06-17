@@ -37,7 +37,7 @@ ini_set('display_errors', 1);
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/calendar/lib.php')      ;
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/plans/lib.php')  ;
-require_once(dirname(dirname(dirname(__FILE__))).'/lib/license.php')  ;
+//require_once(dirname(dirname(dirname(__FILE__))).'/lib/license.php')  ;
 require_once('pieforms/pieform.php');
 require_once('pieforms/pieform/elements/calendar.php');
 require_once(get_config('docroot') . 'artefact/lib.php');
