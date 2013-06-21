@@ -244,19 +244,6 @@ class ArtefactTypeCalendar extends ArtefactType {
 
   private static $color_num = 35; //number of available colors 
 
-  private static $available_dates = array('-1',
-                                         '0',
-                                         '1',
-                                         '2',
-                                         '3',
-                                         '4',
-                                         '5',
-                                         '6',
-                                         '7',
-                                         '14',
-                                         '21',
-                                         '28');
-
 	public function render_self($options) {
 		return get_string('calendar', 'artefact.calendar');
 	}
@@ -350,7 +337,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $available_colors = self::$available_colors; //available colors for color picker
         $reminder_status_per_plan = ArtefactTypeCalendar::get_reminder_status($plans);
         $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date($plans);
-        $reminder_array = ArtefactTypeCalendar::get_reminder_array();
+        $reminder_dates = ArtefactTypeCalendar::get_reminder_array();
         $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
         $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
 
@@ -374,8 +361,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('plan_ids_js', $plan_ids_js);
         $smarty->assign_by_ref('reminder_status_per_plan', $reminder_status_per_plan);
         $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
-        $smarty->assign_by_ref('reminder_dates', $reminder_array['reminder_dates']);
-        $smarty->assign_by_ref('reminder_strings', $reminder_array['reminder_strings']);
+        $smarty->assign_by_ref('reminder_dates', $reminder_dates);
 
         // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
         $smarty->assign_by_ref('form', $form);
@@ -972,9 +958,9 @@ class ArtefactTypeCalendar extends ArtefactType {
       
       $id = $plans['data'][$m]->id;
       $plan_title = $plans['data'][$m]->title;
-      if(strlen($plan_title) > 12){ //shortens title (long titles kill calendar view)
+      if(strlen($plan_title) > 15){ //shortens title (long titles kill calendar view)
         mb_internal_encoding("UTF-8");
-        $short_plan_titles[$id] = mb_substr($plan_title,0,11).'…';
+        $short_plan_titles[$id] = mb_substr($plan_title,0,13).'…';
       }
       else {
         $short_plan_titles[$id] = $plan_title;
@@ -1241,21 +1227,23 @@ class ArtefactTypeCalendar extends ArtefactType {
   **/
 
   private static function get_reminder_array(){
-    $available_dates = self::$available_dates;
     $reminder_dates = array(); //array of reminder dates
-    $reminder_strings = 'new Array('; //javascript array of reminder strings
-    $num_dates = count($available_dates);
 
-    for($u = 0; $u < $num_dates; $u++){
-      $reminder_string = get_string('reminder_date'.$available_dates[$u], 'artefact.calendar');
-      $reminder_dates[$available_dates[$u]] = $reminder_string; //php array
-      $reminder_strings .= 'new Array('.$available_dates[$u].',"'.$reminder_string.'")'; //javascript array
-      if($u < $num_dates - 1)
-        $reminder_strings .= ',';
-    }
-    $reminder_strings .= ')';
-    return array("reminder_dates" => $reminder_dates,
-                 "reminder_strings" => $reminder_strings);
+    $reminder_dates["0"] = get_string('same_day', 'artefact.calendar');
+    $reminder_dates["1"] = "1 ".get_string('day_ahead', 'artefact.calendar');
+    
+    for($i = 2; $i < 7; $i++)
+      $reminder_dates[$i] = $i." ".get_string('days_ahead', 'artefact.calendar');
+
+    $reminder_dates[7] = "1 ".get_string('week_ahead', 'artefact.calendar');
+    for($j = 2; $j < 12; $j++)
+      $reminder_dates[7*$j] = $j." ".get_string('weeks_ahead', 'artefact.calendar');
+
+    $reminder_dates[78] = "3 ".get_string('months_ahead', 'artefact.calendar');
+    for($k = 4; $k <= 12; $k++)
+      $reminder_dates[30*$k] = $k." ".get_string('months_ahead', 'artefact.calendar');
+    
+    return $reminder_dates;
   }
 
   /**

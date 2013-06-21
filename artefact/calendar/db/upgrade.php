@@ -27,7 +27,22 @@
 defined('INTERNAL') || die();
 
 function xmldb_artefact_calendar_upgrade($oldversion=0) {
+    
+    if ($oldversion < 2013062000) {
+        $table = new XMLDBTable('artefact_calendar_reminder');
+
+        $table->addFieldInfo('user', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('reminder_type', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL);
+        
+        $table->addKeyInfo('reminder_pk', XMLDB_KEY_PRIMARY, array('user'));
+
+        if (!create_table($table)) {
+            throw new SQLException($table . " could not be created, check log for errors.");
+        }
+    }
+
     return true;
+    
 }
 
 ?>
