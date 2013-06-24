@@ -63,6 +63,7 @@ $string['individual'] = 'Individual';
 $string['of'] = 'of';
 $string['reminder_description'] = 'Reminders for tasks will be sent to you according to these settings.';
 $string['none'] = 'No reminders';
+$string['never'] = "never";
 $string['same_day'] = "on the same day";
 $string['days_ahead'] = "days ahead";
 $string['day_ahead'] = "day ahead";

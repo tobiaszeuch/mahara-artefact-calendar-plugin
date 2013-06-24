@@ -63,6 +63,7 @@ $string['individual'] = 'Einzelne';
 $string['none'] = 'Keine Benachrichtigungen';
 $string['of'] = 'von';
 $string['reminder_description'] = 'Benachrichtigungen für Aufgaben werden Ihnen den Einstellungen entsprechend zugesendet.';
+$string['never'] = "niemals";
 $string['same_day'] = "am selben Tag";
 $string['days_ahead'] = "Tage davor";
 $string['day_ahead'] = "Tag davor";

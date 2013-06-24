@@ -188,18 +188,6 @@
 					    <td class="plan_controls">
 				        	<a class="cursor_default" href="{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;edit_plan={$id}" >
 								<img src='{$WWWROOT}{$cal}theme/raw/static/images/edit.gif' alt='edit'></a>
-								<!---
-								<a id="reminder_enabled{$id}" onclick="toggle_reminder_ajax('{$id}',1);"
-								{if $reminder_status_per_plan[$id] == 0}
-									class="disp_none"
-								{/if} title="{str section='artefact.calendar' tag='reminder_enabled_tooltip'}">
-								<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder'  ></a>
-								
-								<a id="reminder_disabled{$id}" onclick="toggle_reminder_ajax('{$id}',0);"
-								{if $reminder_status_per_plan[$id] == 1}
-									class="disp_none"
-								{/if}  title="{str section='artefact.calendar' tag='reminder_disabled_tooltip'}">
-								<img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt='reminder'></a>-->
 								<input type="hidden" id="saved_color{$id}" value="#{$colors[$id]}"></input>
 								<a onclick="toggle_color_picker('picker','{$id}', document.getElementById('saved_color{$id}').value);" ><img id="color_button{$id}" src="{$WWWROOT}{$cal}theme/raw/static/images/color_button.gif" style="background-color:#{$colors[$id]};" /></a>
 				    	</td>
@@ -215,12 +203,6 @@
 		{else}
 			{str section="artefact.plans" tag='plan'}
 		{/if}
-		{if $plan_count != 0}	
-		<!--
-				<a class="deco_none pdleft20" id="reminder_enabled_all" onclick="toggle_all_reminders({$plan_ids_js},0);" title="{str section='artefact.calendar' tag='reminder_enable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock_green.gif' alt='reminder' title=''>
-				</a> / 
-				<a class="deco_none" id="reminder_disabled_all" onclick="toggle_all_reminders({$plan_ids_js},1);" title="{str section='artefact.calendar' tag='reminder_disable_all_tooltip'}">{str section="artefact.calendar" tag='all'}  <img src='{$WWWROOT}{$cal}theme/raw/static/images/clock.gif' alt="reminder"></a>-->
-		{/if}
 		</p>
 		{if $plan_count != 0}
 			<hr>
@@ -230,40 +212,47 @@
 			</p>
 			<div id='set_notification' class="disp_none">
 				<hr class="half"/>
-				<p><input type="radio" name="reminder_setting" value="all"><b>{str section="artefact.calendar" tag='all'} {str section="artefact.plans" tag='plans'}</b></p>
-				{str section="artefact.calendar" tag='remind_me'}
-				<select name="reminder" onchange="set_reminder_date_ajax(this.value,'all','{str section="artefact.calendar" tag='set_reminder'}: ',{$reminder_strings});">
-					{foreach key=date_key item=date_string from=$reminder_dates}
-						<option value='{$date_key}' 
-							{if $time == $date_key} 
-								selected 
-							{/if}>{$date_string}
-						</option>
-					{/foreach}
-				</select>
-				<hr class="half"/>
-				<p><input type="radio" name="reminder_setting" value="seperate"> <b>{str section="artefact.calendar" tag='individual'} {str section="artefact.plans" tag='plans'}</b></p>
-				<div class="overflow" style="height:150px;">
-					{counter start=0 assign=plan_count}
-					{foreach from=$plans.data item=plan}
-					{assign var=id value=$plan->id}
-					{counter}	
-					<p class="plan" onclick="toggle_checkbox('reminder_status_plan_{$id}');"><input type="checkbox" id="reminder_status_plan_{$id}" value="1" onclick="toggle_checkbox('reminder_status_plan_{$id}');"/><i>{$plan->title}</i><br/>
-						{str section="artefact.calendar" tag='remind_me'} <select name="reminder_date_plan_{$id}">
-							{foreach key=date_key item=date_string from=$reminder_dates}
-								<option value='{$date_key}'>
+				<form method="post" action="index.php">
+					<p><input type="radio" name="reminder_setting" value="1"  {if $reminder_type == '1'} checked="checked" {/if}><b>{str section="artefact.calendar" tag='all'} {str section="artefact.plans" tag='plans'}</b></p>
+					{str section="artefact.calendar" tag='remind_me'}
+					<select name="reminder" >
+						{foreach key=date_key item=date_string from=$reminder_dates}
+							<option value='{$date_key}' 
+								{if $reminder_date_all == $date_key}
+									selected
+								{/if}>
 								{$date_string}
-								</option>
-							{/foreach}
-						</select>
-					</p>
-					{/foreach}
-				</div>
-				<hr class="half"/>
-				<p><input type="radio" name="reminder_setting" value="none"> <b>{str section="artefact.calendar" tag='none'}</b></p>
-				<hr class="half"/>
-				<p class="description">{str section="artefact.calendar" tag='reminder_description'}</p>
-				<input type="submit" class="submitcancel submit" value="{str section="artefact.calendar" tag='save'}">
+							</option>
+						{/foreach}
+					</select>
+					<hr class="half"/>
+					<p><input type="radio" name="reminder_setting" value="2" {if $reminder_type == '2'} checked="checked" {/if}> <b>{str section="artefact.calendar" tag='individual'} {str section="artefact.plans" tag='plans'}</b></p>
+					<div class="overflow" style="height:150px;">
+						{counter start=0 assign=plan_count}
+						{foreach from=$plans.data item=plan}
+						{assign var=id value=$plan->id}
+						{counter}	
+						<p class="plan"><i>{$plan->title}</i><br/>
+							{str section="artefact.calendar" tag='remind_me'} <select name="reminder_date_plan_{$id}">
+								{foreach key=date_key item=date_string from=$reminder_dates}
+									<option value='{$date_key}'
+									{if $reminder_date_per_plan[$id] == $date_key}
+									selected
+									{/if}
+									>
+									{$date_string}
+									</option>
+								{/foreach}
+							</select>
+						</p>
+						{/foreach}
+					</div>
+					<hr class="half"/>
+					<p><input type="radio" name="reminder_setting" value="0"  {if $reminder_type == '0'} checked="checked" {/if}> <b>{str section="artefact.calendar" tag='none'}</b></p>
+					<hr class="half"/>
+					<p class="description">{str section="artefact.calendar" tag='reminder_description'}</p>
+					<input type="submit" name="reminder_submit" class="submitcancel submit" value="{str section="artefact.calendar" tag='save'}">
+				</form>
 			</div>
 			<hr>
 			<p>

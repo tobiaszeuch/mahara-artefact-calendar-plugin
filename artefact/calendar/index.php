@@ -277,13 +277,6 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('newplan_color').value = color;	//set color to chosen one
 		document.getElementById(color).className += ' borderblack'; //highlight chosen color
 	}
-	
-	function toggle_checkbox(checkbox_name){
-		if(document.getElementById(checkbox_name).checked == true)
-			document.getElementById(checkbox_name).checked = false;
-		else
-			document.getElementById(checkbox_name).checked = true;
-	}
 
 JAVASCRIPT;
 
