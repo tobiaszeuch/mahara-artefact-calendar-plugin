@@ -176,6 +176,10 @@ img.sub {
 	vertical-align: sub !important;
 }
 
+*.top {
+	vertical-align: top;
+}
+
 a.deco_none{
 	text-decoration: none;
 }

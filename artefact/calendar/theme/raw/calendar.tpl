@@ -54,7 +54,16 @@
 					<h3>
 						<a href="{$WWWROOT}{$cal}index.php?month={$past_month}&amp;year={$past_month_year}" title="{str section="artefact.calendar" tag='last_month'}" class="pdright20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-left.gif' alt='back' /></a>
-						{$month_name} {$year}
+						{$month_name} 
+						<select class="top" name="years" onchange="window.location='{$WWWROOT}{$cal}index.php?month={$month}&amp;year='+this.value;">
+							{foreach from=$years item=y}
+								<option value="{$y}"
+									{if $y == $year}
+										selected
+									{/if}
+								>{$y}</option>
+							{/foreach}
+						</select>
 						<a href="{$WWWROOT}{$cal}index.php?month={$next_month}&amp;year={$next_month_year}" title="{str section="artefact.calendar" tag='next_month'}" class="pdleft20">
 							<img src='{$WWWROOT}{$cal}theme/raw/static/images/arrow-right.gif' alt='next' /></a>
 				</h3>

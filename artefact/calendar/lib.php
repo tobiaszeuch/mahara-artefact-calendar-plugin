@@ -426,6 +426,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('month_name', $dates['month_name']);
         $smarty->assign_by_ref('task_per_day', $task_per_day);
         $smarty->assign_by_ref('week_start', $dates['week_start']);
+        $smarty->assign_by_ref('years', $dates['years']);
         $smarty->assign_by_ref('full_dates', $full_dates);
         $smarty->assign_by_ref('calendar', $calendar);
         $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
@@ -550,6 +551,9 @@ class ArtefactTypeCalendar extends ArtefactType {
 
     $month_name = get_string($month, 'artefact.calendar'); //name of the month    
 
+    //years for quick navigation -5 years to +5 years from now
+    $years = array($year-5, $year-4, $year-3, $year-2, $year-1, $year, $year+1, $year+2, $year+3, $year+4, $year+5);
+
     $return = array('today' => $today, 
           'month' => $month, 
           'year' => $year, 
@@ -565,7 +569,8 @@ class ArtefactTypeCalendar extends ArtefactType {
           'this_month' => $this_month,
           'this_year' => $this_year,
           'month_name' => $month_name,
-          'week_start' => $week_start);
+          'week_start' => $week_start,
+          'years' => $years);
           
     return $return;
   }
