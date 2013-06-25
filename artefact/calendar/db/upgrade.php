@@ -43,6 +43,11 @@ function xmldb_artefact_calendar_upgrade($oldversion=0) {
         }
         execute_sql('ALTER TABLE {artefact_calendar_calendar} DROP COLUMN {reminder_status}');
     }
+
+    if($oldversion < 2013062501){
+        execute_sql('ALTER TABLE {artefact_calendar_calendar} change {reminder_date} {reminder_date} int(4) NOT NULL;');
+    }
+
     return true;
     
 }

@@ -96,9 +96,10 @@ class PluginArtefactCalendar extends PluginArtefact {
 
     $users_to_be_reminded = array(); //two dimensional array with user ids and all their tasks
 
+    //users that chose reminders for individual plans
     for($i = 0; $i <= self::$max_reminder_days; $i++){ // get all plans with reminder set to x days ahead    
       ($results = get_records_sql_array("SELECT id, owner FROM {artefact} 
-        JOIN {artefact_calendar_calendar} ON artefact.id = artefact_calendar_calendar.plan WHERE artefacttype = 'plan' AND reminder_date = '$i';", array()))
+        JOIN {artefact_calendar_calendar} ON artefact.id = artefact_calendar_calendar.plan WHERE artefacttype = 'plan' AND reminder_date =  '$i';", array()))
             || ($results = array()); //get plans and user ids
       
       if (!empty($results[0])) {
@@ -117,11 +118,37 @@ class PluginArtefactCalendar extends PluginArtefact {
               $num = count($users_to_be_reminded[$userid][$day]);
               $users_to_be_reminded[$userid][$day][$num] = $tasks[$day][$j];  
             }
-
           }      
         }
       }
     }
+
+    //users that chose reminders for all plans
+    for($k = 0; $k <= self::$max_reminder_days; $k++){ // get all plans with reminder set to x days ahead    
+      ($results = get_records_sql_array("SELECT id, owner FROM artefact_calendar_reminder JOIN artefact ON artefact.owner = artefact_calendar_reminder.user WHERE artefacttype = 'plan' and reminder_type = '1' AND reminder_date = '$k';", array()))
+            || ($results = array()); //get plans and user ids
+
+      if (!empty($results[0])) {
+        
+        foreach ($results as $result) {
+          $userid = $result->owner;
+          $planid = $result->id;
+          $tasks = PluginArtefactCalendar::get_task_in_x_days($k,$planid);//get tasks of plans
+
+          if(count($tasks)){
+
+            $day = array_keys($tasks);
+            $day = $day[0]; //first key is the date of the tasks
+           
+            for ($l = 0; $l < count($tasks[$day]); $l++){ 
+              $num = count($users_to_be_reminded[$userid][$day]);
+              $users_to_be_reminded[$userid][$day][$num] = $tasks[$day][$l];  
+            }
+          }      
+        }
+      }
+    }
+
     return $users_to_be_reminded;
   }
 

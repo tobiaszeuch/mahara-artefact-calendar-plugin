@@ -36,10 +36,6 @@
 						<input type="hidden" id="newplan_color" name="newplan_color" value=""></input>
 					</p>
 					<p>
-					 	<label for="newplan_reminder">{str section="artefact.calendar" tag='reminder'}</label>
-					 	<input type="checkbox" name="newplan_reminder" value="active" checked></input>
-					</p>
-					<p>
 						<input type="hidden" name="month" value="{$month}"/>
 						<input type="hidden" name="year" value="{$year}"/>
 					</p>
