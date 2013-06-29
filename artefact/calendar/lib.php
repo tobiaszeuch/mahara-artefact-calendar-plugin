@@ -1571,9 +1571,13 @@ class ArtefactTypeCalendar extends ArtefactType {
   * See get_plans in Artefact Plans, returns plans for given user
   */
 
-  public static function get_plans_of_user($user){
+  public static function get_plans_of_user($user, $offset, $limit, $plan = 0){
+    if($plan != 0) //only one specific plan
+      ($plans = get_records_sql_array("SELECT * FROM {artefact} WHERE owner = '$user' AND artefacttype = 'plan' and id='$plan'", array())) || ($plans = array());
+    else
      ($plans = get_records_sql_array("SELECT * FROM {artefact} WHERE owner = '$user' AND artefacttype = 'plan' ORDER BY id", array())) || ($plans = array());
-        $result = array(
+    
+    $result = array(
             'count'  => count_records('artefact', 'owner', $user, 'artefacttype', 'plan'),
             'data'   => $plans,
             'offset' => $offset,

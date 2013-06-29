@@ -268,3 +268,7 @@ p.plan:hover{
 *.half{
 	width: 50%;
 }
+
+input.plan_radio{
+	margin-top: 0px;
+}

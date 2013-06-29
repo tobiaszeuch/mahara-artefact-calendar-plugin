@@ -237,10 +237,8 @@
 					<hr class="half"/>
 					<p><input type="radio" name="reminder_setting" value="2" {if $reminder_type == '2'} checked="checked" {/if}> <b>{str section="artefact.calendar" tag='individual'} {str section="artefact.plans" tag='plans'}</b></p>
 					<div class="overflow" style="height:150px;">
-						{counter start=0 assign=plan_count}
 						{foreach from=$plans.data item=plan}
-						{assign var=id value=$plan->id}
-						{counter}	
+						{assign var=id value=$plan->id}	
 						<p class="plan"><i>{$plan->title}</i><br/>
 							{str section="artefact.calendar" tag='remind_me'} <select name="reminder_date_plan_{$id}">
 								{foreach key=date_key item=date_string from=$reminder_dates}
@@ -272,6 +270,60 @@
 			<div id='feed_settings' class="disp_none">
 				<table>
 					<tr>
+						<td colspan="2">
+							<hr class="half"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" class="plan_radio" name="export_only" id="export_all" checked/>
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description_all'}
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" class="plan_radio" name="export_only" id="export_one" />
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description_one'}
+							<select id="export_only">
+								{foreach from=$plans.data item=plan}
+								{assign var=id value=$plan->id}	
+								<option value='{$id}'>{$short_plan_titles[$id]}</option>
+								{/foreach}
+							</select>
+							
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr class="half"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input type="radio" class="plan_radio" name="export_type" id="export_task" value="task" checked/>
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description'}
+						</td>
+					</tr>
+					<tr>
+						<td>
+						   <input type="radio" class="plan_radio" name="export_type" id="export_event" value="event" />
+						</td>
+						<td class="description">
+							{str section="artefact.calendar" tag='feed_description_event'}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<hr class="half"/>
+						</td>
+					</tr>
+					<tr>
 						<td>
 						<input type="checkbox" id="export_old" />
 						</td>
@@ -298,22 +350,6 @@
 						</td>
 						<td class="description"> 
 							{str section="artefact.calendar" tag='export_done'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input type="radio" name="export_type" id="export_task" value="task" checked/>
-						</td>
-						<td class="description">
-							{str section="artefact.calendar" tag='feed_description'}
-						</td>
-					</tr>
-					<tr>
-						<td>
-						   <input type="radio" name="export_type" id="export_event" value="event" />
-						</td>
-						<td class="description">
-							{str section="artefact.calendar" tag='feed_description_event'}
 						</td>
 					</tr>
 				</table>

@@ -266,7 +266,16 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed').innerHTML += '&type=task'; 
 		else
 			document.getElementById('feed').innerHTML += '&type=task'; 
-	}
+
+		if(document.getElementById('export_all').checked == true)
+			document.getElementById('feed').innerHTML += '&export_only=all';
+		else if(document.getElementById('export_one').checked == true){
+			var plan = document.getElementById('export_only').value;
+			document.getElementById('feed').innerHTML += "&export_only="+plan;
+		}
+		else
+			document.getElementById('feed').innerHTML += '&export_old=all';
+		}
 
 
 	function choose_color_new_plan(color){

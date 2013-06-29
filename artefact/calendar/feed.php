@@ -55,7 +55,14 @@ if(!$userkey)
 else if(!$user)
 	echo get_string('missingparamid', 'error').": user id";
 else {
-	$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);
+	if(isset($_GET['export_only'])){
+		if($_GET['export_only'] == 'all')
+			$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
+		else 
+			$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit, $_GET['export_only']);//one plan
+	}
+	else 
+		$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
 	$feed = ArtefactTypeCalendar::build_feed($plans, $user, $userkey);
 	ob_clean(); //cleans the output, otherwise additional empty lines show up which kills the feed
 	echo $feed;

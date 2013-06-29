@@ -84,6 +84,8 @@ $string['reminder'] = 'Enable reminder?';
 $string['feed'] = 'Share calendar';
 $string['feed_description'] = 'Export as tasks';
 $string['feed_description_event'] = "Alternative: Export <b>as events</b> (necessary if the calendar program doesn't support the display of tasks) ";
+$string['feed_description_all'] = 'Export all';
+$string['feed_description_one'] = 'Only export';
 
 $string['missing_title'] = 'Specify a title, please.';
 $string['missing_date'] = 'Specify a date, please.';
