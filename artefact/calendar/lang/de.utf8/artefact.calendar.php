@@ -26,6 +26,10 @@ $string['datepicker_firstday'] = 1;
 $string['display_format'] = 'd.m.Y';
 $string['full_format'] = '$day. $month_name $year';
 
+$string['am_pm'] = 0; 
+$string['date'] = 'Datum';
+$string['wrong_date'] = 'Der Beginn des Termins muss vor dem Ende liegen.';
+
 $string['last_month'] = 'Letzter Monat';
 $string['next_month'] = 'Nächster Monat';
 $string['this_month'] = 'Aktueller Monat';
@@ -97,4 +101,23 @@ $string['month'] = 'Monat';
 $string['generate'] = 'Export-Link generieren';
 $string['regenerate'] = 'Sie können den im Link enthaltenen Sicherheitsschlüssel neu generieren.<br/> Der alte Link wird dadurch ungültig.';
 $string['regenerate_link'] = 'Schlüssel neu generieren';
+
+//Event
+
+$string['event'] = 'Termin';
+$string['new_event'] = 'Neuer Termin';
+$string['begin'] = 'Beginn';
+$string['end'] = 'Ende';
+$string['whole_day'] = 'ganztägig';
+$string['saveevent'] = 'Termin speichern';
+$string['repetition'] = 'Wiederholen';
+$string['repeat_never'] = 'Nie wiederholen'; 
+$string['repeat_daily'] = 'Täglich wiederholen';
+$string['repeat_every'] = 'Alle';
+$string['repeat_x_days'] = 'Tage wiederholen';
+$string['repeat_x_weeks'] = 'Wochen wiederholen';
+$string['on'] = 'Am';
+$string['after'] = 'Nach';
+$string['times'] = 'mal';
+$string['missing_repeat_end'] = 'Bitte wählen Sie aus, wann die Wiederholungen enden.';
 ?>

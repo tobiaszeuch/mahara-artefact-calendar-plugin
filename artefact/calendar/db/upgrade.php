@@ -48,6 +48,26 @@ function xmldb_artefact_calendar_upgrade($oldversion=0) {
         execute_sql('ALTER TABLE {artefact_calendar_calendar} change {reminder_date} {reminder_date} int(4) NOT NULL;');
     }
 
+    if($oldversion < 2013063001){
+        $table = new XMLDBTable('artefact_calendar_event');
+        
+        $table->addFieldInfo('eventid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('begin', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('end', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('whole_day', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('repeat_type', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('repeats_every', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('end_date', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL);
+        $table->addFieldInfo('ends_after', XMLDB_TYPE_INTEGER, '3', null, XMLDB_NOTNULL);
+        $table->addKeyInfo('event_pk', XMLDB_KEY_PRIMARY, array('eventid'));
+        
+         if (!create_table($table)) {
+            throw new SQLException($table . " could not be created, check log for errors.");
+        }
+        
+
+    }
+
     return true;
     
 }

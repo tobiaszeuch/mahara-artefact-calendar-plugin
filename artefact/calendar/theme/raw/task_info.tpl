@@ -1,4 +1,4 @@
-<div id="aufgabenoverlay">
+<div id="infooverlay">
 		<div id="overlay"></div>
 		<div id="overlay_window" class="overlay">
 	      	<div id="overlay_header">
@@ -16,7 +16,7 @@
 				        	
 				     			<a href="{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&edit_task_id={$task_info}">
 									<img src="{$WWWROOT}{$cal}theme/raw/static/images/edit.gif" alt="edit"></a>			
-				            	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick="hide_overlay();" />
+				            	<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick="hide_overlay('infooverlay');" />
 
 		            			<input type="hidden" name="task" value="{$task_info}" />
 								<input type="hidden" name="title" value="{$form['title']}" />

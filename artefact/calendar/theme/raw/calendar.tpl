@@ -14,11 +14,15 @@
 {if $edit_plan_tasks != '0' && $new_task != '1'}
 	{include file="edit_plan.tpl"} 
 {elseif $new_task == '1'}
+	bla
 	{include file="edit_task.tpl"}
+{elseif $new_event == '1'}
+	{include file="edit_event.tpl"}
 {/if}
 {if $task_info != '0'}
 	{include file="task_info.tpl"}
-{elseif $form != '0'  && $new != 1 && $edit_plan_itself != 1 && $new_task != 1}
+{elseif $form != '0'  && $new != 1 && $edit_plan_itself != 1 && $new_task != 1 && $new_event != 1}
+	blu
 	{include file="edit_task.tpl"}
 {/if}
 

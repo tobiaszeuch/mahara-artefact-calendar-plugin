@@ -33,13 +33,11 @@
         });
     });
 </script>
-<div id='aufgabenoverlay'>
+<div id='taskoverlay'>
 		<div id='overlay'></div>
 			<div id='overlay_window' class="overlay">
 				<div class="overlay_control" style='min-width:0;'>
-		            	<a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
-		            		<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick='hide_overlay();'/>
-		            	</a>
+            		<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick='hide_overlay("taskoverlay");'/>
 		        </div>
 		        <div id="overlay_content">
 					<form name="edittask" method="get" action="" id="edittask"> 						
@@ -90,6 +88,7 @@
 								<input type="hidden" name="parent_id" value="{$parent_id}"/>
 							{/if}
 							<input type="hidden" name="task_info" value="{$edit_task_id}"/>
+							<input type="hidden" name="type" value="task"/>
 							<input type="hidden" name="month" value="{$month}"/>
 							<input type="hidden" name="year" value="{$year}"/>
 						</p>

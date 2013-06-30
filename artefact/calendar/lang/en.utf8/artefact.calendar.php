@@ -26,6 +26,10 @@ $string['datepicker_firstday'] = 0;
 $string['display_format'] = 'Y/m/d';
 $string['full_format'] = '$month_name $day, $year';
 
+$string['am_pm'] = 1;
+$string['date'] = 'Date';
+$string['wrong_date'] = 'The begin time of the event has to be before the end time.';
+
 $string['last_month'] = 'Previous month';
 $string['next_month'] = 'Next month';
 $string['this_month'] = 'This month';
@@ -98,4 +102,22 @@ $string['generate'] = 'Generate export link';
 $string['regenerate'] = 'You can regenerate the security key which is part of the link.<br/> The old link becomes invalid.';
 $string['regenerate_link'] = 'Regenerate key';
 
+//Event
+
+$string['event'] = 'Event';
+$string['new_event'] = 'New event';
+$string['begin'] = 'Begin';
+$string['end'] = 'End';
+$string['whole_day'] = 'whole day';
+$string['saveevent'] = 'Save event';
+$string['repetition'] = 'Repetition';
+$string['repeat_never'] = 'Repeat never'; 
+$string['repeat_daily'] = 'Repeat daily';
+$string['repeat_every'] = 'Repeat every';
+$string['repeat_x_days'] = 'days';
+$string['repeat_x_weeks'] = 'weeks';
+$string['on'] = 'On';
+$string['after'] = 'After';
+$string['times'] = 'times';
+$string['missing_repeat_end'] = 'Please choose when the repetition ends.';
 ?>

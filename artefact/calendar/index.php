@@ -157,9 +157,9 @@ $javascript = <<< JAVASCRIPT
 	}
 
 
-	function hide_overlay(){
+	function hide_overlay(overlay){
 
-		document.getElementById('aufgabenoverlay').style.display = 'none'; 
+		document.getElementById(overlay).style.display = 'none'; 
 		
 	}
 
@@ -237,6 +237,13 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed_settings').style.display = 'block';
 	}
 
+	function toggle_repetition_settings(){
+		if(document.getElementById('repetition_settings').style.display == 'block')
+			document.getElementById('repetition_settings').style.display = 'none';
+		else
+			document.getElementById('repetition_settings').style.display = 'block';
+	}
+
 	function toggle_feed_url(toggle){
 		if(toggle == 'off'){
 			document.getElementById('feed_url').style.display = 'none';
@@ -285,6 +292,13 @@ $javascript = <<< JAVASCRIPT
 
 		document.getElementById('newplan_color').value = color;	//set color to chosen one
 		document.getElementById(color).className += ' borderblack'; //highlight chosen color
+	}
+
+	function disable_select(select){
+		if(document.getElementById(select).disabled==true)
+			document.getElementById(select).disabled=false;
+		else 
+			document.getElementById(select).disabled=true;
 	}
 
 JAVASCRIPT;

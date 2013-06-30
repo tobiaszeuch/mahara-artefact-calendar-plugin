@@ -35,7 +35,7 @@ class PluginArtefactCalendar extends PluginArtefact {
 
 	public static function get_artefact_types() {
 		return array(
-		'calendar',
+		'calendar','event'
 		);
 	}
 	
@@ -304,9 +304,12 @@ class ArtefactTypeCalendar extends ArtefactType {
       $dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
       if(isset($_POST['reminder_submit']))
           ArtefactTypeCalendar::save_reminder_settings($plans);
-      if(isset($_GET['title'])) //if edit task form was send, submit the task
-        ArtefactTypeCalendar::submit_task($dates, $cal_variables['task_info']); 
-
+      if(isset($_GET['title'])){ //if edit task/event form was send, submit the task/event
+          if(($_GET['type']) == 'task')
+            ArtefactTypeCalendar::submit_task($dates, $cal_variables['task_info']); 
+          else if (($_GET['type']) == 'event')
+            ArtefactTypeEvent::submit_event($dates);
+        }
       else if(isset($_GET['plan_title'])) //if edit plan form was sent
        ArtefactTypeCalendar::edit_plan_handler($dates);
 
@@ -405,6 +408,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
         $smarty->assign_by_ref('specify_parent', $cal_variables['specify_parent']);
         $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
+        $smarty->assign_by_ref('new_event', $cal_variables['new_event']);
         $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
 
         // colors and status
@@ -426,7 +430,10 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('month_name', $dates['month_name']);
         $smarty->assign_by_ref('task_per_day', $task_per_day);
         $smarty->assign_by_ref('week_start', $dates['week_start']);
+        $smarty->assign_by_ref('am_pm', $dates['am_pm']);
         $smarty->assign_by_ref('years', $dates['years']);
+        $smarty->assign_by_ref('hours', $dates['hours']);
+        $smarty->assign_by_ref('minutes', $dates['minutes']);
         $smarty->assign_by_ref('full_dates', $full_dates);
         $smarty->assign_by_ref('calendar', $calendar);
         $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
@@ -439,6 +446,8 @@ class ArtefactTypeCalendar extends ArtefactType {
         //missing title or date
         $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
         $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
+        $smarty->assign_by_ref('wrong_date', $_GET['wrong_date']);
+        $smarty->assign_by_ref('missing_repeat', $_GET['missing_repeat']);
 
         // smarty fetch
         $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
@@ -455,6 +464,8 @@ class ArtefactTypeCalendar extends ArtefactType {
 
     if(isset($_GET['new_task']))
       $new_task = $_GET['new_task']; //is set to 1 if new task is added
+    if(isset($_GET['new_event']))
+      $new_event = $_GET['new_event']; //is set to 1 if new event is added
     if(isset($_GET['parent_id']))
       $parent_id = $_GET['parent_id'];
     if(isset($_GET['newfeed']))
@@ -471,6 +482,7 @@ class ArtefactTypeCalendar extends ArtefactType {
       $specify_parent = $_GET['specify_parent'];  
 
     return array("new_task" => $new_task,
+                 "new_event" => $new_event,
                  "parent_id" => $parent_id,
                  "newfeed" => $newfeed,
                  "task_info" => $task_info,
@@ -554,6 +566,16 @@ class ArtefactTypeCalendar extends ArtefactType {
     //years for quick navigation -5 years to +5 years from now
     $years = array($year-5, $year-4, $year-3, $year-2, $year-1, $year, $year+1, $year+2, $year+3, $year+4, $year+5);
 
+    //time for events according to language settings
+    $am_pm = get_string('am_pm', 'artefact.calendar');
+
+    $hours = array();
+    for($i = 0; $i < 24; $i++)
+      $hours[$i] = date('H', mktime($i,0,0,1,1,$year));
+    $minutes = array();
+    for($j = 0; $j < 60; $j+=5)
+      $minutes[$j] = date('i', mktime(0,$j,0,1,1,$year));
+
     $return = array('today' => $today, 
           'month' => $month, 
           'year' => $year, 
@@ -570,7 +592,10 @@ class ArtefactTypeCalendar extends ArtefactType {
           'this_year' => $this_year,
           'month_name' => $month_name,
           'week_start' => $week_start,
-          'years' => $years);
+          'am_pm' => $am_pm,
+          'years' => $years, 
+          'hours' => $hours,
+          'minutes' => $minutes);
           
     return $return;
   }
@@ -702,19 +727,46 @@ class ArtefactTypeCalendar extends ArtefactType {
   * If a field is missing when a new task/plan is created, the information of the other fields is preserved
   */
   private static function get_missing_field_info(){
-    if($_GET['missing_field_completiondate'] != ""){
-      $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
-      $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+
+    $display_format = get_string('display_format', 'artefact.calendar');
+
+    if($_GET['new_event'] == 1){
+      if($_GET['missing_field_begin'] != ""){
+        if($display_format == 'Y/m/d')
+          $begin_display = $_GET['missing_field_begin'];
+        else {
+          $begin_parts = explode('/', $_GET['missing_field_begin']);
+          $begin_display = $begin_parts[2].'.'.$begin_parts[1].'.'.$begin_parts[0];
+        }
+      }
+      else
+        $begin_display = "";
+      
+      return array(
+          'title' => $_GET['missing_field_title'],
+          'description' => $_GET['missing_field_description'],
+          'begin' => $_GET['missing_field_begin'],
+          'begin_display' => $begin_display);
     }
-    else
-      $completiondate_display = "";
-        
-    return array(
-        'title' => $_GET['missing_field_title'],
-        'description' => $_GET['missing_field_description'],
-        'completed' => $_GET['missing_field_completed'],
-        'completiondate' => $_GET['missing_field_completiondate'],
-        'completiondate_display' => $completiondate_display);
+    else{
+      if($_GET['missing_field_completiondate'] != ""){
+        if($display_format == 'Y/m/d')
+          $completiondate_display = $_GET['missing_field_completiondate'];
+        else {
+          $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
+          $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
+        }
+      }
+      else
+        $completiondate_display = "";
+          
+      return array(
+          'title' => $_GET['missing_field_title'],
+          'description' => $_GET['missing_field_description'],
+          'completed' => $_GET['missing_field_completed'],
+          'completiondate' => $_GET['missing_field_completiondate'],
+          'completiondate_display' => $completiondate_display);
+    }
   }
 
   /**
@@ -762,7 +814,7 @@ class ArtefactTypeCalendar extends ArtefactType {
     if($id != 0)
       redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit='.$id.$missing_title.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_completiondate='.$completiondate.'&missing_field_completed='.$completed.'&parent='.$parent);
     else
-      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&new_task=1'.$missing_title.$missing_date.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_completiondate='.$completiondate.'&missing_field_completed='.$completed.'&parent='.$parent);
+      redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&specify_parent=1&new_task=1'.$missing_title.$missing_date.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_completiondate='.$completiondate.'&missing_field_completed='.$completed.'&parent='.$parent);
   }
 
   /**
@@ -1597,5 +1649,180 @@ class ArtefactTypeCalendar extends ArtefactType {
   }
 
 }
+
+/**
+* ArtefactTypeEvent
+*/
+
+class ArtefactTypeEvent extends ArtefactType {
+  
+
+  public function render_self($options) {
+    return get_string('event', 'artefact.calendar');
+  }
+  
+  public static function get_icon($options=null) {
+    
+  }
+  
+  public static function is_singular() {
+    return false;
+  }
+  
+  public static function get_links($id) {
+  }
+
+  /**
+  * Submits the event (see the submit function of plans plugin)
+  */
+
+  public static function submit_event($dates, $event_info){
+   
+    global $USER;
+
+    if(isset($_GET['parent_id']))
+      $parent = $_GET['parent_id'];
+    if(isset($_GET['event']))
+      $id = (int) $_GET['event'];
+    else $id = 0;
+
+    $begin_am_pm = $end_am_pm = '';
+
+    $title = $_GET['title'];
+    $description = $_GET['description'];
+    $begin = $_GET['begin'];
+
+    if(isset($_GET['begin_minute']))
+      $begin_minute = $_GET['begin_minute'];
+    if(isset($_GET['begin_hour']))
+      $begin_hour = $_GET['begin_hour'];
+    if(isset($_GET['begin_am_pm']))
+      $begin_am_pm = $_GET['begin_am_pm'];
+    if(isset($_GET['end_minute']))
+      $end_minute = $_GET['end_minute'];
+    if(isset($_GET['end_hour']))
+      $end_hour = $_GET['end_hour'];
+    if(isset($_GET['end_am_pm']))
+      $end_am_pm = $_GET['end_am_pm'];
+    if(isset($_GET['whole_day']))
+    $whole_day = $_GET['whole_day'];
+    $repeat_type = $_GET['repeat_type'];
+
+    if($whole_day == 1){
+      $begin_time = $begin;
+      $end_time = $begin;
+    }
+    else{
+      if(strlen($begin_hour) == 1) 
+        $begin_hour = "0".$begin_hour;
+       if(strlen($end_hour) == 1) 
+        $end_hour = "0".$end_hour;
+      $begin_time = $begin.' '.$begin_hour.':'.$begin_minute.' '.$begin_am_pm;
+      $end_time = $begin.' '.$end_hour.':'.$end_minute.' '.$end_am_pm;
+    }
+
+    $begin_time = strtotime($begin_time);//timestamp of begin date
+    $end_time = strtotime($end_time);//timestamp of end date
+
+    $missing = "";
+    if($title == ""){
+        $missing .= "&missing_title=1";
+    }
+    if($begin == ""){
+        $missing .= "&missing_date=1";
+    }
+    if($begin_time > $end_time){
+        $missing .= '&wrong_date=1';
+    }
+
+    if($repeat_type != 0){//repetition is activated
+      if($repeat_type == 2)
+          $repeats_every = $_GET['repeat_every_days'];
+      else if ($repeat_type == 3)
+          $repeats_every = $_GET['repeat_every_weeks'];
+      if(isset($_GET['repetition_end'])){
+        if($_GET['repetition_end'] == "on"){ //repetition ends on date
+          if(isset($_GET['end_date'])){
+            $end_date = $_GET['end_date'];
+            $end_date = strtotime($end_date);
+          }
+          else 
+            $missing .= "&missing_repeat=1";
+        }
+        else if ($_GET['repetition_end'] == "after"){ //repetition ends after x times
+          if(isset($_GET['ends_after']))
+            echo 'ea'.$ends_after = $_GET['ends_after'];
+          else 
+            $missing .= "&missing_repeat=1";
+        }
+      }
+      else 
+        $missing .= "&missing_repeat=1";  
+    }
+
+    if($missing == ""){
+      if ($id != 0) 
+        $artefact = new ArtefactTypeEvent($id);
+      else {
+          $artefact = new ArtefactTypeEvent();
+          $artefact->set('owner', $USER->get('id'));
+          $artefact->set('parent', $parent);
+      }
+
+      $artefact->set('title', $title);
+      $artefact->set('description', $description);
+
+      $artefact->commit();
+
+      ArtefactTypeEvent::submit_event_additional_info($artefact->get('id'), $begin_time, $end_time, $whole_day, $repeat_type, $repeats_every, $end_date, $ends_after);
+
+      if ($event_info != 0) 
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&event_info='.$id);
+      else 
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+    }
+    else{ //no title or date were specified
+      if($id != 0)
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit='.$id.$missing.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_begin='.$begin.'&parent_id='.$parent);
+      else
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&specify_parent=1&new_event=1'.$missing.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_begin='.$begin.'&parent_id='.$parent);
+    }  
+  }
+
+  /**
+  * Submits additional information about the event
+  */
+  private static function submit_event_additional_info($id, $begin_time, $end_time, $whole_day, $repeat_type, $repeats_every, $end_date, $ends_after){
+
+    db_begin();
+
+    // additional information about the event itself
+    ($result = get_records_sql_array("
+            SELECT *
+                FROM {artefact_calendar_event} WHERE eventid = '$id';", array()))
+            || ($result = array());
+  
+    $data = (object)array(
+            'eventid'  => $id,
+            'begin' => $begin_time,
+            'end' => $end_time,
+            'whole_day' => $whole_day,
+            'repeat_type' => $repeat_type,
+            'repeats_every' => $repeats_every,
+            'end_date' => $end_date,
+            'ends_after' => $ends_after
+        );
+    
+    if (!empty($result[0])) 
+      update_record('artefact_calendar_event', $data, 'eventid'); //update table
+    else 
+      insert_record('artefact_calendar_event', $data); //insert into table
+
+    db_commit();
+  }
+
+
+}
+
 
 ?>
