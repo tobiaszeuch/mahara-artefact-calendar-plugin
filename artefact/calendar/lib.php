@@ -744,7 +744,7 @@ class ArtefactTypeCalendar extends ArtefactType {
 
     $display_format = get_string('display_format', 'artefact.calendar');
 
-    if($_GET['new_event'] == 1){
+    if($_GET['new_event'] == 1 || $_GET['edit_event_id'] != ""){
       if($_GET['missing_field_begin'] != ""){
         if($display_format == 'Y/m/d')
           $begin_display = $_GET['missing_field_begin'];
@@ -1797,7 +1797,7 @@ class ArtefactTypeEvent extends ArtefactType {
     }
     else{ //no title or date were specified
       if($id != 0)
-        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit='.$id.$missing.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_begin='.$begin.'&parent_id='.$parent);
+        redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_event_id='.$id.$missing.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_begin='.$begin.'&parent_id='.$parent);
       else
         redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&specify_parent=1&new_event=1'.$missing.'&missing_field_title='.$title.'&missing_field_description='.$description.'&missing_field_begin='.$begin.'&parent_id='.$parent);
     }  
