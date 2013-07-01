@@ -321,6 +321,9 @@ class ArtefactTypeCalendar extends ArtefactType {
 
       else if(isset($_GET['delete_task_final']))  // if task is to be deleted
         ArtefactTypeCalendar::delete_task_handler($dates);
+
+      else if(isset($_GET['delete_event_final']))  // if task is to be deleted
+        ArtefactTypeCalendar::delete_event_handler($dates);
       
       else if(isset($_GET['regenerate'])){ // if feed url needs to be regenerated
         if($_GET['regenerate'] == 1){
@@ -406,7 +409,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('edit_event_id', $edit_event_id);
         $smarty->assign_by_ref('edit_plan_id', $edit_plan_info['edit_plan_id']);
         $smarty->assign_by_ref('edit_plan_itself', $cal_variables['edit_plan_itself']);
-        $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_info['edit_plan_tasks']);
+        $smarty->assign_by_ref('edit_plan_tasks_and_events', $edit_plan_info['edit_plan_tasks_and_events']);
         $smarty->assign_by_ref('edit_plan_title', $edit_plan_info['edit_plan_title']);
         $smarty->assign_by_ref('edit_plan_description', $edit_plan_info['edit_plan_description']);
         $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
@@ -703,6 +706,7 @@ class ArtefactTypeCalendar extends ArtefactType {
   */
 
   private static function delete_task_handler($dates){
+    global $USER;
     $delete_task_id = $_GET['delete_task_final'];
     $todelete = new ArtefactTypeTask($delete_task_id);
     
@@ -710,7 +714,23 @@ class ArtefactTypeCalendar extends ArtefactType {
         throw new AccessDeniedException(get_string('accessdenied', 'error'));
       
     $todelete->delete();
-    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&edit_plan='.$edit_plan);
+    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
+  }
+
+  /**
+  * Delete event
+  */
+
+  private static function delete_event_handler($dates){
+    global $USER;
+    $delete_event_id = $_GET['delete_event_final'];
+    $todelete = new ArtefactTypeEvent($delete_event_id);
+    
+    if (!$USER->can_edit_artefact($todelete)) 
+        throw new AccessDeniedException(get_string('accessdenied', 'error'));
+      
+    $todelete->delete();
+    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year']);
   }
 
   /**
@@ -979,13 +999,13 @@ class ArtefactTypeCalendar extends ArtefactType {
   */
 
   private static function get_edit_plan_info($plans, $edit_plan_old_description){
-    $edit_plan_id = $edit_plan_tasks = 0;
+    $edit_plan_id = $edit_plan_tasks_and_events = 0;
     $edit_plan_title = "";
     $edit_plan_description = $edit_plan_old_description;
 
     if(isset($_GET['edit_plan'])){
       $edit_plan_id = param_integer('edit_plan');
-      $edit_plan_tasks = ArtefactTypeTask::get_tasks($edit_plan_id,0,1000); //if plan needs to be edited, get form
+      $edit_plan_tasks_and_events = ArtefactTypeEvent::get_tasks_and_events($edit_plan_id,0,1000); //if plan needs to be edited, get form
 
       $plan_count = count($plans['data']);
       for($i = 0; $i < $plan_count; $i++){ //loop through all plans
@@ -1004,7 +1024,7 @@ class ArtefactTypeCalendar extends ArtefactType {
     }
 
     return array("edit_plan_id" => $edit_plan_id,
-                 "edit_plan_tasks" => $edit_plan_tasks,
+                 "edit_plan_tasks_and_events" => $edit_plan_tasks_and_events,
                  "edit_plan_title" => $edit_plan_title,
                  "edit_plan_description" => $edit_plan_description);
   }
@@ -2027,6 +2047,70 @@ class ArtefactTypeEvent extends ArtefactType {
 
     return $result;
   } 
+
+  /**
+  * This function returns a list of the current plans events and tasks, see artefact plans
+  *
+  * @param limit how many events/tasks to display per page
+  * @param offset current page to display
+  * @return array (count: integer, data: array)
+  */
+
+  public static function get_tasks_and_events($plan, $offset=0, $limit=10) {
+        $datenow = time(); // time now to use for formatting tasks by completion
+
+        ($results = get_records_sql_array("SELECT a.id, a.artefacttype, a.title, a.description, ".db_format_tsfield('completiondate').",at.completed, Null as end, Null as whole_day FROM artefact a JOIN artefact_plans_task at ON at.artefact = a.id WHERE a.artefacttype = 'task' AND a.parent = '$plan' 
+                                          UNION
+                                          SELECT a.id, a.artefacttype, a.title, a.description, ae.begin, Null, ae.end, ae.whole_day FROM artefact a JOIN artefact_calendar_event ae ON ae.eventid = a.id WHERE a.artefacttype='event' AND a.parent = '$plan' 
+                                          ORDER BY completiondate ASC"))
+            || ($results = array());
+
+        $tasks_and_events = array();
+        $display_format = get_string('display_format', 'artefact.calendar');
+
+        if (!empty($results)) {
+            foreach ($results as $result) {
+              $date_timestamp = $result->completiondate;
+              $date = date($display_format, $date_timestamp);
+              $artefacttype = $result->artefacttype;
+              $end = $result->end;
+
+              $whole_day = $result->whole_day;
+              $begin_hour = $begin_minute = $end_hour = $end_minute = 0;
+
+              if($artefacttype == 'event'){
+                if($whole_day != '1'){ //timestamps are converted to hours/minutes
+                  $begin_hour = date('H', $date_timestamp);
+                  $begin_minute = date('i', $date_timestamp);
+                  $end_hour = date('H', $end);
+                  $end_minute = date('i', $end);
+                  $begin_hour_am_pm = date('h', $date_timestamp);
+                  $end_hour_am_pm = date('h', $end);
+                  $begin_am_pm = date('a', $date_timestamp); 
+                  $end_am_pm = date('a', $end);
+                }
+              }
+
+              array_push($tasks_and_events, array('id' => $result->id, 
+                                                    'artefacttype' => $artefacttype,
+                                                    'title' => $result->title,
+                                                    'description' => $result->description,
+                                                    'date' => $date,
+                                                    'completed' => $result->completed,
+                                                    'begin_hour' => $begin_hour,
+                                                    'begin_hour_am_pm' => $begin_hour_am_pm,
+                                                    'begin_minute' => $begin_minute,
+                                                    'end_hour' => $end_hour,
+                                                    'end_hour_am_pm' => $end_hour_am_pm,
+                                                    'begin_am_pm' => $begin_am_pm,
+                                                    'end_am_pm' => $end_am_pm,
+                                                    'end_minute' => $end_minute,
+                                                    'whole_day' => $whole_day
+                ));
+            }
+        }    
+        return $tasks_and_events;
+    }
 
    public static function get_event_form($edit){
     ($results = get_records_sql_array("SELECT id, title, description, parent, begin, end, whole_day, repeat_type, repeats_every, end_date, ends_after FROM {artefact} a JOIN {artefact_calendar_event} ace ON a.id = ace.eventid WHERE id='$edit';")) || ($results = array());

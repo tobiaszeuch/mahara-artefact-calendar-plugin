@@ -1,4 +1,4 @@
-<div id='aufgabenoverlay'>
+<div id='planoverlay'>
 	<div id='overlay'></div>
 	<div id='overlay_window' class="overlay">
 		{if $edit_plan_itself == '1'}

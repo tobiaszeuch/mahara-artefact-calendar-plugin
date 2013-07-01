@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.min.css" />
 
 {* includes for overlay windows *}
-{if $edit_plan_tasks != '0' && $new_task != '1'}
+{if $edit_plan_tasks_and_events != '0' && $new_task != '1'}
 	{include file="edit_plan.tpl"} 
 {elseif $new_task == '1'}
 	{include file="edit_task.tpl"}
