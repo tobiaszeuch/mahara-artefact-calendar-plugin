@@ -22,7 +22,9 @@
 	{include file="task_info.tpl"}
 {elseif $event_info != '0'}
 	{include file="event_info.tpl"}
-{elseif $form != '0'  && $new != 1 && $edit_plan_itself != 1 && $new_task != 1 && $new_event != 1}
+{elseif $edit_event_id != '0'}
+	{include file="edit_event.tpl"}
+{elseif $form != '0'  && $new != '1' && $edit_plan_itself != '1' && $new_task != '1' && $new_event != '1'}
 	{include file="edit_task.tpl"}
 {/if}
 

@@ -334,9 +334,11 @@ class ArtefactTypeCalendar extends ArtefactType {
         
         $form = 0;
         $edit_task_id = $cal_variables['edit_task_id'];
-        if($edit_task_id != 0){ //if task needs to be edited, get form
+        $edit_event_id = $cal_variables['edit_event_id'];
+        if($edit_task_id != 0) //if task needs to be edited, get form
           $form = ArtefactTypeCalendar::get_task_form($edit_task_id);
-        }     
+        else if($edit_event_id != 0) 
+          $form = ArtefactTypeEvent::get_event_form($edit_event_id);
         else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified for a new task/plan, error message is displayed and fields are refilled    
           $form = ArtefactTypeCalendar::get_missing_field_info(); //handling for tasks
           if(isset($_GET['missing_field_description']))//handling for plans
@@ -378,7 +380,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         /**
         * assigns for smarty
         */
-
+  
         $smarty = smarty_core();
        
         // plans
@@ -401,6 +403,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
         $smarty->assign_by_ref('form', $form);
         $smarty->assign_by_ref('edit_task_id', $edit_task_id);
+        $smarty->assign_by_ref('edit_event_id', $edit_event_id);
         $smarty->assign_by_ref('edit_plan_id', $edit_plan_info['edit_plan_id']);
         $smarty->assign_by_ref('edit_plan_itself', $cal_variables['edit_plan_itself']);
         $smarty->assign_by_ref('edit_plan_tasks', $edit_plan_info['edit_plan_tasks']);
@@ -476,11 +479,15 @@ class ArtefactTypeCalendar extends ArtefactType {
     if(isset($_GET['task_info']))
       $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
     if(isset($_GET['event_info']))
-      $task_info = $_GET['event_info']; //is set to task id if info overlay needs to be shown
+      $event_info = $_GET['event_info']; //is set to event id if info overlay needs to be shown
     if(isset($_GET['edit_task_id'])) //is set to task id if task is edited
       $edit_task_id = param_integer('edit_task_id');
     else
       $edit_task_id  = $task_info;
+    if(isset($_GET['edit_event_id'])) //is set to event id if task is edited
+      $edit_event_id = param_integer('edit_event_id');
+    else
+      $edit_event_id  = $event_info;
     if(isset($_GET['edit_plan_itself']))
       $edit_plan_itself = $_GET['edit_plan_itself'];  
     if(isset($_GET['specify_parent']))
@@ -493,6 +500,7 @@ class ArtefactTypeCalendar extends ArtefactType {
                  "task_info" => $task_info,
                  "event_info" => $event_info,
                  "edit_task_id" => $edit_task_id,
+                 "edit_event_id" => $edit_event_id,
                  "edit_plan_itself" => $edit_plan_itself,
                  "specify_parent" => $specify_parent); 
   }
@@ -1757,7 +1765,7 @@ class ArtefactTypeEvent extends ArtefactType {
         }
         else if ($_GET['repetition_end'] == "after"){ //repetition ends after x times
           if(isset($_GET['ends_after']))
-            echo 'ea'.$ends_after = $_GET['ends_after'];
+            $ends_after = $_GET['ends_after'];
           else 
             $missing .= "&missing_repeat=1";
         }
@@ -1841,7 +1849,6 @@ class ArtefactTypeEvent extends ArtefactType {
 
       $id = $plans['data'][$i]->id; //get id
       $event[$i] = ArtefactTypeEvent::get_events($id,0,1000); //get all events
-      //print_r($event[$i]);
       $event_count = $event[$i]['count'];
 
       for($j = 0; $j < $event_count; $j++){  
@@ -2021,7 +2028,63 @@ class ArtefactTypeEvent extends ArtefactType {
     return $result;
   } 
 
+   public static function get_event_form($edit){
+    ($results = get_records_sql_array("SELECT id, title, description, parent, begin, end, whole_day, repeat_type, repeats_every, end_date, ends_after FROM {artefact} a JOIN {artefact_calendar_event} ace ON a.id = ace.eventid WHERE id='$edit';")) || ($results = array());
 
+    if(!empty($results[0])){
+
+    $begin = $results[0]->begin;
+    $end = $results[0]->end;
+    $whole_day = $results[0]->whole_day;
+    $display_format = get_string("display_format", 'artefact.calendar');
+    $begin_date = date('Y/m/d', $begin);
+    $begin_display = date($display_format, $begin);
+
+    $begin_hour = $begin_minute = $end_hour = $end_minute = 0;
+    if($whole_day == '0'){ //timestamps are converted to hours/minutes
+      $begin_hour = date('H', $begin);
+      $begin_minute = date('i', $begin);
+      $end_hour = date('H', $end);
+      $end_minute = date('i', $end);
+      $begin_hour_am_pm = date('h', $begin);
+      $end_hour_am_pm = date('h', $end);
+      $begin_am_pm = date('a', $begin);
+      $end_am_pm = date('a', $end);
+    }
+
+    $end_result =  $results[0]->end_date;
+    $end_date_display = $end_date = "";
+    if($end_result != 0){
+      $end_date = date('Y/m/d', $end_result);
+      $end_date_display = date($display_format, $end_result);
+    }
+
+    $form = array('event_id' => $results[0]->id,
+                 'title' => $results[0]->title,
+                 'description' => $results[0]->description,
+                 'parent' => $results[0]->parent,
+                 'begin' => $begin,
+                 'begin_date' => $begin_date,
+                 'begin_display' => $begin_display,
+                 'begin_hour' => $begin_hour,
+                 'begin_hour_am_pm' => $begin_hour_am_pm,
+                 'begin_minute' => $begin_minute,
+                 'end' => $end,
+                 'end_hour' => $end_hour,
+                 'end_hour_am_pm' => $end_hour_am_pm,
+                 'end_minute' => $end_minute,
+                 'whole_day' => $whole_day,
+                 'repeat_type' => $results[0]->repeat_type,
+                 'repeats_every' => $results[0]->repeats_every,
+                 'end_date' => $end_date,
+                 'end_date_display' => $end_date_display,
+                 'ends_after' => $results[0]->ends_after, 
+                 'begin_am_pm' => $begin_am_pm,
+                 'end_am_pm' => $end_am_pm
+                ); 
+    return $form;
+    }
+  }
 }
 
 
