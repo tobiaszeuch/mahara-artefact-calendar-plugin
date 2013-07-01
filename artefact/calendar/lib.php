@@ -374,6 +374,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
         $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
 
+        $event_per_day = ArtefactTypeEvent::build_event_per_day($dates, $plans);
         /**
         * assigns for smarty
         */
@@ -410,6 +411,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
         $smarty->assign_by_ref('new_event', $cal_variables['new_event']);
         $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
+        $smarty->assign_by_ref('event_info', $cal_variables['event_info']);
 
         // colors and status
         $smarty->assign_by_ref('colors', $colors);
@@ -429,6 +431,7 @@ class ArtefactTypeCalendar extends ArtefactType {
        	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
         $smarty->assign_by_ref('month_name', $dates['month_name']);
         $smarty->assign_by_ref('task_per_day', $task_per_day);
+        $smarty->assign_by_ref('event_per_day', $event_per_day);
         $smarty->assign_by_ref('week_start', $dates['week_start']);
         $smarty->assign_by_ref('am_pm', $dates['am_pm']);
         $smarty->assign_by_ref('years', $dates['years']);
@@ -459,7 +462,7 @@ class ArtefactTypeCalendar extends ArtefactType {
   * Gets all calendar variables
   */
   private static function get_cal_variables(){
-    $new_task = $newfeed = $task_info = $edit_plan_itself = $specify_parent = 0;
+    $new_task = $newfeed = $task_info = $event_info = $edit_plan_itself = $specify_parent = 0;
     $parent_id = "";
 
     if(isset($_GET['new_task']))
@@ -472,6 +475,8 @@ class ArtefactTypeCalendar extends ArtefactType {
       $newfeed = $_GET['newfeed'];
     if(isset($_GET['task_info']))
       $task_info = $_GET['task_info']; //is set to task id if info overlay needs to be shown
+    if(isset($_GET['event_info']))
+      $task_info = $_GET['event_info']; //is set to task id if info overlay needs to be shown
     if(isset($_GET['edit_task_id'])) //is set to task id if task is edited
       $edit_task_id = param_integer('edit_task_id');
     else
@@ -486,6 +491,7 @@ class ArtefactTypeCalendar extends ArtefactType {
                  "parent_id" => $parent_id,
                  "newfeed" => $newfeed,
                  "task_info" => $task_info,
+                 "event_info" => $event_info,
                  "edit_task_id" => $edit_task_id,
                  "edit_plan_itself" => $edit_plan_itself,
                  "specify_parent" => $specify_parent); 
@@ -1820,6 +1826,200 @@ class ArtefactTypeEvent extends ArtefactType {
 
     db_commit();
   }
+
+   /**
+  * Fills the event_per_day array which all tasks that happen on each day in the specific month
+  */
+
+  public static function build_event_per_day($dates, $plans){
+    $event_per_day = array(); //array with all events of one day
+
+    for($m = 1; $m <= $dates['num_days']; $m++) //two-dimensional array for every day of the month
+      $event_per_day[$m] = array(); //array for each day
+        
+    for($i = 0; $i < count($plans['data']); $i++){ //loop through all plans
+
+      $id = $plans['data'][$i]->id; //get id
+      $event[$i] = ArtefactTypeEvent::get_events($id,0,1000); //get all events
+      //print_r($event[$i]);
+      $event_count = $event[$i]['count'];
+
+      for($j = 0; $j < $event_count; $j++){  
+
+        $title = $event[$i]['data'][$j]->title; //event title
+        $full_title = $title; //full title, other title will be shortened
+
+        if(strlen($title) > 10){ //shortens title (long titles kill calendar view)
+          mb_internal_encoding("UTF-8");
+          $title = mb_substr($title,0,8).'…';
+        }
+
+        $event_id = $event[$i]['data'][$j]->id; //id of the event
+        $parent_id = $event[$i]['data'][$j]->parent;  //id of events parent
+        $description = $event[$i]['data'][$j]->description; //event description
+
+        if($description == '') 
+          $description = get_string('nodescription', 'artefact.calendar');
+
+        $begin = $event[$i]['data'][$j]->begin; 
+        $end = $event[$i]['data'][$j]->end; 
+        $whole_day = $event[$i]['data'][$j]->whole_day; 
+        $repeat_type = $event[$i]['data'][$j]->repeat_type; 
+        $repeats_every = $event[$i]['data'][$j]->repeats_every; 
+        $end_date = $event[$i]['data'][$j]->end_date;
+        $ends_after = $event[$i]['data'][$j]->ends_after;
+        
+        $begin_hour = date('H', $begin);
+        $begin_minute = date('i', $begin);
+        $end_hour = date('H', $end);
+        $end_minute = date('i', $end);
+
+        $timestamp_start_month = strtotime(date(($dates['end_of_last_month']),time()));
+        $timestamp_end_month = strtotime(date('1.'.$dates['next_month'].'.'.$dates['next_month_year'],time()));         
+
+        if(($begin >  $timestamp_start_month) && ($begin < $timestamp_end_month)) { //check if event is in this month
+          $day_of_completion = date('j', $begin);
+          $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+          $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 
+                                                                'event_id' => $event_id,
+                                                                'parent_id' => $parent_id, 
+                                                                'full_title' => $full_title, 
+                                                                'description' => $description, 
+                                                                'begin' => $begin,
+                                                                'end' => $end,
+                                                                'whole_day' => $whole_day,
+                                                                'repeat_type' => $repeat_type,
+                                                                'repeats_every' => $repeats_every,
+                                                                'ends_after' => $ends_after,
+                                                                'begin_hour' => $begin_hour,
+                                                                'begin_minute' => $begin_minute,
+                                                                'end_hour' => $end_hour,
+                                                                'end_minute' => $end_minute);
+       }
+       //repeat is activated
+      if($repeat_type == 1){//repeats daily
+        if($end_date != 0){//repeat ends on date
+          if($end_date > $timestamp_start_month){
+            $begin_temp = $begin;
+            $end_temp = $end;
+            $begin_temp += 86400;
+            $end_temp += 86400;
+            while($begin_temp < $end_date){
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+                $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+              }
+              $begin_temp += 86400;
+              $end_temp += 86400;
+            }
+          }
+        }
+        else if($ends_after != 0){//repeat ends after x times
+          $begin_temp = $begin;
+          $end_temp = $end;
+          for($l = 0; $l < $ends_after-1; $l++){
+            $begin_temp += 86400;
+            $end_temp += 86400;
+            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              $day_of_completion = date('j', $begin_temp);
+              $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+              $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+            }
+          }
+        }
+      }
+      else if($repeat_type == 2){//repeats every x days
+        if($end_date != 0){//repeat ends on date
+          if($end_date > $timestamp_start_month){
+            $begin_temp = $begin;
+            $end_temp = $end;
+            $begin_temp += $repeats_every*86400;
+            $end_temp += $repeats_every*86400;
+            while($begin_temp < $end_date){   
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+                $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+              }
+              $begin_temp += $repeats_every*86400;
+              $end_temp += $repeats_every*86400;
+            }
+          }
+        }
+        else if($ends_after != 0){//repeat ends after x times
+          $begin_temp = $begin;
+          $end_temp = $end;
+          for($l = 0; $l < $ends_after-1; $l++){
+            $begin_temp += $repeats_every*86400;
+            $end_temp += $repeats_every*86400;
+            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              $day_of_completion = date('j', $begin_temp);
+              $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+              $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+            }
+          }
+        }
+       }
+      else if($repeat_type == 3){//repeats every x weeks
+        if($end_date != 0){//repeat ends on date
+          if($end_date > $timestamp_start_month){
+            $begin_temp = $begin;
+            $end_temp = $end;
+            $begin_temp += $repeats_every*604800;
+            $end_temp += $repeats_every*604800;
+            while($begin_temp < $end_date){
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+                $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+              }
+              $begin_temp += $repeats_every*604800;
+              $end_temp += $repeats_every*604800;
+            }
+          }
+        }
+        else if($ends_after != 0){//repeat ends after x times
+          $begin_temp = $begin;
+          $end_temp = $end;
+          for($l = 0; $l < $ends_after-1; $l++){
+            $begin_temp += $repeats_every*604800;
+            $end_temp += $repeats_every*604800;
+            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              $day_of_completion = date('j', $begin_temp);
+              $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
+              $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
+            }
+          }
+        }
+      }
+    }
+  }
+
+    return $event_per_day;
+  }
+
+  /**
+  * This function returns a list of the current plans events, see artefact plans
+  *
+  * @param limit how many events to display per page
+  * @param offset current page to display
+  * @return array (count: integer, data: array)
+  */
+  public static function get_events($plan, $offset=0, $limit=10) {
+
+     ($results = get_records_sql_array("SELECT id, title, description, parent, begin, end, whole_day, repeat_type, repeats_every, end_date, ends_after FROM {artefact} a JOIN {artefact_calendar_event} ace ON a.id = ace.eventid WHERE artefacttype = 'event' AND parent = '$plan';")) || ($results = array());
+
+    $result = array(
+        'count'  => count_records('artefact', 'artefacttype', 'event', 'parent', $plan),
+        'data'   => $results,
+        'offset' => $offset,
+        'limit'  => $limit,
+        'id'     => $plan,
+    );
+
+    return $result;
+  } 
 
 
 }

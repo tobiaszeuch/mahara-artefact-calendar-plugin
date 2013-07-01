@@ -14,15 +14,15 @@
 {if $edit_plan_tasks != '0' && $new_task != '1'}
 	{include file="edit_plan.tpl"} 
 {elseif $new_task == '1'}
-	bla
 	{include file="edit_task.tpl"}
 {elseif $new_event == '1'}
 	{include file="edit_event.tpl"}
 {/if}
 {if $task_info != '0'}
 	{include file="task_info.tpl"}
+{elseif $event_info != '0'}
+	{include file="event_info.tpl"}
 {elseif $form != '0'  && $new != 1 && $edit_plan_itself != 1 && $new_task != 1 && $new_event != 1}
-	blu
 	{include file="edit_task.tpl"}
 {/if}
 
@@ -129,6 +129,16 @@
 									{if $task['completed'] == '1'}
 										<img name="task{$task['parent_id']}" class="sub" src='{$WWWROOT}theme/raw/static/images/success.gif' alt='done' />	
 									{/if}</a>
+									
+
+							{/foreach}
+							{foreach from=$event_per_day[$day] item=event}
+								{assign var=p_id value=$event['parent_id']}
+
+								{* The name tag has to be in p tag and each child tag, so IE toggels the events correctly *}
+								
+								<a name="event{$event['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;event_info={$event['event_id']}' title="{$event['full_title']}" style="background-color:#{$colors[$p_id]};">{$event['title']}
+								</a>
 									
 
 							{/foreach}
