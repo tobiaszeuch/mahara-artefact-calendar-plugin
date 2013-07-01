@@ -355,17 +355,18 @@ class ArtefactTypeCalendar extends ArtefactType {
         $task_count_info = ArtefactTypeCalendar::get_task_count_info($plans);
         $feed_url = ArtefactTypeCalendar::get_feed_url();
         $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
-        $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month 
+        $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month
+        $event_per_day = ArtefactTypeEvent::build_event_per_day($dates, $plans); 
         $full_format = get_string('full_format', 'artefact.calendar'); //full date format
         $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
         $full_format = str_replace('$year', $dates['year'], $full_format);
         
         $full_dates = array(); //full date for each day
-        $number_of_tasks_per_day = array(); //if more than 3, displayed in calendar
+        $number_of_tasks_and_events_per_day = array(); //if more than 3, displayed in calendar
         
         for($j = 1; $j <= count($task_per_day); $j++){   
           $full_dates[$j] = str_replace('$day', $j, $full_format);
-          $number_of_tasks_per_day[$j] = count($task_per_day[$j]);
+          $number_of_tasks_and_events_per_day[$j] = count($task_per_day[$j]) + count($event_per_day[$j]);
         }
         
         $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
@@ -378,8 +379,6 @@ class ArtefactTypeCalendar extends ArtefactType {
         $reminder_type = ArtefactTypeCalendar::get_reminder_type();
         $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
         $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
-
-        $event_per_day = ArtefactTypeEvent::build_event_per_day($dates, $plans);
         /**
         * assigns for smarty
         */
@@ -392,7 +391,7 @@ class ArtefactTypeCalendar extends ArtefactType {
         $smarty->assign_by_ref('short_plan_titles', $short_plan_titles);
         $smarty->assign_by_ref('task_count', $task_count_info['task_count']);
         $smarty->assign_by_ref('task_count_completed', $task_count_info['task_count_completed']); 
-        $smarty->assign_by_ref('number_of_tasks_per_day', $number_of_tasks_per_day);
+        $smarty->assign_by_ref('number_of_tasks_and_events_per_day', $number_of_tasks_and_events_per_day);
         $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
         $smarty->assign_by_ref('new', $_GET['new']);
 
@@ -955,6 +954,9 @@ class ArtefactTypeCalendar extends ArtefactType {
       for($m = 1; $m <= $dates['num_days']; $m++) //two-dimensional array for every day of the month
         $tasks_per_plan_per_day[$id][$m] = 0; //array for each day, initialized with 0
     }
+
+    $timestamp_start_month = strtotime(date(($dates['end_of_last_month']),time()));
+    $timestamp_end_month = strtotime(date('1.'.$dates['next_month'].'.'.$dates['next_month_year'],time()));  
     
     for($i = 0; $i < $plan_count; $i++){ //loop through all plans
 
@@ -970,15 +972,106 @@ class ArtefactTypeCalendar extends ArtefactType {
         $completiondate_task_elements = (ArtefactTypeTask::get_taskform_elements($completiondate_task->parent, $completiondate_task));
         
         $timestamp_completion = $completiondate_task_elements['completiondate']['defaultvalue'];
-        $timestamp_start_month = strtotime(date(($dates['end_of_last_month']),time()));
-        $timestamp_end_month = strtotime(date('1.'.$dates['next_month'].'.'.$dates['next_month_year'],time()));         
-
+       
         if(($timestamp_completion >  $timestamp_start_month) && ($timestamp_completion < $timestamp_end_month)) { //check if completiondate is in this month
           $day_of_completion = date('j', $timestamp_completion);   
           $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
         }
       }
 
+      $event[$i] = ArtefactTypeEvent::get_events($id,0,1000); //get all events
+      $event_count = $event[$i]['count'];
+
+      for($j = 0; $j < $event_count; $j++){  
+
+        $event_id = $event[$i]['data'][$j]->id; //id of the event
+        $begin = $event[$i]['data'][$j]->begin; 
+        $repeat_type = $event[$i]['data'][$j]->repeat_type;
+        $end_date = $event[$i]['data'][$j]->end_date;
+        $ends_after = $event[$i]['data'][$j]->ends_after;
+        $repeats_every = $event[$i]['data'][$j]->repeats_every;
+
+        if(($begin > $timestamp_start_month) && ($begin < $timestamp_end_month)) { //check if event is in this month
+          $day_of_completion = date('j', $begin);   
+          $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+        }
+       //repeat is activated
+        if($repeat_type == 1){//repeats daily
+          if($end_date != 0){//repeat ends on date
+            if($end_date > $timestamp_start_month){
+              $begin_temp = $begin;
+              $begin_temp += 86400;
+              while($begin_temp < $end_date){
+                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                  $day_of_completion = date('j', $begin_temp);
+                  $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+                }
+                $begin_temp += 86400;
+              }
+            }
+          }
+          else if($ends_after != 0){//repeat ends after x times
+            $begin_temp = $begin;
+            for($l = 0; $l < $ends_after-1; $l++){
+              $begin_temp += 86400;
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+              }
+            }
+          }
+        }
+        else if($repeat_type == 2){//repeats every x days
+          if($end_date != 0){//repeat ends on date
+            if($end_date > $timestamp_start_month){
+              $begin_temp = $begin;
+              $begin_temp += $repeats_every*86400;
+              while($begin_temp < $end_date){   
+                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                  $day_of_completion = date('j', $begin_temp);
+                  $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+                }
+                $begin_temp += $repeats_every*86400;
+              }
+            }
+          }
+          else if($ends_after != 0){//repeat ends after x times
+            $begin_temp = $begin;
+            for($l = 0; $l < $ends_after-1; $l++){
+              $begin_temp += $repeats_every*86400;
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+               }
+            }
+          }
+        }
+        else if($repeat_type == 3){//repeats every x weeks
+          if($end_date != 0){//repeat ends on date
+            if($end_date > $timestamp_start_month){
+              $begin_temp = $begin;
+              $begin_temp += $repeats_every*604800;
+              while($begin_temp < $end_date){
+                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                  $day_of_completion = date('j', $begin_temp);
+                  $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+                }
+                $begin_temp += $repeats_every*604800;
+              }
+            }
+          }
+          else if($ends_after != 0){//repeat ends after x times
+            $begin_temp = $begin;
+            for($l = 0; $l < $ends_after-1; $l++){
+              $begin_temp += $repeats_every*604800;
+              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+                $day_of_completion = date('j', $begin_temp);
+                $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
+              }
+            }
+          }
+        }
+      }
       //turn into javascript array so number can be dynamically changed later on
       $temp = $tasks_per_plan_per_day[$id];
       $tasks_per_day = 'new Array('; //javascript array of plan ids
@@ -987,10 +1080,10 @@ class ArtefactTypeCalendar extends ArtefactType {
           $tasks_per_day .= $temp[$u];
           if($u < count($temp))
             $tasks_per_day .= ',';
-        }
-        $tasks_per_day .= ")";
-        $tasks_per_plan_per_day[$id] = $tasks_per_day;
       }
+      $tasks_per_day .= ")";
+      $tasks_per_plan_per_day[$id] = $tasks_per_day;
+    }
     return $tasks_per_plan_per_day;
   }
 

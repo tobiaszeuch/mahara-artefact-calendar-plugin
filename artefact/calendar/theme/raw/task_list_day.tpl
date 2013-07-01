@@ -19,6 +19,12 @@
 					</a>
 					<hr name="task{$task['parent_id']}">
 				{/foreach}
+				{foreach from=$event_per_day[$day] item=event}
+					{assign var=p_id value=$event['parent_id']}
+					<a class="taskname" name="task{$event['parent_id']}" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}&event_info={$event['event_id']}' title="{$event['full_title']}" style="background-color:#{$colors[$p_id]};">{$event['full_title']}
+					</a>
+					<hr name="task{$event['parent_id']}">
+				{/foreach}
 				<div class="description description_overlay
 					{if $day == $today}
 						bggrey
@@ -30,7 +36,7 @@
 					">		
 				</div>
 			</div>
-			<div class="description txtcenter" ><div id="display_number_overlay{$day}" style="display:inline;" >{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}</div>
+			<div class="description txtcenter" ><div id="display_number_overlay{$day}" style="display:inline;" >{$number_of_tasks_per_day[$day]}</div> {str section="artefact.calendar" tag='items'}</div>
 		</div>
 	</div>
 </div>

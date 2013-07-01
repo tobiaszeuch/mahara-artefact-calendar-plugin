@@ -102,6 +102,7 @@ $string['generate'] = 'Generate export link';
 $string['regenerate'] = 'You can regenerate the security key which is part of the link.<br/> The old link becomes invalid.';
 $string['regenerate_link'] = 'Regenerate key';
 
+$string['items'] = 'items';
 //Event
 
 $string['event'] = 'Event';
@@ -120,4 +121,5 @@ $string['on'] = 'On';
 $string['after'] = 'After';
 $string['times'] = 'times';
 $string['missing_repeat_end'] = 'Please choose when the repetition ends.';
+
 ?>

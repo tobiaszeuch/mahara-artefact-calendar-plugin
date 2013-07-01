@@ -39,7 +39,7 @@
 {foreach from=$calendar item=week}
 	{foreach from=$week item=day}
 		{if $day != ""}
-			<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_per_day[$day]}"></input>
+			<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_and_events_per_day[$day]}"></input>
 					{include file="task_list_day.tpl"}
 		{/if}
 	{/foreach}
@@ -139,13 +139,12 @@
 
 								{* The name tag has to be in p tag and each child tag, so IE toggels the events correctly *}
 								
-								<a name="event{$event['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;event_info={$event['event_id']}' title="{$event['full_title']}" style="background-color:#{$colors[$p_id]};">{$event['title']}
+								<a name="task{$event['parent_id']}" class="taskname" href='{$WWWROOT}{$cal}index.php?month={$month}&amp;year={$year}&amp;event_info={$event['event_id']}' title="{$event['full_title']}" style="background-color:#{$colors[$p_id]};">{$event['title']}
 								</a>
 									
 
 							{/foreach}
 						{/if}							
-							
 							<div id="link_number_tasks{$day}" class="description description_overlay
 							{if $day == $today}
 								bggrey
@@ -155,11 +154,11 @@
 								bgday
 							{/if}
 							"
-							{if $day == "" || $number_of_tasks_per_day[$day] < 4}
+							{if $day == "" || $number_of_tasks_and_events_per_day[$day] < '4'}
 								style="display:none;"
 							{/if}>
 								<a class="cursor_pointer" onclick="document.getElementById('task_list_day{$day}').style.display='block';">
-									<div id="display_number_calendar{$day}" style="display:inline;">{$number_of_tasks_per_day[$day]}</div> {str section="artefact.plans" tag='tasks'}
+									<div id="display_number_calendar{$day}" style="display:inline;">{$number_of_tasks_and_events_per_day[$day]}</div> {str section="artefact.calendar" tag='items'}
 								</a>
 							</div>
 						</td>

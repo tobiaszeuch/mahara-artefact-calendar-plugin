@@ -102,6 +102,8 @@ $string['generate'] = 'Export-Link generieren';
 $string['regenerate'] = 'Sie können den im Link enthaltenen Sicherheitsschlüssel neu generieren.<br/> Der alte Link wird dadurch ungültig.';
 $string['regenerate_link'] = 'Schlüssel neu generieren';
 
+$string['items'] = 'Einträge';
+
 //Event
 
 $string['event'] = 'Termin';
