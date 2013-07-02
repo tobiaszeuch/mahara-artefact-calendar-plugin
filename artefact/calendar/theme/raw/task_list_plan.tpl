@@ -67,7 +67,6 @@
 					{if $task_event['whole_day'] == '1'}
 		        		({str section="artefact.calendar" tag="whole_day"})
 		        	{else}
-		        		{$am_pm}
 			        	{if $am_pm == '0'}
 			        		({$task_event['begin_hour']}:{$task_event['begin_minute']} - {$task_event['end_hour']}:{$task_event['end_minute']})
 			        	{else}
