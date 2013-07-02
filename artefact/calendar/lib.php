@@ -1001,8 +1001,8 @@ class ArtefactTypeCalendar extends ArtefactType {
             if($end_date > $timestamp_start_month){
               $begin_temp = $begin;
               $begin_temp += 86400;
-              while($begin_temp < $end_date){
-                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              while($begin_temp <= $end_date+86400){
+                if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                   $day_of_completion = date('j', $begin_temp);
                   $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
                 }
@@ -1014,7 +1014,7 @@ class ArtefactTypeCalendar extends ArtefactType {
             $begin_temp = $begin;
             for($l = 0; $l < $ends_after-1; $l++){
               $begin_temp += 86400;
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
               }
@@ -1026,8 +1026,8 @@ class ArtefactTypeCalendar extends ArtefactType {
             if($end_date > $timestamp_start_month){
               $begin_temp = $begin;
               $begin_temp += $repeats_every*86400;
-              while($begin_temp < $end_date){   
-                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              while($begin_temp <= $end_date+86400){   
+                if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                   $day_of_completion = date('j', $begin_temp);
                   $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
                 }
@@ -1039,7 +1039,7 @@ class ArtefactTypeCalendar extends ArtefactType {
             $begin_temp = $begin;
             for($l = 0; $l < $ends_after-1; $l++){
               $begin_temp += $repeats_every*86400;
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
                }
@@ -1051,8 +1051,8 @@ class ArtefactTypeCalendar extends ArtefactType {
             if($end_date > $timestamp_start_month){
               $begin_temp = $begin;
               $begin_temp += $repeats_every*604800;
-              while($begin_temp < $end_date){
-                if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              while($begin_temp <= $end_date+86400){
+                if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                   $day_of_completion = date('j', $begin_temp);
                   $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
                 }
@@ -1064,7 +1064,7 @@ class ArtefactTypeCalendar extends ArtefactType {
             $begin_temp = $begin;
             for($l = 0; $l < $ends_after-1; $l++){
               $begin_temp += $repeats_every*604800;
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $tasks_per_plan_per_day[$id][$day_of_completion] = $tasks_per_plan_per_day[$id][$day_of_completion]+1;
               }
@@ -2024,14 +2024,15 @@ class ArtefactTypeEvent extends ArtefactType {
             $end_temp = $end;
             $begin_temp += 86400;
             $end_temp += 86400;
-            while($begin_temp < $end_date){
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            while($begin_temp <= $end_date+86400){
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
                 $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
               }
               $begin_temp += 86400;
               $end_temp += 86400;
+
             }
           }
         }
@@ -2041,7 +2042,7 @@ class ArtefactTypeEvent extends ArtefactType {
           for($l = 0; $l < $ends_after-1; $l++){
             $begin_temp += 86400;
             $end_temp += 86400;
-            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
               $day_of_completion = date('j', $begin_temp);
               $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
               $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
@@ -2056,8 +2057,8 @@ class ArtefactTypeEvent extends ArtefactType {
             $end_temp = $end;
             $begin_temp += $repeats_every*86400;
             $end_temp += $repeats_every*86400;
-            while($begin_temp < $end_date){   
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            while($begin_temp <= $end_date+86400){   
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
                 $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
@@ -2073,7 +2074,7 @@ class ArtefactTypeEvent extends ArtefactType {
           for($l = 0; $l < $ends_after-1; $l++){
             $begin_temp += $repeats_every*86400;
             $end_temp += $repeats_every*86400;
-            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
               $day_of_completion = date('j', $begin_temp);
               $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
               $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
@@ -2088,8 +2089,8 @@ class ArtefactTypeEvent extends ArtefactType {
             $end_temp = $end;
             $begin_temp += $repeats_every*604800;
             $end_temp += $repeats_every*604800;
-            while($begin_temp < $end_date){
-              if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            while($begin_temp <= $end_date+86400){
+              if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
                 $day_of_completion = date('j', $begin_temp);
                 $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
                 $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);
@@ -2105,7 +2106,7 @@ class ArtefactTypeEvent extends ArtefactType {
           for($l = 0; $l < $ends_after-1; $l++){
             $begin_temp += $repeats_every*604800;
             $end_temp += $repeats_every*604800;
-            if(($begin_temp >  $timestamp_start_month) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
+            if(($begin_temp > $timestamp_start_month+86399) && ($begin_temp < $timestamp_end_month)) { //check if event is in this month
               $day_of_completion = date('j', $begin_temp);
               $num_events = count($event_per_day[$day_of_completion]); //calculates how many events happen on this day        
               $event_per_day[$day_of_completion][$num_events] = array('title' => $title, 'event_id' => $event_id, 'parent_id' => $parent_id, 'full_title' => $full_title, 'description' => $description, 'begin' => $begin_temp,'end' => $end_temp,'whole_day' => $whole_day,'repeat_type' => $repeat_type,'repeats_every' => $repeats_every,'ends_after' => $ends_after,'begin_hour' => $begin_hour,'begin_minute' => $begin_minute,'end_hour' => $end_hour,'end_minute' => $end_minute);

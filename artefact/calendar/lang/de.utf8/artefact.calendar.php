@@ -83,13 +83,12 @@ $string['yes'] = 'Ja';
 $string['no'] = 'Nein';
 
 $string['color'] = 'Farbe';
-$string['reminder'] = 'Benachrichtigung aktivieren?';
 
 $string['feed'] = 'Kalender freigeben';
-$string['feed_description'] = 'Als Aufgaben exportieren';
-$string['feed_description_event'] = 'Alternativ: <b>Als Termin</b> exportieren (dies ist notwendig für Kalenderprogramme, die das Anzeigen von Aufgaben nicht unterstützen) ';
-$string['feed_description_all'] = 'Alle exportieren';
-$string['feed_description_one'] = 'Exportiere nur';
+$string['feed_description'] = 'Aufgaben als Aufgaben exportieren';
+$string['feed_description_event'] = 'Alternativ: Aufgaben als <b>Termin</b> exportieren (dies ist notwendig für Kalenderprogramme, die das Anzeigen von Aufgaben nicht unterstützen) ';
+$string['feed_description_all'] = 'Alle Aufgaben exportieren';
+$string['feed_description_one'] = 'Exportiere nur Aufgaben von';
 
 $string['missing_title'] = 'Bitte geben Sie einen Titel an.';
 $string['missing_date'] = 'Bitte geben Sie ein Datum an.';
