@@ -158,9 +158,9 @@ $javascript = <<< JAVASCRIPT
 	}
 
 
-	function hide_overlay(){
+	function hide_overlay(overlay){
 
-		document.getElementById('aufgabenoverlay').style.display = 'none'; 
+		document.getElementById(overlay).style.display = 'none'; 
 		
 	}
 
@@ -238,6 +238,13 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed_settings').style.display = 'block';
 	}
 
+	function toggle_repetition_settings(){
+		if(document.getElementById('repetition_settings').style.display == 'block')
+			document.getElementById('repetition_settings').style.display = 'none';
+		else
+			document.getElementById('repetition_settings').style.display = 'block';
+	}
+
 	function toggle_feed_url(toggle){
 		if(toggle == 'off'){
 			document.getElementById('feed_url').style.display = 'none';
@@ -267,87 +274,17 @@ $javascript = <<< JAVASCRIPT
 			document.getElementById('feed').innerHTML += '&type=task'; 
 		else
 			document.getElementById('feed').innerHTML += '&type=task'; 
-	}
 
-	function set_reminder_date_ajax(reminder_value, plan, prefix, reminder_strings){//changes the reminder settings
-		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
-		  xmlhttp=new XMLHttpRequest();
-		  
-		else// code for IE6, IE5
-		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-	 	
-	 	for (var i = 0; i < reminder_strings.length; ++i){ //changes text to new reminder date
-	 		if(reminder_strings[i][0] == reminder_value){
-	 			var newText = prefix+reminder_strings[i][1];
-	 			document.getElementById('reminder').innerHTML = newText;
-	 		}
-	 	}
-	 	toggle_notification_settings();
-		xmlhttp.open("GET","index.php?reminder_date="+reminder_value+"&reminder="+plan+"&ajax=true",true);
-		xmlhttp.send();
-	}
+		if(document.getElementById('export_all').checked == true)
+			document.getElementById('feed').innerHTML += '&export_only=all';
+		else if(document.getElementById('export_one').checked == true){
+			var plan = document.getElementById('export_only').value;
+			document.getElementById('feed').innerHTML += "&export_only="+plan;
+		}
+		else
+			document.getElementById('feed').innerHTML += '&export_old=all';
+		}
 
-
-	function toggle_reminder_ajax(planid, status){//changes the reminder settings
-
-		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
-		  xmlhttp=new XMLHttpRequest();
-		  
-		else// code for IE6, IE5
-		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-
-	 	if(status == 0)
-	 		new_status = 1;
-	 	else new_status = 0;
-
-	 	if(new_status == 1){
-	 		var enable = 'reminder_enabled'+planid;
-	 		var disable = 'reminder_disabled'+planid;
-	 	}
-	 	else{
-	 		var enable = 'reminder_disabled'+planid;
-	 		var disable = 'reminder_enabled'+planid;
-	 	}	
-	 	document.getElementById(disable).style.display = 'none';
-	 	document.getElementById(enable).style.display = 'inline';
-	 	
-		
-		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder="+planid+"&ajax=true",true);
-		xmlhttp.send();
-	}
-
-	function toggle_all_reminders(plan_ids, status){
-		if (window.XMLHttpRequest)// code for IE7+, Firefox, Chrome, Opera, Safari
-		  xmlhttp=new XMLHttpRequest();
-		  
-		else// code for IE6, IE5
-		  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-		
-	 	if(status == 0)
-	 		new_status = 1;
-	 	else new_status = 0;
-
-	 	if(new_status == 1){
-	 		for (var i = 0; i < plan_ids.length; ++i){
-		 		var enable = 'reminder_enabled'+plan_ids[i];
-		 		var disable = 'reminder_disabled'+plan_ids[i];
-		 		document.getElementById(disable).style.display = 'none';
-	 			document.getElementById(enable).style.display = 'inline';
-	 		}
-
-	 	}
-	 	else{
-	 		for (var i = 0; i < plan_ids.length; ++i){
-		 		var enable = 'reminder_disabled'+plan_ids[i];
-		 		var disable = 'reminder_enabled'+plan_ids[i];
-		 		document.getElementById(disable).style.display = 'none';
-	 			document.getElementById(enable).style.display = 'inline';
-		 	} 	
-	 	}	
-		
-		xmlhttp.open("GET","index.php?reminder_status="+new_status+"&reminder=all&ajax=true",true);
-		xmlhttp.send();
-	}
 
 	function choose_color_new_plan(color){
 		var last = document.getElementById('newplan_color').value; //remove highlighting of last chosen color
@@ -357,12 +294,31 @@ $javascript = <<< JAVASCRIPT
 		document.getElementById('newplan_color').value = color;	//set color to chosen one
 		document.getElementById(color).className += ' borderblack'; //highlight chosen color
 	}
-	
+
+	function disable_select(select){
+		if(document.getElementById(select).disabled==true)
+			document.getElementById(select).disabled=false;
+		else 
+			document.getElementById(select).disabled=true;
+	}
+
 JAVASCRIPT;
+
+
+if(isset($_GET['month']))
+	$month = $_GET['month'];
+else
+	$month = date('n',time());
+if(isset($_GET['year']))
+	$year = $_GET['year'];
+else
+	$year = date('Y',time());
 
 $smarty = smarty(array('paginator'));
 $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign_by_ref('plans', $plans);
+$smarty->assign_by_ref('year', $year);
+$smarty->assign_by_ref('month', $month);
 $smarty->assign('PAGEHEADING', hsc(get_string("calendar", "artefact.calendar")));
 if(!($_GET["ajax"] == true))
 	$smarty->display('artefact:calendar:index.tpl');

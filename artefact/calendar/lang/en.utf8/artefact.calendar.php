@@ -26,6 +26,10 @@ $string['datepicker_firstday'] = 0;
 $string['display_format'] = 'Y/m/d';
 $string['full_format'] = '$month_name $day, $year';
 
+$string['am_pm'] = 1;
+$string['date'] = 'Date';
+$string['wrong_date'] = 'The begin time of the event has to be before the end time.';
+
 $string['last_month'] = 'Previous month';
 $string['next_month'] = 'Next month';
 $string['this_month'] = 'This month';
@@ -50,32 +54,27 @@ $string['completiondate'] = 'Completion Date';
 $string['completed'] = 'Completed';
 $string['format'] = 'Please use YYYY/MM/DD format';
 
+$string['save'] = "Save";
+
 $string['savetask'] = 'Save task';
 $string['newtask'] = 'New task';
 $string['deleteconfirm'] = 'Confirm deletion?';
 
-$string['set_reminder'] = 'Reminder date';
-$string['remind_me'] = 'Remind me by email about tasks';
-$string['of'] = 'of';
-$string['reminder_date-1']= 'never';
-$string['reminder_date0'] = 'on the same day';
-$string['reminder_date1'] = 'one day ahead';
-$string['reminder_date2'] = 'two days ahead';
-$string['reminder_date3'] = 'three days ahead';
-$string['reminder_date4'] = 'four days ahead';
-$string['reminder_date5'] = 'five days ahead';
-$string['reminder_date6'] = 'six days ahead';
-$string['reminder_date7'] = 'one week ahead';
-$string['reminder_date14'] = 'two weeks ahead';
-$string['reminder_date21'] = 'three weeks ahead';
-$string['reminder_date28'] = 'four weeks ahead';
-$string['disable_reminder1'] = 'You can disable/enable the reminders of each ';
-$string['disable_reminder2'] = ' by clickung on the clock button next to it.';
+$string['reminder_settings'] = 'Reminder settings';
+$string['remind_me'] = 'Remind me';
 $string['all'] = 'All';
-$string['reminder_enabled_tooltip'] = 'Reminder is enabled';
-$string['reminder_disabled_tooltip'] = 'Reminder is disabled';
-$string['reminder_enable_all_tooltip'] = 'Enable reminder for all';
-$string['reminder_disable_all_tooltip'] = 'Disable reminder for all';
+$string['individual'] = 'Individual';
+$string['of'] = 'of';
+$string['reminder_description'] = 'Reminders for incomplete tasks will be sent to you according to these settings.';
+$string['none'] = 'No reminders';
+$string['never'] = "never";
+$string['same_day'] = "on the same day";
+$string['days_ahead'] = "days ahead";
+$string['day_ahead'] = "day ahead";
+$string['weeks_ahead'] = "weeks ahead";
+$string['week_ahead'] = "week ahead";
+$string['months_ahead'] = "months ahead";
+$string['month_ahead'] = "month ahead";
 $string['subject'] = 'Reminder for task(s)';
 $string['message'] = 'This is a reminder for the following task(s):';
 $string['on'] = 'On';
@@ -84,21 +83,42 @@ $string['yes'] = 'Yes';
 $string['no'] = 'No';
 
 $string['color'] = 'Color';
-$string['reminder'] = 'Enable reminder?';
 
 $string['feed'] = 'Share calendar';
-$string['feed_description'] = 'Export as tasks';
-$string['feed_description_event'] = "Alternative: Export <b>as events</b> (necessary if the calendar program doesn't support the display of tasks) ";
+$string['feed_description'] = 'Export tasks as tasks';
+$string['feed_description_event'] = "Alternative: Export tasks as <b>events</b> (necessary if the calendar program doesn't support the display of tasks) ";
+$string['feed_description_all'] = 'Export all tasks';
+$string['feed_description_one'] = 'Only export tasks of';
 
 $string['missing_title'] = 'Specify a title, please.';
 $string['missing_date'] = 'Specify a date, please.';
 
 $string['export_old'] = "Don't export tasks, which are older than ";
-$string['export_done'] = "Don't export tasks, which are done.";
+$string['export_done'] = "Don't export tasks, which are completed.";
 $string['month_plural'] = 'months';
 $string['month'] = 'month';
 $string['generate'] = 'Generate export link';
 $string['regenerate'] = 'You can regenerate the security key which is part of the link.<br/> The old link becomes invalid.';
 $string['regenerate_link'] = 'Regenerate key';
+
+$string['items'] = 'items';
+//Event
+
+$string['event'] = 'Event';
+$string['new_event'] = 'New event';
+$string['begin'] = 'Begin';
+$string['end'] = 'End';
+$string['whole_day'] = 'whole day';
+$string['saveevent'] = 'Save event';
+$string['repetition'] = 'Repetition';
+$string['repeat_never'] = 'Repeat never'; 
+$string['repeat_daily'] = 'Repeat daily';
+$string['repeat_every'] = 'Repeat every';
+$string['repeat_x_days'] = 'days';
+$string['repeat_x_weeks'] = 'weeks';
+$string['on'] = 'On';
+$string['after'] = 'After';
+$string['times'] = 'times';
+$string['missing_repeat_end'] = 'Please choose when the repetition ends.';
 
 ?>

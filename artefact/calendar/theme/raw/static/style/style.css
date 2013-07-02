@@ -68,6 +68,14 @@
 	padding-top: 1px;
 	}
 
+*.calendar_week {
+	color:white;
+	background-color: #aaa;
+	line-height: 1.4em;
+	padding: 0 2px;
+	font-size: .9167em;
+	}
+
 *.overlay_control {
 	position: absolute;
 	right: 0;
@@ -168,6 +176,10 @@ img.sub {
 	vertical-align: sub !important;
 }
 
+*.top {
+	vertical-align: top;
+}
+
 a.deco_none{
 	text-decoration: none;
 }
@@ -211,7 +223,7 @@ div.day{
 }
 
 td.plan_controls{
-	min-width:60px;
+	min-width:40px;
 	position:relative;
 	padding-right:20px;
 	text-align:right;
@@ -231,3 +243,32 @@ td.plan:hover{
 	background-color: lightgray;
 }
 
+p.plan{
+	margin: 1px;
+	-webkit-user-select: none; /** Text of plans isn't selectable */ 
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+p.plan:hover{
+	background-color: lightgray;
+}
+
+*.cursor_pointer{
+	cursor: pointer;
+}
+
+*.cursor_default{
+	cursor: default;
+}
+
+*.half{
+	width: 50%;
+}
+
+input.plan_radio{
+	margin-top: 0px;
+}
