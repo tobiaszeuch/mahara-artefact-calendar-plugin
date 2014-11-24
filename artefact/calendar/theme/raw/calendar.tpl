@@ -12,23 +12,23 @@
 
 {* includes for overlay windows *}
 {if $edit_plan_tasks_and_events != '0' && $new_task != '1'}
-	{include file="edit_plan.tpl"} 
+	{include file="artefact:calendar:edit_plan.tpl"}
 {elseif $new_task == '1'}
-	{include file="edit_task.tpl"}
+	{include file="artefact:calendar:edit_task.tpl"}
 {elseif $new_event == '1'}
-	{include file="edit_event.tpl"}
+	{include file="artefact:calendar:edit_event.tpl"}
 {/if}
 {if $task_info != '0'}
-	{include file="task_info.tpl"}
+	{include file="artefact:calendar:task_info.tpl"}
 {elseif $event_info != '0'}
-	{include file="event_info.tpl"}
+	{include file="artefact:calendar:event_info.tpl"}
 {elseif $edit_event_id != '0'}
-	{include file="edit_event.tpl"}
+	{include file="artefact:calendar:edit_event.tpl"}
 {elseif $form != '0'  && $new != '1' && $edit_plan_itself != '1' && $new_task != '1' && $new_event != '1'}
-	{include file="edit_task.tpl"}
+	{include file="artefact:calendar:edit_task.tpl"}
 {/if}
 
-{include file="new_plan.tpl"}
+{include file="artefact:calendar:new_plan.tpl"}
 {if $new == 1}
 	<script language="JavaScript">
 		document.getElementById('planoverlay').style.display='block';
@@ -40,7 +40,7 @@
 	{foreach from=$week item=day}
 		{if $day != ""}
 			<input id="number_tasks{$day}" type="hidden" value="{$number_of_tasks_and_events_per_day[$day]}"></input>
-					{include file="task_list_day.tpl"}
+					{include file="artefact:calendar:task_list_day.tpl"}
 		{/if}
 	{/foreach}
 {/foreach}
@@ -219,7 +219,7 @@
 				{/foreach}
 			</table>
 		</div>
-		{include file="color_picker.tpl"}
+		{include file="artefact:calendar:color_picker.tpl"}
 		<p  class="description txtcenter">{$plan_count} 
 			
 		{if $plan_count != 1}

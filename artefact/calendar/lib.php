@@ -31,50 +31,52 @@ require_once('activity.php');
 
 class PluginArtefactCalendar extends PluginArtefact {
 
-  private static $max_reminder_days = 365;
+    private static $max_reminder_days = 365;
 
-	public static function get_artefact_types() {
-		return array(
-		'calendar','event'
-		);
-	}
-	
-	public static function get_block_types() {
-		return array();
-	}
-	
-	public static function get_plugin_name() {
-		return 'calendar';
-	}
-	
-	public static function menu_items() {
-		return array(
-			array(
-			'path' => 'calendar',
-			'url' => 'artefact/calendar/',
-			'title' => get_string('calendar', 'artefact.calendar'),
-			'weight' => 60,
-			),
-		);
-	}
+    public static function get_artefact_types() {
+        return array(
+            'calendar',
+            'event'
+        );
+    }
 
-  public static function get_activity_types() {
+    public static function get_block_types() {
         return array();
     }
 
-  public static function get_cron() {
-    return array(
-      (object)array(
-      'callfunction' => 'remind_all_users',
-      'hour' => '2',
-      'minute' => '00',
-      ),
-      (object)array(
-      'callfunction' => 'clean_db_table',
-      'hour' => '2',
-      'minute' => '00',
-      ));
-  }
+    public static function get_plugin_name() {
+        return 'calendar';
+    }
+
+    public static function menu_items() {
+        return array(
+            array(
+            'path' => 'calendar',
+            'url' => 'artefact/calendar/',
+            'title' => get_string('calendar', 'artefact.calendar'),
+            'weight' => 60,
+            ),
+        );
+    }
+
+    public static function get_activity_types() {
+        return array();
+    }
+
+    public static function get_cron() {
+        return array(
+            (object)array(
+                'callfunction' => 'remind_all_users',
+                'hour' => '2',
+                'minute' => '00',
+            ),
+            (object)array(
+                'callfunction' => 'clean_db_table',
+                'hour' => '2',
+                'minute' => '00',
+            )
+        );
+    }
 
   /**
   * Reminds all users about their tasks
@@ -292,186 +294,197 @@ class ArtefactTypeCalendar extends ArtefactType {
    *
    * @param plans (reference)
    */
-  public static function build_calendar_html(&$plans) {
+    public static function build_calendar_html(&$plans) {
 
-    global $SESSION,$USER;
+        global $SESSION,$USER;
 
-     //if status is changed
-    if(isset($_GET['ajax']))
-      ArtefactTypeCalendar::ajax_handling($plans);
-
-    else{
-      $dates = ArtefactTypeCalendar::get_calendar_dates(); //function that calculates all dates
-      if(isset($_POST['reminder_submit']))
-          ArtefactTypeCalendar::save_reminder_settings($plans);
-      if(isset($_GET['title'])){ //if edit task/event form was send, submit the task/event
-          if(($_GET['type']) == 'task')
-            ArtefactTypeCalendar::submit_task($dates, $cal_variables['task_info']); 
-          else if (($_GET['type']) == 'event')
-            ArtefactTypeEvent::submit_event($dates);
+         //if status is changed
+        if(isset($_GET['ajax'])) {
+            ArtefactTypeCalendar::ajax_handling($plans);
         }
-      else if(isset($_GET['plan_title'])) //if edit plan form was sent
-       ArtefactTypeCalendar::edit_plan_handler($dates);
+        else {
+            //function that calculates all dates
+            $dates = ArtefactTypeCalendar::get_calendar_dates();
+            if(isset($_POST['reminder_submit'])) {
+                ArtefactTypeCalendar::save_reminder_settings($plans);
+            }
+            if(isset($_GET['title'])){ //if edit task/event form was send, submit the task/event
+                if(($_GET['type']) == 'task') {
+                    ArtefactTypeCalendar::submit_task($dates, $cal_variables['task_info']);
+                }
+                else if (($_GET['type']) == 'event') {
+                    ArtefactTypeEvent::submit_event($dates);
+                }
+            }
+            else if(isset($_GET[' {plan_title'])) { //if edit plan form was sent
+                  ArtefactTypeCalendar::edit_plan_handler($dates);
+              }
 
-      else if(isset($_GET['newplan_title']))  //if new plan form was sent
-        ArtefactTypeCalendar::new_plan_handler($dates);
-      
-      else if(isset($_GET['delete_plan_final']))// if plan is to be deleted
-        ArtefactTypeCalendar::delete_plan_handler($dates);
+            else if(isset($_GET['newplan_title']))  //if new plan form was sent
+                  ArtefactTypeCalendar::new_plan_handler($dates);
 
-      else if(isset($_GET['delete_task_final']))  // if task is to be deleted
-        ArtefactTypeCalendar::delete_task_handler($dates);
+            else if(isset($_GET['delete_plan_final']))// if plan is to be deleted
+                  ArtefactTypeCalendar::delete_plan_handler($dates);
 
-      else if(isset($_GET['delete_event_final']))  // if task is to be deleted
-        ArtefactTypeCalendar::delete_event_handler($dates);
-      
-      else if(isset($_GET['regenerate'])){ // if feed url needs to be regenerated
-        if($_GET['regenerate'] == 1){
-          ArtefactTypeCalendar::generate_feed_url($USER->id, 0);
-          redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&newfeed=1');
+            else if(isset($_GET['delete_task_final']))  // if task is to be deleted
+                  ArtefactTypeCalendar::delete_task_handler($dates);
+
+            else if(isset($_GET['delete_event_final']))  // if task is to be deleted
+                  ArtefactTypeCalendar::delete_event_handler($dates);
+
+            else if(isset($_GET['regenerate'])){ // if feed url needs to be regenerated
+                  if($_GET['regenerate'] == 1){
+                    ArtefactTypeCalendar::generate_feed_url($USER->id, 0);
+                    redirect('/artefact/calendar/index.php?month='.$dates['month'].'&year='.$dates['year'].'&newfeed=1');
+                  }
+            }
+            else{
+                $missingtitle = param_variable('missing_title', null);
+                $missingdate = param_variable('missing_date', null);
+                $missing_field_description = param_variable('missing_field_description', '');
+
+                $cal_variables = ArtefactTypeCalendar::get_cal_variables();
+
+                $form = 0;
+                $edit_task_id = $cal_variables['edit_task_id'];
+                $edit_event_id = $cal_variables['edit_event_id'];
+
+                //if task needs to be edited, get form
+                if($edit_task_id != 0) {
+                    $form = ArtefactTypeCalendar::get_task_form($edit_task_id);
+                }
+                else if($edit_event_id != 0) {
+                    $form = ArtefactTypeEvent::get_event_form($edit_event_id);
+                }
+                //if no title or date is specified for a new task/plan, error message is displayed and fields are refilled
+                else if($missingtitle == '1' || $missingdate == '1') {
+                    $form = ArtefactTypeCalendar::get_missing_field_info(); //handling for tasks
+                }
+
+                $plan_count = count($plans['data']);
+                $calendar_weeks = ArtefactTypeCalendar::get_calendar_weeks($dates['month'], $dates['year']);
+                $edit_plan_info = ArtefactTypeCalendar::get_edit_plan_info($plans, $missing_field_description);
+                $task_count_info = ArtefactTypeCalendar::get_task_count_info($plans);
+                $feed_url = ArtefactTypeCalendar::get_feed_url();
+                $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
+                $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month
+                $event_per_day = ArtefactTypeEvent::build_event_per_day($dates, $plans);
+                $full_format = get_string('full_format', 'artefact.calendar'); //full date format
+                $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
+                $full_format = str_replace('$year', $dates['year'], $full_format);
+
+                $full_dates = array(); //full date for each day
+                $number_of_tasks_and_events_per_day = array(); //if more than 3, displayed in calendar
+
+                for($j = 1; $j <= count($task_per_day); $j++){
+                  $full_dates[$j] = str_replace('$day', $j, $full_format);
+                  $number_of_tasks_and_events_per_day[$j] = count($task_per_day[$j]) + count($event_per_day[$j]);
+                }
+
+                $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
+                $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
+                $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
+                $available_colors = self::$available_colors; //available colors for color picker
+                $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date_per_plan($plans);
+                $reminder_date_all = ArtefactTypeCalendar::get_reminder_date_all();
+                $reminder_dates = ArtefactTypeCalendar::get_reminder_array();
+                $reminder_type = ArtefactTypeCalendar::get_reminder_type();
+                $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
+                $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
+                /**
+                * assigns for smarty
+                */
+
+                $smarty = smarty_core();
+
+                // plans
+                $smarty->assign_by_ref('plans', $plans);
+                $smarty->assign_by_ref('plan_count', $plan_count);
+                $smarty->assign_by_ref('short_plan_titles', $short_plan_titles);
+                $smarty->assign_by_ref('task_count', $task_count_info['task_count']);
+                $smarty->assign_by_ref('task_count_completed', $task_count_info['task_count_completed']);
+                $smarty->assign_by_ref('number_of_tasks_and_events_per_day', $number_of_tasks_and_events_per_day);
+                $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
+                $smarty->assign_by_ref('new', $_GET['new']);
+
+                //reminder
+                $smarty->assign_by_ref('plan_ids_js', $plan_ids_js);
+                $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
+                $smarty->assign_by_ref('reminder_date_all', $reminder_date_all);
+                $smarty->assign_by_ref('reminder_dates', $reminder_dates);
+                $smarty->assign_by_ref('reminder_type', $reminder_type);
+
+                // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
+                $smarty->assign_by_ref('form', $form);
+                $smarty->assign_by_ref('edit_task_id', $edit_task_id);
+                $smarty->assign_by_ref('edit_event_id', $edit_event_id);
+                $smarty->assign_by_ref('edit_plan_id', $edit_plan_info['edit_plan_id']);
+                $smarty->assign_by_ref('edit_plan_itself', $cal_variables['edit_plan_itself']);
+                $smarty->assign_by_ref('edit_plan_tasks_and_events', $edit_plan_info['edit_plan_tasks_and_events']);
+                $smarty->assign_by_ref('edit_plan_title', $edit_plan_info['edit_plan_title']);
+                $smarty->assign_by_ref('edit_plan_description', $edit_plan_info['edit_plan_description']);
+                $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
+                $smarty->assign_by_ref('specify_parent', $cal_variables['specify_parent']);
+                $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
+                $smarty->assign_by_ref('new_event', $cal_variables['new_event']);
+                $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
+                $smarty->assign_by_ref('event_info', $cal_variables['event_info']);
+
+                // colors and status
+                $smarty->assign_by_ref('colors', $colors);
+                $smarty->assign_by_ref('available_colors', $available_colors);
+                $smarty->assign_by_ref('plans_status', $plans_status);
+
+                // dates
+                $smarty->assign_by_ref('year', $dates['year']);
+                $smarty->assign_by_ref('month', $dates['month']);
+                $smarty->assign_by_ref('today', $dates['today']);
+                $smarty->assign_by_ref('num_days', $dates['num_days']);
+                $smarty->assign_by_ref('next_month',$dates['next_month']);
+                $smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
+                $smarty->assign_by_ref('this_month',$dates['this_month']);
+                $smarty->assign_by_ref('this_year', $dates['this_year']);
+                $smarty->assign_by_ref('past_month', $dates['past_month']);
+                $smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
+                $smarty->assign_by_ref('month_name', $dates['month_name']);
+                $smarty->assign_by_ref('task_per_day', $task_per_day);
+                $smarty->assign_by_ref('event_per_day', $event_per_day);
+                $smarty->assign_by_ref('week_start', $dates['week_start']);
+                $smarty->assign_by_ref('am_pm', $dates['am_pm']);
+                $smarty->assign_by_ref('years', $dates['years']);
+                $smarty->assign_by_ref('hours', $dates['hours']);
+                $smarty->assign_by_ref('minutes', $dates['minutes']);
+                $smarty->assign_by_ref('full_dates', $full_dates);
+                $smarty->assign_by_ref('calendar', $calendar);
+                $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
+
+                //feed
+                $smarty->assign_by_ref('uid', $USER->get('id'));
+                $smarty->assign_by_ref('feed_url', $feed_url);
+                $smarty->assign_by_ref('newfeed', $ $cal_variables['newfeed']);
+
+                //missing title or date
+                $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
+                $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
+                $smarty->assign_by_ref('wrong_date', $_GET['wrong_date']);
+                $smarty->assign_by_ref('missing_repeat', $_GET['missing_repeat']);
+
+                // smarty fetch
+                $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
+            }
         }
-      }
-      else{
-
-        $cal_variables = ArtefactTypeCalendar::get_cal_variables(); 
-        
-        $form = 0;
-        $edit_task_id = $cal_variables['edit_task_id'];
-        $edit_event_id = $cal_variables['edit_event_id'];
-        if($edit_task_id != 0) //if task needs to be edited, get form
-          $form = ArtefactTypeCalendar::get_task_form($edit_task_id);
-        else if($edit_event_id != 0) 
-          $form = ArtefactTypeEvent::get_event_form($edit_event_id);
-        else if($_GET['missing_title'] == '1' || $_GET['missing_date'] == '1') { //if no title or date is specified for a new task/plan, error message is displayed and fields are refilled    
-          $form = ArtefactTypeCalendar::get_missing_field_info(); //handling for tasks
-          if(isset($_GET['missing_field_description']))//handling for plans
-            $missing_field_description = $_GET['missing_field_description']; 
-          else $missing_field_description = "";   
-        }
-
-        $plan_count = count($plans['data']);
-        $calendar_weeks = ArtefactTypeCalendar::get_calendar_weeks($dates['month'], $dates['year']);
-        $edit_plan_info = ArtefactTypeCalendar::get_edit_plan_info($plans, $missing_field_description);
-        $task_count_info = ArtefactTypeCalendar::get_task_count_info($plans);
-        $feed_url = ArtefactTypeCalendar::get_feed_url();
-        $plans_status = ArtefactTypeCalendar::get_status_of_plans($plans);//status for all plans
-        $task_per_day = ArtefactTypeCalendar::build_task_per_day($dates, $plans); // get all tasks, check which tasks happen this month
-        $event_per_day = ArtefactTypeEvent::build_event_per_day($dates, $plans); 
-        $full_format = get_string('full_format', 'artefact.calendar'); //full date format
-        $full_format = str_replace('$month_name', $dates['month_name'], $full_format); //month name and year can directly be replaced
-        $full_format = str_replace('$year', $dates['year'], $full_format);
-        
-        $full_dates = array(); //full date for each day
-        $number_of_tasks_and_events_per_day = array(); //if more than 3, displayed in calendar
-        
-        for($j = 1; $j <= count($task_per_day); $j++){   
-          $full_dates[$j] = str_replace('$day', $j, $full_format);
-          $number_of_tasks_and_events_per_day[$j] = count($task_per_day[$j]) + count($event_per_day[$j]);
-        }
-        
-        $number_of_tasks_per_plan_per_day = ArtefactTypeCalendar::get_number_of_tasks_per_plan_per_day($plans, $dates); //array of javascript arrays with number of tasks per day for each plan
-        $calendar = ArtefactTypeCalendar::build_calendar_array($dates);  //calendar is filled with dates
-        $colors = ArtefactTypeCalendar::get_colors($plans);     //colors for each plan
-        $available_colors = self::$available_colors; //available colors for color picker
-        $reminder_date_per_plan = ArtefactTypeCalendar::get_reminder_date_per_plan($plans);
-        $reminder_date_all = ArtefactTypeCalendar::get_reminder_date_all();
-        $reminder_dates = ArtefactTypeCalendar::get_reminder_array();
-        $reminder_type = ArtefactTypeCalendar::get_reminder_type();
-        $plan_ids_js = ArtefactTypeCalendar::get_plan_ids_js($plans);
-        $short_plan_titles = ArtefactTypeCalendar::get_short_plan_titles($plans);
-        /**
-        * assigns for smarty
-        */
-  
-        $smarty = smarty_core();
-       
-        // plans
-        $smarty->assign_by_ref('plans', $plans);
-        $smarty->assign_by_ref('plan_count', $plan_count);
-        $smarty->assign_by_ref('short_plan_titles', $short_plan_titles);
-        $smarty->assign_by_ref('task_count', $task_count_info['task_count']);
-        $smarty->assign_by_ref('task_count_completed', $task_count_info['task_count_completed']); 
-        $smarty->assign_by_ref('number_of_tasks_and_events_per_day', $number_of_tasks_and_events_per_day);
-        $smarty->assign_by_ref('number_of_tasks_per_plan_per_day', $number_of_tasks_per_plan_per_day);
-        $smarty->assign_by_ref('new', $_GET['new']);
-
-        //reminder
-        $smarty->assign_by_ref('plan_ids_js', $plan_ids_js);
-        $smarty->assign_by_ref('reminder_date_per_plan', $reminder_date_per_plan);
-        $smarty->assign_by_ref('reminder_date_all', $reminder_date_all);
-        $smarty->assign_by_ref('reminder_dates', $reminder_dates);
-        $smarty->assign_by_ref('reminder_type', $reminder_type);
-
-        // form for 'edit task' and elements for 'edit plan', 'new task' and 'delete task'
-        $smarty->assign_by_ref('form', $form);
-        $smarty->assign_by_ref('edit_task_id', $edit_task_id);
-        $smarty->assign_by_ref('edit_event_id', $edit_event_id);
-        $smarty->assign_by_ref('edit_plan_id', $edit_plan_info['edit_plan_id']);
-        $smarty->assign_by_ref('edit_plan_itself', $cal_variables['edit_plan_itself']);
-        $smarty->assign_by_ref('edit_plan_tasks_and_events', $edit_plan_info['edit_plan_tasks_and_events']);
-        $smarty->assign_by_ref('edit_plan_title', $edit_plan_info['edit_plan_title']);
-        $smarty->assign_by_ref('edit_plan_description', $edit_plan_info['edit_plan_description']);
-        $smarty->assign_by_ref('parent_id', $cal_variables['parent_id']);
-        $smarty->assign_by_ref('specify_parent', $cal_variables['specify_parent']);
-        $smarty->assign_by_ref('new_task', $cal_variables['new_task']);
-        $smarty->assign_by_ref('new_event', $cal_variables['new_event']);
-        $smarty->assign_by_ref('task_info', $cal_variables['task_info']);
-        $smarty->assign_by_ref('event_info', $cal_variables['event_info']);
-
-        // colors and status
-        $smarty->assign_by_ref('colors', $colors);
-        $smarty->assign_by_ref('available_colors', $available_colors);
-        $smarty->assign_by_ref('plans_status', $plans_status);
-
-        // dates
-        $smarty->assign_by_ref('year', $dates['year']);
-        $smarty->assign_by_ref('month', $dates['month']);
-        $smarty->assign_by_ref('today', $dates['today']);
-        $smarty->assign_by_ref('num_days', $dates['num_days']);
-        $smarty->assign_by_ref('next_month',$dates['next_month']);
-       	$smarty->assign_by_ref('next_month_year', $dates['next_month_year']);
-       	$smarty->assign_by_ref('this_month',$dates['this_month']);
-       	$smarty->assign_by_ref('this_year', $dates['this_year']);
-       	$smarty->assign_by_ref('past_month', $dates['past_month']);
-       	$smarty->assign_by_ref('past_month_year', $dates['past_month_year']);
-        $smarty->assign_by_ref('month_name', $dates['month_name']);
-        $smarty->assign_by_ref('task_per_day', $task_per_day);
-        $smarty->assign_by_ref('event_per_day', $event_per_day);
-        $smarty->assign_by_ref('week_start', $dates['week_start']);
-        $smarty->assign_by_ref('am_pm', $dates['am_pm']);
-        $smarty->assign_by_ref('years', $dates['years']);
-        $smarty->assign_by_ref('hours', $dates['hours']);
-        $smarty->assign_by_ref('minutes', $dates['minutes']);
-        $smarty->assign_by_ref('full_dates', $full_dates);
-        $smarty->assign_by_ref('calendar', $calendar);
-        $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
-
-        //feed
-        $smarty->assign_by_ref('uid', $USER->id);
-        $smarty->assign_by_ref('feed_url', $feed_url);
-        $smarty->assign_by_ref('newfeed', $ $cal_variables['newfeed']);
-
-        //missing title or date
-        $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
-        $smarty->assign_by_ref('missing_date', $_GET['missing_date']);
-        $smarty->assign_by_ref('wrong_date', $_GET['wrong_date']);
-        $smarty->assign_by_ref('missing_repeat', $_GET['missing_repeat']);
-
-        // smarty fetch
-        $plans['tablerows'] = $smarty->fetch('artefact:calendar:calendar.tpl');
-      }
     }
-  }
 
   /**
   * Gets all calendar variables
   */
   private static function get_cal_variables(){
-    $new_task = $newfeed = $task_info = $event_info = $edit_plan_itself = $specify_parent = 0;
+    $new_task = $newfeed = $task_info = $event_info = $edit_plan_itself = $specify_parent = $new_event = 0;
     $parent_id = "";
 
-    if(isset($_GET['new_task']))
-      $new_task = $_GET['new_task']; //is set to 1 if new task is added
+    if(isset($_GET['new_task'])) {
+        $new_task = $_GET['new_task']; //is set to 1 if new task is added
+    }
     if(isset($_GET['new_event']))
       $new_event = $_GET['new_event']; //is set to 1 if new event is added
     if(isset($_GET['parent_id']))
@@ -947,6 +960,7 @@ class ArtefactTypeCalendar extends ArtefactType {
 
   private static function get_number_of_tasks_per_plan_per_day($plans, $dates){
     $plan_count = count($plans['data']);
+    $tasks_per_plan_per_day = array();
 
     for($i = 0; $i < $plan_count; $i++){
       $id = $plans['data'][$i]->id;
