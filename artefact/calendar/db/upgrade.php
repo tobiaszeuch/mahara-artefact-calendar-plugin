@@ -64,8 +64,6 @@ function xmldb_artefact_calendar_upgrade($oldversion=0) {
          if (!create_table($table)) {
             throw new SQLException($table . " could not be created, check log for errors.");
         }
-        
-
     }
 
     return true;

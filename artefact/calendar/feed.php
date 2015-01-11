@@ -40,8 +40,8 @@ header('Content-Disposition: attachment; filename="plans.ics"');
 
 require(dirname(dirname(dirname(__FILE__))) . '/init.php');
 require_once(dirname(dirname(dirname(__FILE__))).'/artefact/lib.php');
-require_once(dirname(dirname(dirname(__FILE__))).'/artefact/calendar/lib.php')      ;
-require_once(dirname(dirname(dirname(__FILE__))).'/artefact/plans/lib.php')  ;
+require_once(dirname(dirname(dirname(__FILE__))).'/artefact/calendar/lib.php');
+require_once(dirname(dirname(dirname(__FILE__))).'/artefact/plans/lib.php');
 
 // offset and limit
 $offset = param_integer('offset', 0);
@@ -50,22 +50,27 @@ $limit  = param_integer('limit', 1000);
 $userkey = $_GET['fid'];
 $user = $_GET['uid'];
 
-if(!$userkey)
-	echo get_string('missingparamid', 'error').": feed id";
-else if(!$user)
-	echo get_string('missingparamid', 'error').": user id";
+if (!$userkey) {
+    echo get_string('missingparamid', 'error').": feed id";
+}
+else if (!$user) {
+    echo get_string('missingparamid', 'error').": user id";
+}
 else {
-	if(isset($_GET['export_only'])){
-		if($_GET['export_only'] == 'all')
-			$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
-		else 
-			$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit, $_GET['export_only']);//one plan
-	}
-	else 
-		$plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
-	$feed = ArtefactTypeCalendar::build_feed($plans, $user, $userkey);
-	ob_clean(); //cleans the output, otherwise additional empty lines show up which kills the feed
-	echo $feed;
-}	
+    if (isset($_GET['export_only'])) {
+        if($_GET['export_only'] == 'all') {
+            $plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
+        }
+        else {
+            $plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit, $_GET['export_only']);//one plan
+        }
+    }
+    else {
+        $plans = ArtefactTypeCalendar::get_plans_of_user($user, $offset, $limit);//all plans
+    }
+    $feed = ArtefactTypeCalendar::build_feed($plans, $user, $userkey);
+    ob_clean(); //cleans the output, otherwise additional empty lines show up which kills the feed
+    echo $feed;
+}
 
 ?>
