@@ -65,6 +65,15 @@ function xmldb_artefact_calendar_upgrade($oldversion=0) {
             throw new SQLException($table . " could not be created, check log for errors.");
         }
     }
+    
+    if ($oldversion < 2015011800) {
+        $subscription = (object) array(
+            'plugin' => 'calendar',
+            'event' => 'deleteartefact',
+            'callfunction' => 'on_delete_calendar_delete_events'
+        );
+        ensure_record_exists('artefact_event_subscription', $subscription, $subscription);
+    }
 
     return true;
     

@@ -3,7 +3,7 @@
 	<div id='overlay_window' class="overlay">
 		<div class="overlay_control" style="min-width:0;">
 		    <a onclick="document.getElementById('task_list_day{$day}').style.display='none';"> 
-		    	<img src="{$WWWROOT}{$img}remove-block.png" alt="X"/>
+		    	<img src="{$WWWROOT}{$img}btn_close.png" alt="X"/>
 		    </a>
 		</div>
 		<div id="overlay_content">
@@ -25,15 +25,7 @@
 					</a>
 					<hr name="task{$event['parent_id']}">
 				{/foreach}
-				<div class="description description_overlay
-					{if $day == $today}
-						bggrey
-					{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}
-						bgweekend
-					{else}
-						bgday
-					{/if}
-					">		
+				<div class="description description_overlay {if $day == $today}bggrey{elseif (($week_count == 0 or $week_count == 6) and $week_start == 0) or (($week_count == 5 or $week_count == 6) and $week_start == 1)}bgweekend{else}bgday{/if}">
 				</div>
 			</div>
 			<div class="description txtcenter" ><div id="display_number_overlay{$day}" style="display:inline;" >{$number_of_tasks_and_events_per_day[$day]}</div> {str section="artefact.calendar" tag='items'}</div>

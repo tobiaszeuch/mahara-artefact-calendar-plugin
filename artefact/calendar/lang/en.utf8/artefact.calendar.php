@@ -29,6 +29,8 @@ $string['full_format'] = '$month_name $day, $year';
 $string['am_pm'] = 1;
 $string['date'] = 'Date';
 $string['wrong_date'] = 'The begin time of the event has to be before the end time.';
+$string['hh'] = 'hh';
+$string['mm'] = 'mm';
 
 $string['last_month'] = 'Previous month';
 $string['next_month'] = 'Next month';
@@ -120,5 +122,6 @@ $string['on'] = 'On';
 $string['after'] = 'After';
 $string['times'] = 'times';
 $string['missing_repeat_end'] = 'Please choose when the repetition ends.';
+$string['error_no_plan'] = 'You have to create a plan in order for the calendar to work!';
 
 ?>

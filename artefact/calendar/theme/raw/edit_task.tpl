@@ -3,7 +3,7 @@
     $(function() {
         $("#datepicker").datepicker({
         	showOn: "button",
-            buttonImage: "{$WWWROOT}theme/raw/static/images/calendar.gif",
+            buttonImage: "{$WWWROOT}theme/raw/static/images/btn_calendar.png",
             buttonImageOnly: true,
             dateFormat: "{str section='artefact.calendar' tag='datepicker_format'}",
             altField: "#alternate",
@@ -37,7 +37,7 @@
 		<div id='overlay'></div>
 			<div id='overlay_window' class="overlay">
 				<div class="overlay_control" style='min-width:0;'>
-            		<img src="{$WWWROOT}theme/raw/static/images/remove-block.png" class="deletebutton" alt="X" onclick='hide_overlay("taskoverlay");'/>
+            		<img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X" onclick='hide_overlay("taskoverlay");'/>
 		        </div>
 		        <div id="overlay_content">
 					<form name="edittask" method="get" action="" id="edittask"> 						

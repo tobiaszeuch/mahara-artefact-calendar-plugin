@@ -29,6 +29,8 @@ $string['full_format'] = '$day. $month_name $year';
 $string['am_pm'] = 0; 
 $string['date'] = 'Datum';
 $string['wrong_date'] = 'Der Beginn des Termins muss vor dem Ende liegen.';
+$string['hh'] = 'hh';
+$string['mm'] = 'mm';
 
 $string['last_month'] = 'Letzter Monat';
 $string['next_month'] = 'Nächster Monat';
@@ -121,4 +123,5 @@ $string['on'] = 'Am';
 $string['after'] = 'Nach';
 $string['times'] = 'mal';
 $string['missing_repeat_end'] = 'Bitte wählen Sie aus, wann die Wiederholungen enden.';
+$string['error_no_plan'] = 'Sie müssen einen Plan anlegen, um den Kalendar benutzen zu können.';
 ?>

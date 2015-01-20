@@ -1,6 +1,6 @@
 <div class="overlay_control" style="min-width:36px;">
     <a class="flright" href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
-    	<img src="{$WWWROOT}{$img}remove-block.png" alt="X"/>
+    	<img src="{$WWWROOT}{$img}btn_close.png" alt="X"/>
     </a>	
 </div>
 <div id="overlay_content">
