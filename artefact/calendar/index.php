@@ -323,6 +323,7 @@ $smarty->assign('INLINEJAVASCRIPT', $javascript);
 $smarty->assign_by_ref('plans', $plans);
 $smarty->assign_by_ref('year', $year);
 $smarty->assign_by_ref('month', $month);
+$smarty->assign('available_colors', ArtefactTypeCalendar::get_available_colors());
 $smarty->assign('PAGEHEADING', hsc(get_string("calendar", "artefact.calendar")));
 if (!(array_key_exists('ajax', $_GET) && $_GET["ajax"] == true)) {
     $smarty->display('artefact:calendar:index.tpl');

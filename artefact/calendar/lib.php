@@ -310,6 +310,10 @@ class ArtefactTypeCalendar extends ArtefactType {
         '5B5BFF',
         '25A0C5'
     );
+    
+    public static function get_available_colors() {
+        return self::$available_colors;
+    }
 
     // number of available colors 
     private static $color_num = 35; 
@@ -873,33 +877,58 @@ class ArtefactTypeCalendar extends ArtefactType {
      */
     private static function get_missing_field_info() {
         $display_format = get_string('display_format', 'artefact.calendar');
-        if ($_GET['new_event'] == 1 || $_GET['edit_event_id'] != "") {
-            if ($_GET['missing_field_begin'] != "") {
+        $title = '';
+        $missingfielddescription = '';
+        $missingfieldcompleted = '';
+        if (array_key_exists('missing_field_title', $_GET)) {
+            $title = $_GET['missing_field_title'];
+        }
+        if (array_key_exists('missing_field_description', $_GET)) {
+            $missingfielddescription = $_GET['missing_field_description'];
+        }
+        if (array_key_exists('missing_field_completed', $_GET)) {
+            $missingfieldcompleted = $_GET['missing_field_completed'];
+        }
+        $newevent = 0;
+        $editevent = '';
+        $missingfieldbegin = '';
+        if (array_key_exists('new_event', $_GET)) {
+            $newevent = $_GET['new_event'];
+        }
+        if (array_key_exists('edit_event_id', $_GET)) {
+            $editevent = $_GET['edit_event_id'];
+        }
+        if (array_key_exists('missing_field_begin', $_GET)) {
+            $missingfieldbegin = $_GET['missing_field_begin'];
+        }
+        if (($newevent == 1) || ($editevent != "")) {
+            if ($missingfieldbegin != "") {
                 if ($display_format == 'Y/m/d') {
-                    $begin_display = $_GET['missing_field_begin'];
+                    $begin_display = $missingfieldbegin;
                 }
                 else {
-                    $begin_parts = explode('/', $_GET['missing_field_begin']);
+                    $begin_parts = explode('/', $missingfieldbegin);
                     $begin_display = $begin_parts[2] . '.' . $begin_parts[1] . '.' . $begin_parts[0];
                 }
             }
-            else
-            $begin_display = "";
+            else {
+                $begin_display = '';
+            }
 
             return array(
-                'title' => $_GET['missing_field_title'],
-                'description' => $_GET['missing_field_description'],
-                'begin' => $_GET['missing_field_begin'],
+                'title' => $title,
+                'description' => $missingfielddescription,
+                'begin' => $missingfieldbegin,
                 'begin_display' => $begin_display
             );
         }
         else {
-            if ($_GET['missing_field_completiondate'] != "") {
+            if ($missingfieldcompleted != "") {
                 if ($display_format == 'Y/m/d') {
-                    $completiondate_display = $_GET['missing_field_completiondate'];
+                    $completiondate_display = $missingfieldcompleted;
                 }
                 else {
-                    $completiondate_parts = explode('/', $_GET['missing_field_completiondate']);
+                    $completiondate_parts = explode('/', $missingfieldcompleted);
                     $completiondate_display = $completiondate_parts[2].'.'.$completiondate_parts[1].'.'.$completiondate_parts[0];
                 }
             }
@@ -907,10 +936,10 @@ class ArtefactTypeCalendar extends ArtefactType {
             $completiondate_display = "";
 
             return array(
-                'title' => $_GET['missing_field_title'],
-                'description' => $_GET['missing_field_description'],
-                'completed' => $_GET['missing_field_completed'],
-                'completiondate' => $_GET['missing_field_completiondate'],
+                'title' => $title,
+                'description' => $missingfielddescription,
+                'completed' => $missingfieldcompleted,
+                'completiondate' => $missingfieldcompleted,
                 'completiondate_display' => $completiondate_display
             );
         }

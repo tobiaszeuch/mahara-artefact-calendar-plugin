@@ -33,7 +33,7 @@
 
 							{counter}
 						{/foreach}
-						<input type="hidden" id="newplan_color" name="newplan_color" value="">
+						<input type="hidden" id="newplan_color" name="newplan_color" value="660000">
 					</p>
 					<p>
 						<input type="hidden" name="month" value="{$month}"/>

@@ -151,17 +151,17 @@
                                             {str section="artefact.calendar" tag="after"}
                                         </option>
                                         <option value="on"
-                                            {if $form['end_date'] !== ''}selected="selected"{/if}
+                                            {if $form['end_date'] != ''}selected="selected"{/if}
                                         >
                                             {str section="artefact.calendar" tag="on"}
                                         </option>
                                     </select>
                                 </td>
                                 <td>
-                                    <div class="showonlyonrepeatendson {if $form['end_date'] === ''}js-hidden{/if}">
-                                        <input type="text" name="end_date" class="text datepicker" value={$form['end_date']}/>
+                                    <div class="showonlyonrepeatendson {if $form['end_date'] == ''}js-hidden{/if}">
+                                        <input type="text" name="end_date" class="text datepicker" value="{$form['end_date']}"/>
                                     </div>
-                                    <span class="showonlyonrepeatendsafter {if $form['ends_after'] === ''}js-hidden{/if}">
+                                    <span class="showonlyonrepeatendsafter {if $form['ends_after'] == ''}js-hidden{/if}">
                                         <input type="text" name="ends_after" value="{$form['ends_after']}"/>{str section="artefact.calendar" tag="times"}
                                     </span>
                                 </td>
