@@ -60,7 +60,7 @@ class PluginArtefactCalendar extends PluginArtefact {
                 'url' => 'artefact/calendar/',
                 'title' => '',
                 'alt' => get_string('calendar', 'artefact.calendar'),
-                'icon' => $THEME->get_url('images/btn_calendar.png'),
+                'icon' => $THEME->get_url('images/calendar.png'),
                 'weight' => 60,
             ),
         );
