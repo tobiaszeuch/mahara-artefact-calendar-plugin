@@ -49,7 +49,14 @@ class PluginArtefactCalendar extends PluginArtefact {
     }
     
     public static function menu_items() {
-        return array();
+        return array(
+            'content/plans' => array(
+                'path' => 'content/plans',
+                'url'  => 'artefact/plans/index.php',
+                'title' => get_string('Plans', 'artefact.plans') + "test",
+                'weight' => 60,
+            ),
+        );
     }
 
     public static function right_nav_menu_items() {
