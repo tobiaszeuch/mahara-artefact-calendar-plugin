@@ -1,7 +1,9 @@
 
 <div id='picker' class="color_picker">
 	<div class="overlay_control mini" style="display:block;">
-		<img id="close_color_picker" src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" style="width:12px;" alt="X"/>
+            <button id="close_color_picker" class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
     </div>
     <input type="hidden" id="color_picker_id">
     <input type="hidden" id="old_color" value="">

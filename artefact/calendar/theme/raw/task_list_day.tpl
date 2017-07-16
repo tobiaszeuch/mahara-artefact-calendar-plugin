@@ -3,7 +3,9 @@
 	<div id='overlay_window' class="overlay">
 		<div class="overlay_control" style="min-width:0;">
 		    <a onclick="document.getElementById('task_list_day{$day}').style.display='none';"> 
-		    	<img src="{$WWWROOT}{$img}btn_close.png" alt="X"/>
+		    	<button class="close deletebutton" type="button" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
 		    </a>
 		</div>
 		<div id="overlay_content">

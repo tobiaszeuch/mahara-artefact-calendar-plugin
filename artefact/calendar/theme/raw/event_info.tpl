@@ -5,7 +5,9 @@
         <div id="overlay_header">
             <h4 id="overlay_title">{$form['title']}</h4>
             <div class="overlay_control">
-                <img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X" onclick="hide_overlay('event_info_overlay');" />
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick='hide_overlay("event_info_overlay");'>
+                    <span aria-hidden="true">×</span>
+                </button>
             </div>
             <div id="overlay_content">
                 <p>

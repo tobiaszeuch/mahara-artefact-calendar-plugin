@@ -37,10 +37,12 @@
 		<div id='overlay'></div>
 			<div id='overlay_window' class="overlay">
 				<div class="overlay_control" style='min-width:0;'>
-            		<img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X" onclick='hide_overlay("taskoverlay");'/>
-		        </div>
-		        <div id="overlay_content">
-					<form name="edittask" method="get" action="" id="edittask"> 						
+                                    <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick='hide_overlay("taskoverlay");'>
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+                                <div id="overlay_content">
+                                    <form name="edittask" method="get" action="" id="edittask">
 						{if $missing_title == 1}
 							<p class="errmsg">{str section="artefact.calendar" tag='missing_title'}</p>
 						{/if}

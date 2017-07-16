@@ -4,7 +4,7 @@
 {* date picker plugin *}
 <script type="text/javascript" src="{$WWWROOT}js/jquery/jquery.js"></script>
 <script type="text/javascript" src="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/js/jquery-ui-1.9.0.custom.js"></script>
-<script type="text/javascript" src="{$WWWROOT}js/jquery/jquery-ui/js/jquery-ui-1.10.2.min.js"></script>
+<script type="text/javascript" src="{$WWWROOT}js/jquery/jquery-ui/js/jquery-ui.min.js"></script>
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/ui-lightness/jquery-ui-1.9.0.custom.css" />
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/ui-lightness/jquery-ui-1.9.0.custom.min.css" />
 <link rel="stylesheet" href="{$WWWROOT}{$cal}jquery-ui-1.9.0.custom/css/smoothness/jquery-ui-1.9.0.custom.css" />

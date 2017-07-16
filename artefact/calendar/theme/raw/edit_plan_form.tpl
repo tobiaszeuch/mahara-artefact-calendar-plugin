@@ -1,6 +1,8 @@
 <div class="overlay_control" style="min-width:0;">
     <a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
-    	<img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X"/>
+        <button class="close deletebutton" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
     </a>
 </div>
 <div id="overlay_content">

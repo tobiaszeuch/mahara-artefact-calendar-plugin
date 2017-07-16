@@ -13,7 +13,9 @@
                         {assign var=status value=0}
                         <input type="image" id="done" src="{$WWWROOT}{$cal}theme/raw/static/images/done_gruen.gif" alt="done" />
                     {/if}
-                    <img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X" onclick="hide_overlay('task_info_overlay');" />
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick='hide_overlay("task_info_overlay");'>
+                        <span aria-hidden="true">×</span>
+                    </button>
                     <input type="hidden" name="task" value="{$task_info}" />
                     <input type="hidden" name="type" value="task"/>
                     <input type="hidden" name="title" value="{$form['title']}" />

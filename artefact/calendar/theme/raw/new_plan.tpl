@@ -1,14 +1,16 @@
 <div id='planoverlay' class="disp_none">
-	<div id='overlay'></div>
-	<div id='overlay_window' class="overlay">
-		<div class="overlay_control" style="min-width:0;">
-		    <a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'> 
-		    	<img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X"/>
-		    </a>
-		</div>
-		<div id="overlay_content">
-				<form name="newplan" method="get" action="" id="newplan"> 
-					{if $missing_title == 1}
+    <div id='overlay'></div>
+    <div id='overlay_window' class="overlay">
+        <div class="overlay_control" style="min-width:0;">
+            <a href='{$WWWROOT}{$cal}index.php?month={$month}&year={$year}'>
+                <button class="close deletebutton" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </a>
+        </div>
+        <div id="overlay_content">
+            <form name="newplan" method="get" action="" id="newplan">
+                {if $missing_title == 1}
 						<p class="errmsg">{str section="artefact.calendar" tag='missing_title'}</p>
 					{/if}
 					<p>

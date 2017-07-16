@@ -37,7 +37,9 @@
     <div id='overlay'></div>
     <div id='overlay_window' class="overlay">
         <div class="overlay_control" style='min-width:0;'>
-            <img src="{$WWWROOT}theme/raw/static/images/btn_close.png" class="deletebutton" alt="X" onclick='hide_overlay("eventoverlay");'/>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close" onclick='hide_overlay("eventoverlay");'>
+                <span aria-hidden="true">×</span>
+            </button>
         </div>
         <div id="overlay_content">
             <form name="editevent" method="get" action="" id="editevent"> 						
