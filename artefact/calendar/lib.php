@@ -50,11 +50,11 @@ class PluginArtefactCalendar extends PluginArtefact {
     
     public static function menu_items() {
         return array(
-            'content/plans' => array(
-                'path' => 'content/plans',
-                'url'  => 'artefact/plans/index.php',
-                'title' => get_string('Plans', 'artefact.plans') + "test",
-                'weight' => 60,
+            'content/calendar' => array(
+                'path' => 'content/calendar',
+                'url'  => 'artefact/calendar/index.php',
+                'title' => get_string('calendar', 'artefact.calendar'),
+                'weight' => 35,
             ),
         );
     }
@@ -526,9 +526,10 @@ class ArtefactTypeCalendar extends ArtefactType {
                 $smarty->assign_by_ref('calendar_weeks', $calendar_weeks);
 
                 //feed
-                $smarty->assign_by_ref('uid', $USER->get('id'));
+                $user = $USER->get('id');
+                $smarty->assign_by_ref('uid', $user);
                 $smarty->assign_by_ref('feed_url', $feed_url);
-                $smarty->assign_by_ref('newfeed', $ $cal_variables['newfeed']);
+                $smarty->assign_by_ref('newfeed', $cal_variables['newfeed']);
 
                 //missing title or date
                 $smarty->assign_by_ref('missing_title', $_GET['missing_title']);
